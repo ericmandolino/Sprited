@@ -1,0 +1,129 @@
+package com.swirlfist.sprited.domain.usecase
+
+import android.net.Uri
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.fromColorLong
+import com.swirlfist.sprited.domain.error.ExportPixelImageError
+import com.swirlfist.sprited.domain.height
+import com.swirlfist.sprited.domain.model.PaletteModel
+import com.swirlfist.sprited.domain.model.PixelImageModel
+import com.swirlfist.sprited.domain.model.PixelMatrixModel
+import com.swirlfist.sprited.domain.model.PixelModel
+import com.swirlfist.sprited.domain.toHexCode
+import com.swirlfist.sprited.domain.width
+import javax.inject.Inject
+
+class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
+    private val writeToFileUseCase: WriteToFileUseCase,
+) : ExportPixelImageToSvgUseCase {
+    override suspend fun invoke(params: ExportPixelImageToSvgUseCase.Params): Result<Unit> {
+        return try {
+            exportPixelImage(
+                params.pixelImageModel,
+                params.uri,
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(ExportPixelImageError(e))
+        }
+    }
+
+    private suspend fun exportPixelImage(
+        pixelImageModel: PixelImageModel,
+        uri: Uri,
+    ) {
+        val stringBuilder = StringBuilder()
+        val pixelMatrix = pixelImageModel.pixelMatrixModel
+        writeHeader(
+            stringBuilder,
+            width = pixelMatrix.width(),
+            height = pixelMatrix.height(),
+        )
+        writeContent(
+            stringBuilder,
+            pixelMatrix,
+            palette = pixelImageModel.paletteModel,
+        )
+        writeFooter(stringBuilder)
+
+        writeToFileUseCase(
+            WriteToFileUseCase.Params(
+                content = stringBuilder.toString(),
+                uri,
+            )
+        ).fold(
+            onSuccess = {},
+            onFailure = { throwable -> throw throwable }
+        )
+    }
+
+    private fun writeHeader(
+        stringBuilder: StringBuilder,
+        width: Int,
+        height: Int,
+    ) {
+        val header = """<svg width="$width" height="$height" xmlns="http://www.w3.org/2000/svg">
+            |
+        """.trimMargin()
+        stringBuilder.append(header)
+    }
+
+    private fun writeFooter(
+        stringBuilder: StringBuilder,
+    ) {
+        stringBuilder.append("</svg>")
+    }
+
+    private fun writeContent(
+        stringBuilder: StringBuilder,
+        pixelMatrix: PixelMatrixModel,
+        palette: PaletteModel,
+    ) {
+        val hexColorMap = mutableMapOf<Int, String>()
+        val height = pixelMatrix.height()
+
+        pixelMatrix.content.forEachIndexed { rowIndex, row ->
+            val y = height - 1 - rowIndex
+            row.forEachIndexed { x, pixel ->
+                writePixel(stringBuilder, pixel, x, y, palette, hexColorMap)
+            }
+        }
+    }
+
+    private fun writePixel(
+        stringBuilder: StringBuilder,
+        pixel: PixelModel,
+        x: Int,
+        y: Int,
+        palette: PaletteModel,
+        hexColorMap: MutableMap<Int, String>,
+    ) {
+        if (pixel.paletteIndex < 0) {
+            return
+        }
+
+        val color = getHexColor(
+            palette,
+            paletteIndex = pixel.paletteIndex,
+            hexColorMap,
+        )
+
+        val pixelStr = """  <rect width="1" height="1" x="$x" y="$y" fill="$color" shape-rendering="crispEdges" />
+            |
+        """.trimMargin()
+        stringBuilder.append(pixelStr)
+    }
+
+    private fun getHexColor(
+        palette: PaletteModel,
+        paletteIndex: Int,
+        hexColorMap: MutableMap<Int, String>,
+    ): String {
+        hexColorMap[paletteIndex]?.let { colorHex -> return colorHex }
+
+        val colorHex = Color.fromColorLong(palette.colors[paletteIndex]).toHexCode()
+        hexColorMap[paletteIndex] = colorHex
+
+        return colorHex
+    }
+}

@@ -7,17 +7,17 @@ plugins {
 }
 
 android {
-    namespace = "com.swirlfist.simplepixel"
+    namespace = "com.swirlfist.sprited"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.swirlfist.simplepixel"
+        applicationId = "com.swirlfist.sprited"
         minSdk = 26
         targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.9.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
