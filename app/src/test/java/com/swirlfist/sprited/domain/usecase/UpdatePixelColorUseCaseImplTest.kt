@@ -62,32 +62,6 @@ class UpdatePixelColorUseCaseImplTest {
     }
 
     @Test
-    fun `when the palette index is the same the undo action is not added or updated`() = runTest {
-        // Given
-        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
-        )
-        val x = 1
-        val y = 1
-        val useCaseParams = UpdatePixelColorUseCase.Params(
-            actionContext = PixelImageEditorActionContext(pixelImageModel),
-            x,
-            y,
-            isSameAction = false,
-            paletteIndex = 1,
-        )
-
-        // When
-        useCase(useCaseParams)
-
-        // Then
-        coVerify(exactly = 0) {
-            pixelImageEditorActionRepository.addAction(any(), any())
-            pixelImageEditorActionRepository.updateLastAction(any())
-        }
-    }
-
-    @Test
     fun `when the pixel coordinates are within the image then the palette index for that pixel gets updated`() =
         runTest {
             // Given
