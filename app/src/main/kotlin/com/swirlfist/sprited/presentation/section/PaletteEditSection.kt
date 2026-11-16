@@ -1,0 +1,295 @@
+package com.swirlfist.sprited.presentation.section
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowColumn
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.foundation.text.input.then
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.fromColorLong
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
+import com.swirlfist.sprited.R
+import com.swirlfist.sprited.domain.toHexCode
+import com.swirlfist.sprited.presentation.state.PaletteEditState
+import com.swirlfist.sprited.presentation.theme.SpritedTheme
+import com.swirlfist.sprited.presentation.uielements.IconButton
+import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButton
+import kotlin.math.roundToInt
+
+@Composable
+fun PaletteEditSection(
+    modifier: Modifier = Modifier,
+    paletteEditState: PaletteEditState,
+) {
+    val colors = paletteEditState.paletteColors
+    val selectedPaletteIndex = paletteEditState.selectedPaletteIndex
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        FlowColumn(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            maxItemsInEachColumn = 2,
+        ) {
+            colors.forEachIndexed { paletteIndex, colorLong ->
+                PaletteColorSelectButton(
+                    Color.fromColorLong(colorLong),
+                    size = 48.dp,
+                    isEnabled = true,
+                    contentDescriptionValue = stringResource(
+                        R.string.cd_new_image_screen_edit_palette_color,
+                        paletteIndex
+                    ),
+                    isSelected = paletteIndex == selectedPaletteIndex,
+                    onClick = { paletteEditState.onPaletteColorClick(paletteIndex) },
+                )
+            }
+            IconButton(
+                modifier = Modifier.padding(4.dp),
+                drawableResId = R.drawable.ic_new_image_screen_add_palette_color_24dp,
+                contentDescriptionResId = R.string.cd_new_image_screen_add_palette_color,
+                size = 48.dp,
+                isEnabled = true,
+                onClick = paletteEditState.onAddPaletteColorClick,
+            )
+        }
+
+        val color = if (selectedPaletteIndex != null && selectedPaletteIndex in colors.indices) {
+            Color.fromColorLong(colors[selectedPaletteIndex])
+        } else {
+            null
+        }
+
+        PaletteColorEdit(
+            color = color,
+            isDeleteEnabled = color != null && colors.size > 1,
+            onDeleteClick = paletteEditState.onDeletePaletteColorClick,
+            onColorComponentRedSliderChange = paletteEditState.onColorComponentRedSliderChange,
+            onColorComponentGreenSliderChange = paletteEditState.onColorComponentGreenSliderChange,
+            onColorComponentBlueSliderChange = paletteEditState.onColorComponentBlueSliderChange,
+        )
+    }
+}
+
+@Composable
+fun PaletteColorEdit(
+    modifier: Modifier = Modifier,
+    color: Color?,
+    isDeleteEnabled: Boolean,
+    onDeleteClick: () -> Unit,
+    onColorComponentRedSliderChange: (Float) -> Unit,
+    onColorComponentGreenSliderChange: (Float) -> Unit,
+    onColorComponentBlueSliderChange: (Float) -> Unit,
+) {
+    val redTextFieldState = rememberTextFieldState()
+    val greenTextFieldState = rememberTextFieldState()
+    val blueTextFieldState = rememberTextFieldState()
+
+    LaunchedEffect(color) {
+        redTextFieldState.setTextAndPlaceCursorAtEnd(
+            color?.red?.toColorComponentString() ?: ""
+        )
+        greenTextFieldState.setTextAndPlaceCursorAtEnd(
+            color?.green?.toColorComponentString() ?: ""
+        )
+        blueTextFieldState.setTextAndPlaceCursorAtEnd(
+            color?.blue?.toColorComponentString() ?: ""
+        )
+    }
+
+    Column(
+        modifier = modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                shape = RoundedCornerShape(4.dp),
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(1F),
+                text = color?.toHexCode()?.uppercase() ?: "",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            TextButton(
+                onClick = onDeleteClick,
+                enabled = isDeleteEnabled,
+            ) {
+                Text(
+                    text = stringResource(R.string.delete)
+                )
+            }
+        }
+        PaletteColorComponent(
+            componentColor = Color.Red,
+            textFieldState = redTextFieldState,
+            onSliderChange = onColorComponentRedSliderChange,
+            isEnabled = color != null,
+        )
+        PaletteColorComponent(
+            componentColor = Color.Green,
+            textFieldState = greenTextFieldState,
+            onSliderChange = onColorComponentGreenSliderChange,
+            isEnabled = color != null,
+        )
+        PaletteColorComponent(
+            componentColor = Color.Blue,
+            textFieldState = blueTextFieldState,
+            onSliderChange = onColorComponentBlueSliderChange,
+            isEnabled = color != null,
+        )
+    }
+}
+
+@Composable
+fun PaletteColorComponent(
+    componentColor: Color,
+    textFieldState: TextFieldState,
+    onSliderChange: (Float) -> Unit,
+    isEnabled: Boolean = true,
+) {
+    val textValue = textFieldState.text.toString()
+    val sliderPosition = if (textValue.isNotBlank()) textValue.toFloat() / 255 else 0F
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .background(
+                    color = if (isEnabled) componentColor else componentColor.copy(alpha = 0.5F),
+                    shape = RoundedCornerShape(4.dp),
+                )
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    shape = RoundedCornerShape(4.dp),
+                ),
+        )
+        Slider(
+            modifier = Modifier
+                .weight(1F),
+            value = sliderPosition,
+            onValueChange = { value ->
+                textFieldState.setTextAndPlaceCursorAtEnd(value.toColorComponentString())
+                onSliderChange(value)
+            },
+            valueRange = 0F..1F,
+            steps = 256,
+            enabled = isEnabled,
+        )
+        TextField(
+            state = textFieldState,
+            modifier = Modifier
+                .width(64.dp)
+                .onFocusChanged { focusState ->
+                    if (!focusState.hasFocus && textFieldState.text.isBlank()) {
+                        textFieldState.setTextAndPlaceCursorAtEnd("0")
+                        onSliderChange(0F)
+                    }
+                }
+            ,
+            enabled = isEnabled,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                textAlign = TextAlign.End,
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+            ),
+            lineLimits = TextFieldLineLimits.SingleLine,
+            inputTransformation = InputTransformation.then {
+                val charSequence = asCharSequence()
+                if (charSequence.isEmpty()) {
+                    return@then
+                }
+                if (!charSequence.isDigitsOnly()) {
+                    revertAllChanges()
+                } else {
+                    try {
+                        val value = charSequence.toString().toInt()
+                        if (value !in 0..255) {
+                            revertAllChanges()
+                        } else {
+                            onSliderChange(value.toFloat() / 255)
+                        }
+                    } catch (_: NumberFormatException) {
+                        revertAllChanges()
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 480)
+@Composable
+fun PaletteEditSectionPreview() {
+    SpritedTheme {
+        PaletteEditSection(
+            modifier = Modifier.wrapContentSize(),
+            paletteEditState = PaletteEditState(),
+        )
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun PaletteColorComponentPreview() {
+    SpritedTheme {
+        PaletteColorComponent(
+            componentColor = Color.Red,
+            textFieldState = rememberTextFieldState("25"),
+            onSliderChange = {},
+        )
+    }
+}
+
+private fun Float.toColorComponentString(): String {
+    return (this * 255).roundToInt().toString()
+}

@@ -1,0 +1,123 @@
+package com.swirlfist.sprited.domain.usecase
+
+import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
+import com.swirlfist.sprited.domain.getPixelAt
+import com.swirlfist.sprited.domain.model.PixelImageEditorAction
+import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
+import com.swirlfist.sprited.domain.model.PixelImageModel
+import com.swirlfist.sprited.domain.model.PixelModel
+import javax.inject.Inject
+
+class ApplyBucketUseCaseImpl @Inject constructor(
+    private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
+) : ApplyBucketUseCase {
+    override suspend fun invoke(params: ApplyBucketUseCase.Params): Result<PixelImageModel> {
+        return Result.success(
+            applyBucket(
+                actionContext = params.actionContext,
+                x = params.x,
+                y = params.y,
+                paletteIndex = params.paletteIndex,
+                isSameAction = params.isSameAction,
+            )
+        )
+    }
+
+    private suspend fun applyBucket(
+        actionContext: PixelImageEditorActionContext,
+        x: Int,
+        y: Int,
+        paletteIndex: Int,
+        isSameAction: Boolean,
+    ): PixelImageModel {
+        val pixelImage = actionContext.pixelImage
+        val pixel = pixelImage.getPixelAt(x, y)
+
+        val pixelImageResult = if (pixel.paletteIndex == paletteIndex) {
+             pixelImage
+        } else {
+            val mutablePixelMatrix = mutableListOf<MutableList<PixelModel>>().apply {
+                pixelImage.pixelMatrixModel.content.forEach { row ->
+                    add(row.toMutableList())
+                }
+            }
+
+            applyBucket(
+                pixelMatrix = mutablePixelMatrix,
+                x,
+                y,
+                paletteIndexToReplace = pixel.paletteIndex,
+                paletteIndexNew = paletteIndex,
+            )
+
+            pixelImage.copy(
+                pixelMatrixModel = pixelImage.pixelMatrixModel.copy(
+                    content = mutablePixelMatrix,
+                )
+            )
+        }
+
+        val actionContextResult = actionContext.copy(
+            pixelImage = pixelImageResult,
+        )
+
+        if (isSameAction) {
+            pixelImageEditorActionRepository.updateLastAction(actionContextResult)
+        } else {
+            pixelImageEditorActionRepository.addAction(
+                PixelImageEditorAction.ApplyBucketColorAction(
+                    actionContext,
+                    x,
+                    y,
+                    paletteIndex,
+                ),
+                actionContextResult,
+            )
+        }
+
+        return pixelImageResult
+    }
+
+    private fun applyBucket(
+        pixelMatrix: MutableList<MutableList<PixelModel>>,
+        x: Int,
+        y: Int,
+        paletteIndexToReplace: Int,
+        paletteIndexNew: Int,
+    ) {
+        val size = pixelMatrix.size
+
+        if (x !in 0..<size || y !in 0..<size) {
+            return
+        }
+
+        val colorUpdated = applyColor(pixelMatrix, x, y, paletteIndexToReplace, paletteIndexNew)
+
+        if (!colorUpdated) {
+            return
+        }
+
+        applyBucket(pixelMatrix, x = x - 1, y, paletteIndexToReplace, paletteIndexNew)
+        applyBucket(pixelMatrix, x = x + 1, y, paletteIndexToReplace, paletteIndexNew)
+        applyBucket(pixelMatrix, x, y = y - 1, paletteIndexToReplace, paletteIndexNew)
+        applyBucket(pixelMatrix, x, y = y + 1, paletteIndexToReplace, paletteIndexNew)
+    }
+
+    private fun applyColor(
+        pixelMatrix: MutableList<MutableList<PixelModel>>,
+        x: Int,
+        y: Int,
+        paletteIndexToReplace: Int,
+        paletteIndexNew: Int,
+    ): Boolean {
+        val pixel = pixelMatrix[y][x]
+        val pixelPaletteIndex = pixel.paletteIndex
+
+        return if (pixelPaletteIndex == paletteIndexNew || pixelPaletteIndex != paletteIndexToReplace) {
+            false
+        } else {
+            pixelMatrix[y][x] = pixel.copy(paletteIndex = paletteIndexNew)
+            true
+        }
+    }
+}

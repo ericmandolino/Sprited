@@ -1,0 +1,220 @@
+package com.swirlfist.sprited.domain.usecase
+
+import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
+import com.swirlfist.sprited.domain.getPixelAt
+import com.swirlfist.sprited.domain.model.PixelImageEditorAction
+import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
+import com.swirlfist.sprited.testutil.PixelImageModelTestUtil
+import io.mockk.MockKAnnotations
+import io.mockk.coVerify
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+
+class ApplyBucketUseCaseImplTest {
+
+    private lateinit var useCase: ApplyBucketUseCase
+    private val testPixelImageString = """
+    1 2 2 1
+    1 1 2 0
+    1 2 1 1
+    1 1 3 3
+    """.trimIndent()
+
+    @MockK
+    private lateinit var pixelImageEditorActionRepository: PixelImageEditorActionRepository
+
+    init {
+        MockKAnnotations.init(this, relaxUnitFun = true)
+    }
+
+    @Before
+    fun setup() {
+        useCase = ApplyBucketUseCaseImpl(pixelImageEditorActionRepository)
+    }
+
+    @Test
+    fun `when the palette index is the same the image does not change`() = runTest {
+        // Given
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = testPixelImageString
+        )
+        val x = 1
+        val y = 1
+        val useCaseParams = ApplyBucketUseCase.Params(
+            actionContext = PixelImageEditorActionContext(pixelImageModel),
+            x,
+            y,
+            isSameAction = false,
+            paletteIndex = pixelImageModel.getPixelAt(x, y).paletteIndex,
+        )
+
+        // When
+        val result = useCase(useCaseParams)
+
+        // Then
+        assertTrue { result.isSuccess }
+        assertEquals(pixelImageModel, result.getOrNull())
+    }
+
+    @Test
+    fun `when the palette index is the same the undo action is not added or updated`() = runTest {
+        // Given
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = testPixelImageString
+        )
+        val x = 1
+        val y = 1
+        val useCaseParams = ApplyBucketUseCase.Params(
+            actionContext = PixelImageEditorActionContext(pixelImageModel),
+            x,
+            y,
+            isSameAction = false,
+            paletteIndex = pixelImageModel.getPixelAt(x, y).paletteIndex,
+        )
+
+        // When
+        useCase(useCaseParams)
+
+        // Then
+        coVerify(exactly = 0) {
+            pixelImageEditorActionRepository.addAction(any(), any())
+            pixelImageEditorActionRepository.updateLastAction(any())
+        }
+    }
+
+    @Test
+    fun `when the pixel is isolated then only that pixel is updated`() = runTest {
+        // Given
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = testPixelImageString
+        )
+        val x = 1
+        val y = 1
+        val useCaseParams = ApplyBucketUseCase.Params(
+            actionContext = PixelImageEditorActionContext(pixelImageModel),
+            x,
+            y,
+            isSameAction = false,
+            paletteIndex = 0,
+        )
+        val expected = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = ("""
+                0 2 2 1
+                0 0 2 0
+                0 2 1 1
+                0 0 3 3
+                """.trimIndent()
+                    )
+        )
+
+        // When
+        val result = useCase(useCaseParams)
+
+        // Then
+        assertTrue { result.isSuccess }
+        assertEquals(expected, result.getOrNull())
+    }
+
+    @Test
+    fun `when the pixel is not isolated then all pixels in the group are updated`() = runTest {
+        // Given
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = testPixelImageString
+        )
+        val x = 1
+        val y = 2
+        val useCaseParams = ApplyBucketUseCase.Params(
+            actionContext = PixelImageEditorActionContext(pixelImageModel),
+            x,
+            y,
+            isSameAction = false,
+            paletteIndex = 0,
+        )
+        val expected = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = ("""
+                1 2 2 1
+                1 1 2 0
+                1 0 1 1
+                1 1 3 3
+                """.trimIndent()
+                    )
+        )
+
+        // When
+        val result = useCase(useCaseParams)
+
+        // Then
+        assertTrue { result.isSuccess }
+        assertEquals(expected, result.getOrNull())
+    }
+
+    @Test
+    fun `when the image is updated if it is not the same action the undo action is added`() = runTest {
+        // Given
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = testPixelImageString
+        )
+        val x = 1
+        val y = 1
+        val useCaseParams = ApplyBucketUseCase.Params(
+            actionContext = PixelImageEditorActionContext(pixelImageModel),
+            x,
+            y,
+            isSameAction = false,
+            paletteIndex = 0,
+        )
+
+        // When
+        val result = useCase(useCaseParams)
+
+        // Then
+        coVerify(exactly = 1) {
+            pixelImageEditorActionRepository.addAction(
+                PixelImageEditorAction.ApplyBucketColorAction(
+                    actionContext = PixelImageEditorActionContext(pixelImageModel),
+                    x,
+                    y,
+                    paletteIndex = 0,
+                ),
+                actionContextResult = PixelImageEditorActionContext(result.getOrThrow()),
+            )
+        }
+        coVerify(exactly = 0) {
+            pixelImageEditorActionRepository.updateLastAction(any())
+        }
+    }
+
+    @Test
+    fun `when the image is updated if it is the same action the last action is updated`() = runTest {
+        // Given
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = testPixelImageString
+        )
+        val x = 1
+        val y = 1
+        val useCaseParams = ApplyBucketUseCase.Params(
+            actionContext = PixelImageEditorActionContext(pixelImageModel),
+            x,
+            y,
+            isSameAction = true,
+            paletteIndex = 0,
+        )
+
+        // When
+        val result = useCase(useCaseParams)
+
+        // Then
+        coVerify(exactly = 1) {
+            pixelImageEditorActionRepository.updateLastAction(
+                actionContextResult = PixelImageEditorActionContext(result.getOrThrow()),
+            )
+        }
+        coVerify(exactly = 0) {
+            pixelImageEditorActionRepository.addAction(any(), any())
+        }
+    }
+}
