@@ -13,6 +13,17 @@
  - Load and save your sprites.
  - Export your sprites to PNG and SVG.
 
+# Architecture
+
+This project follows MVVM and Clean Architecture principles with presentation, domain and data layers.
+
+# Tech stack
+
+ - Language: Kotlin
+ - UI: Jetpack Compose
+ - Dependecy injection: Hilt
+ - Local persistence: Room
+
 # License
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
