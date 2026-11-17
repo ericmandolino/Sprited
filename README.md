@@ -1,5 +1,3 @@
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
-
 **Sprited** is an open source sprite editor for Android.
 
 # Features
