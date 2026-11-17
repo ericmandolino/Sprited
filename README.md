@@ -10,7 +10,7 @@
  - Move all sprite pixels up and down row by row, or left and right column by column.
  - Undo/redo your recent editor actions.
  - Display or hide a preview of your image.
- - Load and save your sprites.
+ - Save and load your sprites.
  - Export your sprites to PNG and SVG.
 
 # Architecture
@@ -31,3 +31,11 @@ This program is free software: you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 See [GPL-3.0](LICENSE) for the full text.
+
+# Screenshots
+
+![Portrait create palette](/screenshots/portrait-create-palette.png?raw=true")
+![Portrait preview](/screenshots/portrait-preview.png?raw=true")
+![Portrait edit palette](/screenshots/portrait-edit-palette.png?raw=true")
+![Portrait rectangle selection](/screenshots/portrait-rectangle-selection.png?raw=true")
+![Landscape no preview](/screenshots/landscape-no-preview.png?raw=true")
