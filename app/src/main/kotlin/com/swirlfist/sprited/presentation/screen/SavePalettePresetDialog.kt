@@ -28,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.swirlfist.sprited.R
 import com.swirlfist.sprited.presentation.section.ActionCancelButtonsDialogFooter
+import com.swirlfist.sprited.presentation.section.ActionCancelButtonsDialogFooterState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 
 private const val PRESET_NAME_MAX_LENGTH = 64
@@ -94,11 +95,13 @@ fun SavePalettePresetDialogContent(
                 }
                 val presetName = nameTextFieldState.text.toString()
                 ActionCancelButtonsDialogFooter(
-                    isActionEnabled = presetName.isNotBlank(),
-                    actionText = stringResource(R.string.save),
-                    cancelText = stringResource(android.R.string.cancel),
-                    onActionClick = { onSaveClick(presetName) },
-                    onCancelClick = onDismiss,
+                    state = ActionCancelButtonsDialogFooterState(
+                        isActionEnabled = presetName.isNotBlank(),
+                        actionText = stringResource(R.string.save),
+                        cancelText = stringResource(android.R.string.cancel),
+                        onActionClick = { onSaveClick(presetName) },
+                        onCancelClick = onDismiss,
+                    ),
                 )
             }
         }

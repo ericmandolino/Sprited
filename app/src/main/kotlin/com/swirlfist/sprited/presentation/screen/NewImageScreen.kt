@@ -37,6 +37,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.swirlfist.sprited.R
+import com.swirlfist.sprited.presentation.FLOAT_40_PERCENT
 import com.swirlfist.sprited.presentation.section.PaletteEditSection
 import com.swirlfist.sprited.presentation.state.NewImagePaletteState
 import com.swirlfist.sprited.presentation.state.NewImageScreenState
@@ -181,7 +182,7 @@ fun ImageSize(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             DimensionTextField(
-                modifier = Modifier.weight(0.4F),
+                modifier = Modifier.weight(FLOAT_40_PERCENT),
                 label = stringResource(R.string.input_width),
                 textFieldState = widthTextFieldState,
             )
@@ -189,7 +190,7 @@ fun ImageSize(
                 text = "x",
             )
             DimensionTextField(
-                modifier = Modifier.weight(0.4F),
+                modifier = Modifier.weight(FLOAT_40_PERCENT),
                 label = stringResource(R.string.input_height),
                 textFieldState = heightTextFieldState,
             )

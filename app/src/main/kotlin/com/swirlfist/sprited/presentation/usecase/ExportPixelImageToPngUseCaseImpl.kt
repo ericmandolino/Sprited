@@ -17,6 +17,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.FileOutputStream
 import javax.inject.Inject
 
+private const val PNG_QUALITY = 100
+
 class ExportPixelImageToPngUseCaseImpl @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
 ) : ExportPixelImageToPngUseCase {
@@ -55,7 +57,7 @@ class ExportPixelImageToPngUseCaseImpl @Inject constructor(
             FileOutputStream(descriptor.fileDescriptor).use { outputStream ->
                 bitmap.compress(
                     Bitmap.CompressFormat.PNG,
-                    100,
+                    PNG_QUALITY,
                     outputStream,
                 )
             }

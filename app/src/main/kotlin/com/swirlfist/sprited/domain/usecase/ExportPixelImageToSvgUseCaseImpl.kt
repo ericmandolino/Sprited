@@ -74,7 +74,14 @@ class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
         pixelMatrix.content.forEachIndexed { rowIndex, row ->
             val y = height - 1 - rowIndex
             row.forEachIndexed { x, pixel ->
-                writePixel(stringBuilder, pixel, x, y, palette, hexColorMap)
+                if (pixel.paletteIndex >= 0) {
+                    val hexColor = getHexColor(
+                        palette,
+                        paletteIndex = pixel.paletteIndex,
+                        hexColorMap,
+                    )
+                    writePixel(stringBuilder, pixel, x, y, hexColor)
+                }
             }
         }
     }
@@ -84,20 +91,13 @@ class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
         pixel: PixelModel,
         x: Int,
         y: Int,
-        palette: PaletteModel,
-        hexColorMap: MutableMap<Int, String>,
+        hexColor: String,
     ) {
         if (pixel.paletteIndex < 0) {
             return
         }
 
-        val color = getHexColor(
-            palette,
-            paletteIndex = pixel.paletteIndex,
-            hexColorMap,
-        )
-
-        val pixelStr = """  <rect width="1" height="1" x="$x" y="$y" fill="$color" shape-rendering="crispEdges" />
+        val pixelStr = """  <rect width="1" height="1" x="$x" y="$y" fill="$hexColor" shape-rendering="crispEdges" />
             |
         """.trimMargin()
         stringBuilder.append(pixelStr)

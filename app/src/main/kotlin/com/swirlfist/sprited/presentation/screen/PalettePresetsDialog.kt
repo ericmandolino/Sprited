@@ -33,6 +33,7 @@ import com.swirlfist.sprited.R
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PalettePresetModel
 import com.swirlfist.sprited.presentation.section.CancelButtonDialogFooter
+import com.swirlfist.sprited.presentation.section.CancelButtonDialogFooterState
 import com.swirlfist.sprited.presentation.state.PalettePresetsDialogState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.LoadingIndeterminateProgress
@@ -86,7 +87,9 @@ fun PalettePresetsDialogContent(
                     )
 
                     CancelButtonDialogFooter(
-                        onCancelClick = onDismiss,
+                        state = CancelButtonDialogFooterState(
+                            onCancelClick = onDismiss,
+                        ),
                     )
                 }
             }
@@ -223,6 +226,7 @@ fun PalettePresetItemPreview() {
     }
 }
 
+@Suppress("MagicNumber")
 private fun getPreviewPalettePresets(): List<PalettePresetModel> {
     val presets = mutableListOf<PalettePresetModel>()
 

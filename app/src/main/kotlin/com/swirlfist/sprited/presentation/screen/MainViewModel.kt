@@ -9,8 +9,6 @@ import com.swirlfist.sprited.domain.error.ExportPixelImageError
 import com.swirlfist.sprited.domain.error.OpenPixelImageError
 import com.swirlfist.sprited.domain.getPixelHeight
 import com.swirlfist.sprited.domain.model.ActionModel
-import com.swirlfist.sprited.domain.model.BaseButtonGroupActionModel
-import com.swirlfist.sprited.domain.model.EMPTY_PIXEL_PALETTE_INDEX
 import com.swirlfist.sprited.domain.model.FloatingPixelImageModel
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
@@ -49,6 +47,13 @@ import com.swirlfist.sprited.presentation.isSelected
 import com.swirlfist.sprited.presentation.section.ActionButtonType
 import com.swirlfist.sprited.presentation.section.ActionSectionEvent
 import com.swirlfist.sprited.presentation.section.CanvasSectionEvent
+import com.swirlfist.sprited.presentation.section.FileButtonClicked
+import com.swirlfist.sprited.presentation.section.MoveImageDirectionButtonClicked
+import com.swirlfist.sprited.presentation.section.PaletteButtonClicked
+import com.swirlfist.sprited.presentation.section.SelectionButtonClicked
+import com.swirlfist.sprited.presentation.section.ToolButtonClicked
+import com.swirlfist.sprited.presentation.section.UndoRedoButtonClicked
+import com.swirlfist.sprited.presentation.section.ZoomButtonClicked
 import com.swirlfist.sprited.presentation.state.ActionsSectionState
 import com.swirlfist.sprited.presentation.state.CanvasSectionState
 import com.swirlfist.sprited.presentation.state.MainScreenState
@@ -68,9 +73,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val DEFAULT_ZOOM_FACTOR = 1F
-private const val ERASER_TOOL_PALETTE_INDEX = EMPTY_PIXEL_PALETTE_INDEX
 private const val ONCE_MORE_TO_EXIT_DURATION_SECONDS = 4
 
+@Suppress("LargeClass", "LongParameterList", "TooManyFunctions")
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getBasePixelImageUseCase: GetBasePixelImageUseCase,
@@ -295,79 +300,118 @@ class MainViewModel @Inject constructor(
         when (event) {
             ActionSectionEvent.NoActionSectionEvent -> {}
 
-            ActionSectionEvent.OpenPaletteButtonClicked,
-            -> showPalette()
+            is PaletteButtonClicked -> onPaletteButtonClicked(event)
 
-            ActionSectionEvent.EditPaletteButtonClicked,
-            -> showEditPalette()
+            is ToolButtonClicked -> onToolButtonClicked(event)
 
-            is ActionSectionEvent.PickPaletteColorButtonClicked,
-            -> updateSelectedPaletteIndex(event.pickPaletteColorActionButtonType)
+            is UndoRedoButtonClicked -> onUndoRedoButtonClicked(event)
 
-            ActionSectionEvent.RedoButtonClicked,
-            -> redoEditorAction()
+            is ZoomButtonClicked -> onZoomButtonClicked(event)
 
-            ActionSectionEvent.UndoButtonClicked,
-            -> undoEditorAction()
+            is FileButtonClicked -> onFileButtonClicked(event)
 
-            ActionSectionEvent.ZoomInButtonClicked,
-            -> zoom(isZoomIn = true)
-
-            ActionSectionEvent.ZoomOutButtonClicked,
-            -> zoom(isZoomIn = false)
-
-            ActionSectionEvent.SavePixelImageButtonClicked,
-            -> selectSavePixelImageLocation()
-
-            ActionSectionEvent.OpenPixelImageButtonClicked,
-            -> selectOpenPixelImageLocation()
-
-            ActionSectionEvent.ExportPixelImageButtonClicked,
-            -> selectExportPixelImageFormat()
-
-            ActionSectionEvent.InkEraserButtonClicked,
-            -> updateSelectedPaletteIndex(ActionButtonType.InkEraserActionButtonType)
-
-            ActionSectionEvent.InkBucketButtonClicked,
-            -> updateSelectedTool(ActionButtonType.InkBucketActionButtonType)
-
-            ActionSectionEvent.InkPenButtonClicked,
-            -> updateSelectedTool(ActionButtonType.InkPenActionButtonType)
-
-            ActionSectionEvent.OpenToolsButtonClicked -> {}
             ActionSectionEvent.MoveImageActionButtonClicked -> {}
-            ActionSectionEvent.MoveImageDownActionButtonClicked,
-            -> moveImage(MoveDirection.DOWN)
 
-            ActionSectionEvent.MoveImageLeftActionButtonClicked,
-            -> moveImage(MoveDirection.LEFT)
+            is MoveImageDirectionButtonClicked -> onMoveImageButtonClicked(event)
 
-            ActionSectionEvent.MoveImageRightActionButtonClicked,
-            -> moveImage(MoveDirection.RIGHT)
+            ActionSectionEvent.TogglePreviewButtonClicked -> togglePreview()
 
-            ActionSectionEvent.MoveImageUpActionButtonClicked,
-            -> moveImage(MoveDirection.UP)
+            is SelectionButtonClicked -> onSelectionButtonClicked(event)
 
-            ActionSectionEvent.TogglePreviewButtonClicked,
-            -> togglePreview()
+            ActionSectionEvent.DeselectActionButtonClicked -> deselectPreviouslySelected()
 
-            ActionSectionEvent.SelectRectangleActionButtonClicked,
-            -> toggleSelectRectangle()
-
-            ActionSectionEvent.SelectTouchActionButtonClicked,
-            -> toggleSelectTouch()
-
-            ActionSectionEvent.SelectMagicWandActionButtonClicked,
-            -> toggleSelectMagicWand()
-
-            ActionSectionEvent.DeselectActionButtonClicked,
-            -> deselectPreviouslySelected()
-
-            ActionSectionEvent.MoveSelectionActionButtonClicked,
-            -> toggleMoveSelection()
+            ActionSectionEvent.MoveSelectionActionButtonClicked -> toggleMoveSelection()
         }
     }
 
+    fun onFileButtonClicked(event: FileButtonClicked) {
+        when (event) {
+            FileButtonClicked.SavePixelImageButtonClicked -> selectSavePixelImageLocation()
+
+            FileButtonClicked.OpenPixelImageButtonClicked -> selectOpenPixelImageLocation()
+
+            FileButtonClicked.ExportPixelImageButtonClicked -> selectExportPixelImageFormat()
+        }
+    }
+
+    fun onMoveImageButtonClicked(event: MoveImageDirectionButtonClicked) {
+        when (event) {
+            MoveImageDirectionButtonClicked.MoveImageDownButtonClicked,
+            -> moveImage(MoveDirection.DOWN)
+
+            MoveImageDirectionButtonClicked.MoveImageLeftButtonClicked,
+            -> moveImage(MoveDirection.LEFT)
+
+            MoveImageDirectionButtonClicked.MoveImageRightButtonClicked,
+            -> moveImage(MoveDirection.RIGHT)
+
+            MoveImageDirectionButtonClicked.MoveImageUpButtonClicked,
+            -> moveImage(MoveDirection.UP)
+        }
+    }
+
+    fun onPaletteButtonClicked(event: PaletteButtonClicked) {
+        when (event) {
+            PaletteButtonClicked.OpenPaletteButtonClicked,
+            -> showPalette()
+
+            PaletteButtonClicked.EditPaletteButtonClicked,
+            -> showEditPalette()
+
+            is PaletteButtonClicked.PickPaletteColorButtonClicked,
+            -> updateSelectedPaletteIndex(event.pickPaletteColorActionButtonType)
+
+            PaletteButtonClicked.InkEraserButtonClicked,
+            -> updateSelectedPaletteIndex(ActionButtonType.InkEraserActionButtonType)
+        }
+    }
+
+    fun onSelectionButtonClicked(event: SelectionButtonClicked) {
+        when (event) {
+            SelectionButtonClicked.SelectRectangleActionButtonClicked,
+            -> toggleSelectRectangle()
+
+            SelectionButtonClicked.SelectTouchActionButtonClicked,
+            -> toggleSelectTouch()
+
+            SelectionButtonClicked.SelectMagicWandActionButtonClicked,
+            -> toggleSelectMagicWand()
+        }
+    }
+
+    fun onToolButtonClicked(event: ToolButtonClicked) {
+        when (event) {
+            ToolButtonClicked.InkBucketButtonClicked,
+            -> updateSelectedTool(ActionButtonType.InkBucketActionButtonType)
+
+            ToolButtonClicked.InkPenButtonClicked,
+            -> updateSelectedTool(ActionButtonType.InkPenActionButtonType)
+
+            ToolButtonClicked.OpenToolsButtonClicked -> {}
+        }
+    }
+
+    fun onUndoRedoButtonClicked(event: UndoRedoButtonClicked) {
+        when (event) {
+            UndoRedoButtonClicked.RedoButtonClicked,
+            -> redoEditorAction()
+
+            UndoRedoButtonClicked.UndoButtonClicked,
+            -> undoEditorAction()
+        }
+    }
+
+    fun onZoomButtonClicked(event: ZoomButtonClicked) {
+        when (event) {
+            ZoomButtonClicked.ZoomInButtonClicked,
+            -> zoom(isZoomIn = true)
+
+            ZoomButtonClicked.ZoomOutButtonClicked,
+            -> zoom(isZoomIn = false)
+        }
+    }
+
+    @Suppress("LongMethod")
     private fun createActions(pixelImageModel: PixelImageModel) = mapOf(
         ActionButtonType.OpenPaletteActionButtonType to
             ActionModel.SelectableButtonGroupActionModel(
@@ -1252,361 +1296,3 @@ class MainViewModel @Inject constructor(
         }
     }
 }
-
-private fun MainScreenState.updateSelection(
-    pixelSelection: PixelSelectionModel?,
-    floatingPixelImage: FloatingPixelImageModel?,
-): MainScreenState = copy(
-    canvasSectionState = canvasSectionState.copy(
-        pixelSelectionModel = pixelSelection,
-        floatingPixelImageModel = floatingPixelImage,
-    ),
-    actionsSectionState = actionsSectionState.updateSelectionRelatedButtonsState(
-        pixelSelection,
-        floatingPixelImage,
-    ),
-)
-
-private fun ActionsSectionState.updateZoomButtonState(zoomFactor: Float): ActionsSectionState =
-    updateButtonEnabled(
-        ActionButtonType.ZoomInActionButtonType,
-        isEnabled = zoomFactor < MAX_ZOOM_FACTOR,
-    ).updateButtonEnabled(
-        ActionButtonType.ZoomOutActionButtonType,
-        isEnabled = zoomFactor > MIN_ZOOM_FACTOR,
-    )
-
-private fun ActionsSectionState.updateUndoButtonState(isEnabled: Boolean): ActionsSectionState =
-    updateButtonEnabled(
-        ActionButtonType.UndoActionButtonType,
-        isEnabled = isEnabled,
-    )
-
-private fun ActionsSectionState.updateRedoButtonState(isEnabled: Boolean): ActionsSectionState =
-    updateButtonEnabled(
-        ActionButtonType.RedoActionButtonType,
-        isEnabled = isEnabled,
-    )
-
-private fun ActionsSectionState.updateSelectionRelatedButtonsState(
-    pixelSelection: PixelSelectionModel?,
-    floatingPixelImage: FloatingPixelImageModel?,
-): ActionsSectionState {
-    val isAnySelectionActive =
-        pixelSelection != null &&
-            (
-                pixelSelection.rectangleSelection != null ||
-                    pixelSelection.selected.find { row ->
-                        row.find { pixel ->
-                            pixel != null
-                        } != null
-                    } != null
-                )
-    val isAnyFloatingPixelImageActive = floatingPixelImage != null
-
-    val isDeselectButtonEnabled = isAnySelectionActive || isAnyFloatingPixelImageActive
-    val isMoveSelectionButtonEnabled = isAnySelectionActive || isAnyFloatingPixelImageActive
-    val isMoveSelectionButtonSelected = isSelected(ActionButtonType.MoveSelectionActionButtonType)
-    val isMoveSelectionButtonToBeToggled = if (isAnyFloatingPixelImageActive) {
-        !isMoveSelectionButtonSelected
-    } else {
-        isMoveSelectionButtonSelected
-    }
-
-    return updateButtonEnabled(
-        ActionButtonType.DeselectActionButtonType,
-        isEnabled = isDeselectButtonEnabled,
-    ).updateButtonEnabled(
-        ActionButtonType.MoveSelectionActionButtonType,
-        isEnabled = isMoveSelectionButtonEnabled,
-    ).let { updatedState ->
-        if (isMoveSelectionButtonToBeToggled) {
-            updatedState.toggleMoveSelection()
-        } else {
-            updatedState
-        }
-    }
-}
-
-private fun ActionsSectionState.toggleMoveSelection(): ActionsSectionState = toggleSelectableButton(
-    ActionButtonType.MoveSelectionActionButtonType,
-).let { updatedSectionState ->
-    if (updatedSectionState.isSelected(ActionButtonType.MoveSelectionActionButtonType)) {
-        updatedSectionState
-            .disablePaintButtons()
-            .disableSelectionButtons()
-    } else {
-        updatedSectionState
-            .enableSelectionButtons().apply {
-                if (!isAnySelectToolSelected()) {
-                    enablePaintButtons()
-                }
-            }
-    }
-}
-
-private fun ActionsSectionState.updateButtonEnabled(
-    actionButtonType: ActionButtonType,
-    isEnabled: Boolean,
-): ActionsSectionState {
-    val buttonModel = actionModels[actionButtonType]
-
-    return if (buttonModel != null) {
-        if (buttonModel.isEnabled == isEnabled) {
-            this
-        } else {
-            val updatedModel = when (buttonModel) {
-                is ActionModel.ButtonActionModel -> buttonModel.copy(isEnabled = isEnabled)
-                is ActionModel.ButtonGroupActionModel -> buttonModel.copy(isEnabled = isEnabled)
-                is ActionModel.SelectableButtonGroupActionModel -> buttonModel.copy(
-                    isEnabled = isEnabled,
-                )
-            }
-            copy(
-                actionModels = actionModels.toMutableMap().also { actionModels ->
-                    actionModels[actionButtonType] = updatedModel
-                },
-            )
-        }
-    } else {
-        updateChildButtonEnabled(
-            actionButtonType,
-            isEnabled,
-        )
-    }
-}
-
-private fun ActionsSectionState.updateChildButtonEnabled(
-    actionButtonType: ActionButtonType,
-    isEnabled: Boolean,
-): ActionsSectionState {
-    val buttonGroups = actionModels.values.filterIsInstance<BaseButtonGroupActionModel>()
-    if (buttonGroups.isEmpty()) {
-        return this
-    }
-
-    return buttonGroups.findChildActionModel(actionButtonType)?.let { (buttonGroup, childIndex) ->
-        val updatedChildButtons = buttonGroup.childButtonActionModels.toMutableList().apply {
-            val childButton = get(childIndex)
-            set(childIndex, childButton.copy(isEnabled = isEnabled))
-        }
-        val updatedButtonGroup = when (buttonGroup) {
-            is ActionModel.ButtonGroupActionModel -> buttonGroup.copy(
-                childButtonActionModels = updatedChildButtons,
-            )
-            is ActionModel.SelectableButtonGroupActionModel -> buttonGroup.copy(
-                childButtonActionModels = updatedChildButtons,
-            )
-        }
-        copy(
-            actionModels = actionModels.toMutableMap().also { actionModels ->
-                actionModels[buttonGroup.actionType] = updatedButtonGroup
-            },
-        )
-    } ?: this
-}
-
-private fun Collection<BaseButtonGroupActionModel>.findChildActionModel(
-    actionButtonType: ActionButtonType,
-): Pair<BaseButtonGroupActionModel, Int>? {
-    forEach { buttonGroupActionModel ->
-        buttonGroupActionModel.childButtonActionModels.forEachIndexed {
-                index,
-                childButtonActionModel,
-            ->
-            if (childButtonActionModel.actionType == actionButtonType) {
-                return Pair(buttonGroupActionModel, index)
-            }
-        }
-    }
-
-    return null
-}
-
-private fun ActionsSectionState.toggleSelectableButton(
-    actionButtonType: ActionButtonType,
-): ActionsSectionState {
-    val actionModel = actionModels[actionButtonType] ?: return this
-
-    return when (actionModel) {
-        is ActionModel.ButtonActionModel -> copy(
-            actionModels = actionModels.toMutableMap().apply {
-                put(
-                    actionModel.actionType,
-                    actionModel.copy(
-                        isSelected = !actionModel.isSelected,
-                    ),
-                )
-            },
-        )
-
-        is ActionModel.ButtonGroupActionModel,
-        is ActionModel.SelectableButtonGroupActionModel,
-        -> this
-    }
-}
-
-private fun ActionsSectionState.updateSelectedChildButton(
-    actionButtonType: ActionButtonType,
-    isToggle: Boolean = false,
-): ActionsSectionState {
-    val parentActionModel = actionModels.values.find { actionModel ->
-        actionModel is ActionModel.SelectableButtonGroupActionModel &&
-            actionModel.childButtonActionModels.find { childButtonActionModel ->
-                childButtonActionModel.actionType == actionButtonType
-            } != null
-    } ?: return this
-
-    return when (parentActionModel) {
-        is ActionModel.ButtonActionModel,
-        is ActionModel.ButtonGroupActionModel,
-        -> this
-
-        is ActionModel.SelectableButtonGroupActionModel -> {
-            copy(
-                actionModels = actionModels.toMutableMap().apply {
-                    put(
-                        parentActionModel.actionType,
-                        parentActionModel.copy(
-                            childButtonActionModels = parentActionModel.childButtonActionModels
-                                .map { child ->
-                                    val isSelected = if (isToggle) {
-                                        (child.actionType == actionButtonType) && !child.isSelected
-                                    } else {
-                                        child.actionType == actionButtonType
-                                    }
-                                    child.copy(
-                                        isSelected = isSelected,
-                                    )
-                                },
-                        ),
-                    )
-                },
-            )
-        }
-    }
-}
-
-private fun ActionsSectionState.enablePaintButtons() = setPaintButtonsEnabled(true)
-
-private fun ActionsSectionState.disablePaintButtons() = setPaintButtonsEnabled(false)
-
-private fun ActionsSectionState.setPaintButtonsEnabled(isEnabled: Boolean): ActionsSectionState {
-    val openToolsButtonGroup = actionModels[ActionButtonType.OpenToolsActionButtonType]
-        as ActionModel.SelectableButtonGroupActionModel
-    val childButtons = openToolsButtonGroup.childButtonActionModels
-
-    return copy(
-        actionModels = actionModels.toMutableMap().apply {
-            put(
-                ActionButtonType.OpenToolsActionButtonType,
-                openToolsButtonGroup.copy(
-                    childButtonActionModels = childButtons.map { childButton ->
-                        childButton.copy(
-                            isEnabled = isEnabled,
-                        )
-                    },
-                ),
-            )
-        },
-    )
-}
-
-private fun ActionsSectionState.enableSelectionButtons() = setSelectionButtonsEnabled(true)
-
-private fun ActionsSectionState.disableSelectionButtons() = setSelectionButtonsEnabled(false)
-
-private fun ActionsSectionState.setSelectionButtonsEnabled(
-    isEnabled: Boolean,
-): ActionsSectionState {
-    val selectionButtonGroup = actionModels[ActionButtonType.NoParentActionSelectionButtonGroupType]
-        as ActionModel.SelectableButtonGroupActionModel
-    val childButtons = selectionButtonGroup.childButtonActionModels
-
-    return copy(
-        actionModels = actionModels.toMutableMap().apply {
-            put(
-                ActionButtonType.NoParentActionSelectionButtonGroupType,
-                selectionButtonGroup.copy(
-                    isEnabled = isEnabled,
-                    childButtonActionModels = childButtons.map { childButton ->
-                        childButton.copy(
-                            isEnabled = isEnabled,
-                        )
-                    },
-                ),
-            )
-        },
-    )
-}
-
-private fun ActionsSectionState.updatePaletteButtons(palette: PaletteModel): ActionsSectionState {
-    val openPaletteActionModel =
-        actionModels[ActionButtonType.OpenPaletteActionButtonType]
-            as ActionModel.SelectableButtonGroupActionModel
-
-    return copy(
-        actionModels = actionModels.toMutableMap().apply {
-            put(
-                ActionButtonType.OpenPaletteActionButtonType,
-                openPaletteActionModel.copy(
-                    childButtonActionModels = palette.createPaletteButtons(),
-                ),
-            )
-        },
-    )
-}
-
-private fun MainScreenState.getPaletteIndex(): Int = if (isEraserSelected()) {
-    ERASER_TOOL_PALETTE_INDEX
-} else {
-    actionsSectionState.getPaletteIndex()
-}
-
-private fun MainScreenState.isEraserSelected() = actionsSectionState.isSelected(
-    ActionButtonType.InkEraserActionButtonType,
-)
-
-private fun MainScreenState.isSelectRectSelected() = actionsSectionState.isSelectRectSelected()
-
-private fun MainScreenState.isSelectTouchSelected() = actionsSectionState.isSelectTouchSelected()
-
-private fun MainScreenState.isSelectMagicWandSelected() =
-    actionsSectionState.isSelectMagicWandSelected()
-
-private fun MainScreenState.isMoveSelectionSelected() = actionsSectionState.isSelected(
-    ActionButtonType.MoveSelectionActionButtonType,
-)
-
-private fun ActionsSectionState.isAnySelectToolSelected() =
-    isSelectRectSelected() || isSelectTouchSelected() || isSelectMagicWandSelected()
-
-private fun ActionsSectionState.isSelectRectSelected() = isSelected(
-    ActionButtonType.SelectRectangleActionButtonType,
-)
-
-private fun ActionsSectionState.isSelectTouchSelected() = isSelected(
-    ActionButtonType.SelectTouchActionButtonType,
-)
-
-private fun ActionsSectionState.isSelectMagicWandSelected() = isSelected(
-    ActionButtonType.SelectMagicWandActionButtonType,
-)
-
-private fun MainScreenState.getSelectedPaintTool() = actionsSectionState.getSelectedPaintTool()
-
-private fun ActionsSectionState.getSelectedPaintTool(): ActionButtonType = getSelectedChildButton(
-    buttonGroup = ActionButtonType.OpenToolsActionButtonType,
-)
-
-private fun ActionsSectionState.getPaletteIndex(): Int = (
-    getSelectedChildButton(
-        buttonGroup = ActionButtonType.OpenPaletteActionButtonType,
-    ) as ActionButtonType.PickPaletteColorActionButtonType
-    ).paletteIndex
-
-private fun ActionsSectionState.getSelectedChildButton(buttonGroup: ActionButtonType) =
-    (actionModels[buttonGroup] as ActionModel.SelectableButtonGroupActionModel)
-        .childButtonActionModels.first { child ->
-            child.isSelected
-        }.actionType

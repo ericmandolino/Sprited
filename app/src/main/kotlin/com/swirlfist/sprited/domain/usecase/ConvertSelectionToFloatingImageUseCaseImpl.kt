@@ -3,7 +3,6 @@ package com.swirlfist.sprited.domain.usecase
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
 import com.swirlfist.sprited.domain.bottom
 import com.swirlfist.sprited.domain.createSelection
-import com.swirlfist.sprited.domain.error.SelectionToFloatingImageError
 import com.swirlfist.sprited.domain.getPixelHeight
 import com.swirlfist.sprited.domain.isSelected
 import com.swirlfist.sprited.domain.left
@@ -22,15 +21,11 @@ class ConvertSelectionToFloatingImageUseCaseImpl @Inject constructor(
 ) : ConvertSelectionToFloatingImageUseCase {
     override suspend fun invoke(
         params: ConvertSelectionToFloatingImageUseCase.Params,
-    ): Result<PixelImageEditorActionContext> = try {
-        Result.success(
-            convertSelectionToFloatingImage(
-                actionContext = params.actionContext,
-            ),
-        )
-    } catch (exception: Exception) {
-        Result.failure(SelectionToFloatingImageError(exception))
-    }
+    ): Result<PixelImageEditorActionContext> = Result.success(
+        convertSelectionToFloatingImage(
+            actionContext = params.actionContext,
+        ),
+    )
 
     private suspend fun convertSelectionToFloatingImage(
         actionContext: PixelImageEditorActionContext,

@@ -52,8 +52,7 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
             pixelMatrix,
             visitedPixels,
             pixelSelection = mutableSelectionMatrix,
-            x,
-            y,
+            coordinates = Pair(x, y),
             paletteIndexToSelect = pixel.paletteIndex,
         )
 
@@ -82,11 +81,12 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
         pixelMatrix: List<List<PixelModel>>,
         visitedPixels: MutableList<MutableList<Boolean>>,
         pixelSelection: MutableList<MutableList<PixelModel?>>,
-        x: Int,
-        y: Int,
+        coordinates: Pair<Int, Int>,
         paletteIndexToSelect: Int,
     ) {
         val size = pixelMatrix.size
+        val x = coordinates.first
+        val y = coordinates.second
 
         if (x !in 0..<size || y !in 0..<size || visitedPixels[y][x]) {
             return
@@ -104,32 +104,28 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
             pixelMatrix,
             visitedPixels,
             pixelSelection,
-            x = x - 1,
-            y,
+            coordinates = Pair(x - 1, y),
             paletteIndexToSelect,
         )
         applySelection(
             pixelMatrix,
             visitedPixels,
             pixelSelection,
-            x = x + 1,
-            y,
+            coordinates = Pair(x + 1, y),
             paletteIndexToSelect,
         )
         applySelection(
             pixelMatrix,
             visitedPixels,
             pixelSelection,
-            x,
-            y = y - 1,
+            coordinates = Pair(x, y - 1),
             paletteIndexToSelect,
         )
         applySelection(
             pixelMatrix,
             visitedPixels,
             pixelSelection,
-            x,
-            y = y + 1,
+            coordinates = Pair(x, y + 1),
             paletteIndexToSelect,
         )
     }

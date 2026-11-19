@@ -7,28 +7,26 @@ import android.net.Uri
 import androidx.activity.result.ActivityResult
 import com.swirlfist.sprited.presentation.screen.SelectOpenPixelImageLocationError
 
-class OpenPixelImageLocationLauncher {
-    companion object {
+object OpenPixelImageLocationLauncher {
 
-        fun getLaunchIntent(): Intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
+    fun getLaunchIntent(): Intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "*/*"
+    }
+
+    fun handleResult(activityResult: ActivityResult, onResult: (Result<Uri>) -> Unit) {
+        val result = when (activityResult.resultCode) {
+            RESULT_OK,
+            -> activityResult.data?.data?.let { uri ->
+                Result.success(uri)
+            } ?: Result.failure(SelectOpenPixelImageLocationError(false))
+
+            RESULT_CANCELED,
+            -> Result.failure(SelectOpenPixelImageLocationError(true))
+
+            else
+            -> Result.failure(SelectOpenPixelImageLocationError(false))
         }
-
-        fun handleResult(activityResult: ActivityResult, onResult: (Result<Uri>) -> Unit) {
-            val result = when (activityResult.resultCode) {
-                RESULT_OK,
-                -> activityResult.data?.data?.let { uri ->
-                    Result.success(uri)
-                } ?: Result.failure(SelectOpenPixelImageLocationError(false))
-
-                RESULT_CANCELED,
-                -> Result.failure(SelectOpenPixelImageLocationError(true))
-
-                else
-                -> Result.failure(SelectOpenPixelImageLocationError(false))
-            }
-            onResult(result)
-        }
+        onResult(result)
     }
 }

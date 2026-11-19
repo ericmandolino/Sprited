@@ -111,15 +111,26 @@ fun ActionsSectionState.isSelected(actionButtonType: ActionButtonType): Boolean 
 private fun ActionsSectionState.isSelectedChild(actionButtonType: ActionButtonType): Boolean {
     actionModels.values.forEach { actionModel ->
         (actionModel as? BaseButtonGroupActionModel)?.let { buttonGroup ->
-            buttonGroup.childButtonActionModels.forEach { childButton ->
-                if (childButton.actionType == actionButtonType) {
-                    return childButton.isSelected
-                }
+            findChildButton(buttonGroup, actionButtonType)?.let { childButton ->
+                return childButton.isSelected
             }
         }
     }
 
     return false
+}
+
+private fun findChildButton(
+    buttonGroup: BaseButtonGroupActionModel,
+    actionButtonType: ActionButtonType,
+): ActionModel.ButtonActionModel? {
+    buttonGroup.childButtonActionModels.forEach { childButton ->
+        if (childButton.actionType == actionButtonType) {
+            return childButton
+        }
+    }
+
+    return null
 }
 
 fun BaseButtonGroupActionModel.isSelected(actionButtonType: ActionButtonType): Boolean =

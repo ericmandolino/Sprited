@@ -67,6 +67,12 @@ private const val SELECTION_RESIZE_SQUARE_SIZE_DP = 16
 private const val SELECTION_RESIZE_SQUARE_BORDER_WIDTH_DP = 1
 private const val PAN_VS_ZOOM_FACTOR = 0.025F
 private const val ZOOM_STEP = 0.025F
+private const val TRIANGLE_VERTEX_1_X_INDEX = 0
+private const val TRIANGLE_VERTEX_1_Y_INDEX = 1
+private const val TRIANGLE_VERTEX_2_X_INDEX = 2
+private const val TRIANGLE_VERTEX_2_Y_INDEX = 3
+private const val TRIANGLE_VERTEX_3_X_INDEX = 4
+private const val TRIANGLE_VERTEX_3_Y_INDEX = 5
 const val MAX_ZOOM_FACTOR = 2F
 const val MIN_ZOOM_FACTOR = 0.25F
 
@@ -1247,10 +1253,10 @@ private fun DrawScope.drawFloatingImageMoveHints() {
 
 private fun DrawScope.drawFloatingImageMoveHint(vertices: FloatArray) {
     val path = Path().apply {
-        moveTo(vertices[0], vertices[1])
-        lineTo(vertices[2], vertices[3])
-        lineTo(vertices[4], vertices[5])
-        lineTo(vertices[0], vertices[1])
+        moveTo(vertices[TRIANGLE_VERTEX_1_X_INDEX], vertices[TRIANGLE_VERTEX_1_Y_INDEX])
+        lineTo(vertices[TRIANGLE_VERTEX_2_X_INDEX], vertices[TRIANGLE_VERTEX_2_Y_INDEX])
+        lineTo(vertices[TRIANGLE_VERTEX_3_X_INDEX], vertices[TRIANGLE_VERTEX_3_Y_INDEX])
+        lineTo(vertices[TRIANGLE_VERTEX_1_X_INDEX], vertices[TRIANGLE_VERTEX_1_Y_INDEX])
     }
 
     drawPath(

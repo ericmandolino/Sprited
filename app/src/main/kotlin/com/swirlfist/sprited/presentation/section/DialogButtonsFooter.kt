@@ -18,53 +18,35 @@ import com.swirlfist.sprited.presentation.theme.SpritedTheme
 @Composable
 fun ActionCancelButtonsDialogFooter(
     modifier: Modifier = Modifier,
-    isActionEnabled: Boolean,
-    actionText: String,
-    cancelText: String,
-    onActionClick: () -> Unit,
-    onCancelClick: () -> Unit,
+    state: ActionCancelButtonsDialogFooterState,
 ) {
     BaseDialogButtonsFooter(
         modifier = modifier,
-        leftText = cancelText,
-        onLeftClick = onCancelClick,
-        isRightEnabled = isActionEnabled,
-        rightText = actionText,
-        onRightClick = onActionClick,
+        state = state.toBaseDialogButtonsFooterState(),
     )
 }
 
 @Composable
 fun ConfirmButtonDialogFooter(
     modifier: Modifier = Modifier,
-    confirmText: String,
-    onConfirmClick: () -> Unit,
+    state: ConfirmButtonDialogFooterState,
 ) {
     BaseDialogButtonsFooter(
         modifier = modifier,
-        leftText = confirmText,
-        onLeftClick = onConfirmClick,
+        state = state.toBaseDialogButtonsFooterState(),
     )
 }
 
 @Composable
-fun CancelButtonDialogFooter(modifier: Modifier = Modifier, onCancelClick: () -> Unit) {
+fun CancelButtonDialogFooter(modifier: Modifier = Modifier, state: CancelButtonDialogFooterState) {
     BaseDialogButtonsFooter(
         modifier = modifier,
-        leftText = stringResource(android.R.string.cancel),
-        onLeftClick = onCancelClick,
+        state = state.toBaseDialogButtonsFooterState(),
     )
 }
 
 @Composable
-fun BaseDialogButtonsFooter(
-    modifier: Modifier = Modifier,
-    leftText: String,
-    onLeftClick: () -> Unit,
-    isRightEnabled: Boolean = true,
-    rightText: String? = null,
-    onRightClick: () -> Unit = {},
-) {
+fun BaseDialogButtonsFooter(modifier: Modifier = Modifier, state: BaseDialogButtonsFooterState) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
@@ -74,18 +56,18 @@ fun BaseDialogButtonsFooter(
         ),
     ) {
         TextButton(
-            onClick = onLeftClick,
+            onClick = state.onLeftClick,
         ) {
             Text(
-                text = leftText,
+                text = state.leftText,
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.End,
             )
         }
-        rightText?.let { text ->
+        state.rightText?.let { text ->
             TextButton(
-                enabled = isRightEnabled,
-                onClick = onRightClick,
+                enabled = state.isRightEnabled,
+                onClick = state.onRightClick,
             ) {
                 Text(
                     text = text,
@@ -102,11 +84,13 @@ fun BaseDialogButtonsFooter(
 fun ActionCancelButtonsDialogFooterPreview() {
     SpritedTheme {
         ActionCancelButtonsDialogFooter(
-            isActionEnabled = true,
-            actionText = "Save",
-            cancelText = "Cancel",
-            onActionClick = {},
-            onCancelClick = {},
+            state = ActionCancelButtonsDialogFooterState(
+                isActionEnabled = true,
+                actionText = "Save",
+                cancelText = "Cancel",
+                onActionClick = {},
+                onCancelClick = {},
+            ),
         )
     }
 }
@@ -116,8 +100,10 @@ fun ActionCancelButtonsDialogFooterPreview() {
 fun ConfirmButtonDialogFooterPreview() {
     SpritedTheme {
         ConfirmButtonDialogFooter(
-            confirmText = "Ok",
-            onConfirmClick = {},
+            state = ConfirmButtonDialogFooterState(
+                confirmText = "Ok",
+                onConfirmClick = {},
+            ),
         )
     }
 }
@@ -127,7 +113,51 @@ fun ConfirmButtonDialogFooterPreview() {
 fun CancelButtonDialogFooterPreview() {
     SpritedTheme {
         CancelButtonDialogFooter(
-            onCancelClick = {},
+            state = CancelButtonDialogFooterState(
+                onCancelClick = {},
+            ),
         )
     }
 }
+
+data class BaseDialogButtonsFooterState(
+    val leftText: String,
+    val onLeftClick: () -> Unit,
+    val isRightEnabled: Boolean = true,
+    val rightText: String? = null,
+    val onRightClick: () -> Unit = {},
+)
+
+data class ActionCancelButtonsDialogFooterState(
+    val isActionEnabled: Boolean,
+    val actionText: String,
+    val cancelText: String,
+    val onActionClick: () -> Unit,
+    val onCancelClick: () -> Unit,
+)
+
+data class CancelButtonDialogFooterState(val onCancelClick: () -> Unit)
+
+data class ConfirmButtonDialogFooterState(val confirmText: String, val onConfirmClick: () -> Unit)
+
+private fun ActionCancelButtonsDialogFooterState.toBaseDialogButtonsFooterState() =
+    BaseDialogButtonsFooterState(
+        leftText = cancelText,
+        onLeftClick = onCancelClick,
+        isRightEnabled = isActionEnabled,
+        rightText = actionText,
+        onRightClick = onActionClick,
+    )
+
+private fun ConfirmButtonDialogFooterState.toBaseDialogButtonsFooterState() =
+    BaseDialogButtonsFooterState(
+        leftText = confirmText,
+        onLeftClick = onConfirmClick,
+    )
+
+@Composable
+private fun CancelButtonDialogFooterState.toBaseDialogButtonsFooterState() =
+    BaseDialogButtonsFooterState(
+        leftText = stringResource(android.R.string.cancel),
+        onLeftClick = onCancelClick,
+    )

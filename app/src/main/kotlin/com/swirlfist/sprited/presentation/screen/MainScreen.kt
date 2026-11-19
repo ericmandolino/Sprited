@@ -1,6 +1,5 @@
 package com.swirlfist.sprited.presentation.screen
 
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,6 +47,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.swirlfist.sprited.R
 import com.swirlfist.sprited.domain.model.ActionModel
+import com.swirlfist.sprited.presentation.FLOAT_30_PERCENT
+import com.swirlfist.sprited.presentation.FLOAT_40_PERCENT
+import com.swirlfist.sprited.presentation.FLOAT_60_PERCENT
+import com.swirlfist.sprited.presentation.FLOAT_70_PERCENT
 import com.swirlfist.sprited.presentation.isSelected
 import com.swirlfist.sprited.presentation.launcher.ExportPixelImageLocationLauncher
 import com.swirlfist.sprited.presentation.launcher.OpenPixelImageLocationLauncher
@@ -72,66 +75,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val mainScreenState = viewModel.mainScreenState.collectAsStateWithLifecycle().value
-    val scope = rememberCoroutineScope()
+    val mainScreenScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val onceMoreToExitString = stringResource(R.string.once_more_to_exit)
-    val pixelImageExportSuccessString = stringResource(R.string.success_export_pixel_image)
 
-    MainScreenLaunchers(
-        mainScreenState.launcherState,
-        viewModel::onSelectSavePixelImageLocationResult,
-        viewModel::onSelectExportPixelImageLocationResult,
-        viewModel::onSelectOpenPixelImageLocationResult,
-        viewModel::onSelectSavePixelImageLocationLaunched,
-        viewModel::onSelectExportPixelImageLocationLaunched,
-        viewModel::onSelectOpenPixelImageLocationLaunched,
-    )
-
-    if (mainScreenState.isShowPalette) {
-        val openPaletteActionButtonModel = mainScreenState.actionsSectionState
-            .actionModels[ActionButtonType.OpenPaletteActionButtonType]
-            as? ActionModel.SelectableButtonGroupActionModel
-        openPaletteActionButtonModel?.childButtonActionModels?.let { buttonActionModels ->
-            SelectableButtonGroupDialog(
-                childButtonActionModels = buttonActionModels,
-                onEvent = viewModel::onActionsSectionEvent,
-                onDismiss = viewModel::hidePalette,
-            )
-        }
-    } else if (mainScreenState.isShowEditPalette) {
-        val pixelImage = mainScreenState.canvasSectionState.pixelImageModel
-        if (pixelImage != null) {
-            PaletteEditDialog(
-                originalPalette = pixelImage.paletteModel,
-                pixelMatrix = pixelImage.pixelMatrixModel,
-                onSaveChangesClick = viewModel::onEditPaletteChangesSaved,
-                onCancelClick = viewModel::hideEditPalette,
-            )
-        }
-    } else if (mainScreenState.isShowSelectPixelImageExportFormat) {
-        PixelImageExportFormatSelectionDialog(
-            onFormatSelected = viewModel::onPixelImageExportFormatSelected,
-            onDismiss = viewModel::hideExportPixelImageFormatSelection,
-        )
-    }
-
-    LaunchedEffect(mainScreenState.isShowPixelImageExportSuccess) {
-        if (mainScreenState.isShowPixelImageExportSuccess) {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    message = pixelImageExportSuccessString,
-                    withDismissAction = true,
-                    duration = SnackbarDuration.Short,
-                )
-            }
-        }
-        viewModel.onPixelImageExportSuccessDisplayed()
-    }
+    MainScreenLaunchers(mainScreenState.launcherState, viewModel)
+    MainScreenDialogs(mainScreenState, viewModel)
+    MainScreenInfoMessages(mainScreenState, viewModel, mainScreenScope, snackbarHostState)
 
     BackHandler(
         enabled = mainScreenState.isBackHandlerEnabled,
     ) {
-        scope.launch {
+        mainScreenScope.launch {
             snackbarHostState.showSnackbar(
                 message = onceMoreToExitString,
                 duration = SnackbarDuration.Short,
@@ -183,21 +138,13 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun MainScreenLaunchers(
-    launcherState: MainScreenLauncherState,
-    onSelectSavePixelImageLocationResult: (Result<Uri>) -> Unit,
-    onSelectExportPixelImageLocationResult: (Result<Uri>) -> Unit,
-    onSelectOpenPixelImageLocationResult: (Result<Uri>) -> Unit,
-    onSelectSavePixelImageLocationLaunched: () -> Unit,
-    onSelectExportPixelImageLocationLaunched: () -> Unit,
-    onSelectOpenPixelImageLocationLaunched: () -> Unit,
-) {
+fun MainScreenLaunchers(launcherState: MainScreenLauncherState, viewModel: MainViewModel) {
     val selectSavePixelImageLocationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
     ) { activityResult ->
         SavePixelImageLocationLauncher.handleResult(
             activityResult,
-            onResult = onSelectSavePixelImageLocationResult,
+            onResult = viewModel::onSelectSavePixelImageLocationResult,
         )
     }
 
@@ -206,7 +153,7 @@ fun MainScreenLaunchers(
     ) { activityResult ->
         ExportPixelImageLocationLauncher.handleResult(
             activityResult,
-            onResult = onSelectExportPixelImageLocationResult,
+            onResult = viewModel::onSelectExportPixelImageLocationResult,
         )
     }
 
@@ -215,7 +162,7 @@ fun MainScreenLaunchers(
     ) { activityResult ->
         OpenPixelImageLocationLauncher.handleResult(
             activityResult,
-            onResult = onSelectOpenPixelImageLocationResult,
+            onResult = viewModel::onSelectOpenPixelImageLocationResult,
         )
     }
 
@@ -223,19 +170,73 @@ fun MainScreenLaunchers(
         if (launcherState.launchSelectSavePixelImage) {
             val intent = SavePixelImageLocationLauncher.getLaunchIntent()
             selectSavePixelImageLocationLauncher.launch(intent)
-            onSelectSavePixelImageLocationLaunched()
+            viewModel.onSelectSavePixelImageLocationLaunched()
         } else if (launcherState.launchSelectExportPixelImage) {
             val intent = ExportPixelImageLocationLauncher.getLaunchIntent(
                 exportFormat =
                 launcherState.selectedPixelImageExportFormat ?: PixelImageExportFormat.SVG,
             )
             selectExportPixelImageLocationLauncher.launch(intent)
-            onSelectExportPixelImageLocationLaunched()
+            viewModel.onSelectExportPixelImageLocationLaunched()
         } else if (launcherState.launchSelectOpenPixelImage) {
             val intent = OpenPixelImageLocationLauncher.getLaunchIntent()
             selectOpenPixelImageLocationLauncher.launch(intent)
-            onSelectOpenPixelImageLocationLaunched()
+            viewModel.onSelectOpenPixelImageLocationLaunched()
         }
+    }
+}
+
+@Composable
+fun MainScreenDialogs(mainScreenState: MainScreenState, viewModel: MainViewModel) {
+    if (mainScreenState.isShowPalette) {
+        val openPaletteActionButtonModel = mainScreenState.actionsSectionState
+            .actionModels[ActionButtonType.OpenPaletteActionButtonType]
+            as? ActionModel.SelectableButtonGroupActionModel
+        openPaletteActionButtonModel?.childButtonActionModels?.let { buttonActionModels ->
+            SelectableButtonGroupDialog(
+                childButtonActionModels = buttonActionModels,
+                onEvent = viewModel::onActionsSectionEvent,
+                onDismiss = viewModel::hidePalette,
+            )
+        }
+    } else if (mainScreenState.isShowEditPalette) {
+        val pixelImage = mainScreenState.canvasSectionState.pixelImageModel
+        if (pixelImage != null) {
+            PaletteEditDialog(
+                originalPalette = pixelImage.paletteModel,
+                pixelMatrix = pixelImage.pixelMatrixModel,
+                onSaveChangesClick = viewModel::onEditPaletteChangesSaved,
+                onCancelClick = viewModel::hideEditPalette,
+            )
+        }
+    } else if (mainScreenState.isShowSelectPixelImageExportFormat) {
+        PixelImageExportFormatSelectionDialog(
+            onFormatSelected = viewModel::onPixelImageExportFormatSelected,
+            onDismiss = viewModel::hideExportPixelImageFormatSelection,
+        )
+    }
+}
+
+@Composable
+fun MainScreenInfoMessages(
+    mainScreenState: MainScreenState,
+    viewModel: MainViewModel,
+    mainScreenScope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+) {
+    val pixelImageExportSuccessString = stringResource(R.string.success_export_pixel_image)
+
+    LaunchedEffect(mainScreenState.isShowPixelImageExportSuccess) {
+        if (mainScreenState.isShowPixelImageExportSuccess) {
+            mainScreenScope.launch {
+                snackbarHostState.showSnackbar(
+                    message = pixelImageExportSuccessString,
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Short,
+                )
+            }
+        }
+        viewModel.onPixelImageExportSuccessDisplayed()
     }
 }
 
@@ -267,7 +268,7 @@ fun MainScreenContent(
             ActionsSection(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.7F),
+                    .weight(FLOAT_70_PERCENT),
                 state = actionsSectionState,
                 onEvent = onActionsSectionEvent,
             )
@@ -276,7 +277,7 @@ fun MainScreenContent(
                 PixelImagePreviewSection(
                     modifier = Modifier
                         .fillMaxSize()
-                        .weight(0.3F),
+                        .weight(FLOAT_30_PERCENT),
                     state = mainScreenState.pixelImagePreviewSectionState,
                 )
             }
@@ -291,16 +292,16 @@ fun MainScreenContent(
             modifier = containerModifier,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            canvasSection(Modifier.weight(0.6F))
-            actionsSection(Modifier.weight(0.4F))
+            canvasSection(Modifier.weight(FLOAT_60_PERCENT))
+            actionsSection(Modifier.weight(FLOAT_40_PERCENT))
         }
     } else {
         Row(
             modifier = containerModifier,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            canvasSection(Modifier.weight(0.6F))
-            actionsSection(Modifier.weight(0.4F))
+            canvasSection(Modifier.weight(FLOAT_60_PERCENT))
+            actionsSection(Modifier.weight(FLOAT_40_PERCENT))
         }
     }
 }
@@ -379,7 +380,7 @@ fun ThreePaneScaffoldPaneScope.MainPane(
                     }
                 },
             ) {
-                Text("SP") // TODO: use icon?
+                Text("SP")
             }
         }
         CanvasSection(
@@ -391,6 +392,7 @@ fun ThreePaneScaffoldPaneScope.MainPane(
     }
 }
 
+@Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ThreePaneScaffoldPaneScope.SupportingPane(
@@ -424,14 +426,14 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
                         }
                     },
                 ) {
-                    Text("<") // TODO: use icon?
+                    Text("<")
                 }
             }
 
             ActionsSection(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.7F),
+                    .weight(FLOAT_70_PERCENT),
                 state = actionsSectionState,
                 onEvent = onActionsSectionEvent,
             )
@@ -439,7 +441,7 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
             PixelImagePreviewSection(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.3F),
+                    .weight(FLOAT_30_PERCENT),
                 state = pixelImagePreviewSectionState,
             )
         }

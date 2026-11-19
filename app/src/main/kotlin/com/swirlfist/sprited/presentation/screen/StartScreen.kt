@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.swirlfist.sprited.R
+import com.swirlfist.sprited.presentation.FLOAT_50_PERCENT
 import com.swirlfist.sprited.presentation.launcher.OpenPixelImageLocationLauncher
 import com.swirlfist.sprited.presentation.state.StartScreenLauncherState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
@@ -88,7 +89,7 @@ fun StartScreenContent(onNewImageClick: () -> Unit, onLoadImageClick: () -> Unit
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TextButton(
-            modifier = Modifier.fillMaxWidth(0.5F),
+            modifier = Modifier.fillMaxWidth(FLOAT_50_PERCENT),
             onClick = onNewImageClick,
         ) {
             Icon(
@@ -103,7 +104,7 @@ fun StartScreenContent(onNewImageClick: () -> Unit, onLoadImageClick: () -> Unit
             )
         }
         TextButton(
-            modifier = Modifier.fillMaxWidth(0.5F),
+            modifier = Modifier.fillMaxWidth(FLOAT_50_PERCENT),
             onClick = onLoadImageClick,
         ) {
             Icon(

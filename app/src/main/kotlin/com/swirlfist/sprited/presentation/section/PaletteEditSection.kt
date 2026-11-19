@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import com.swirlfist.sprited.R
 import com.swirlfist.sprited.domain.toHexCode
+import com.swirlfist.sprited.presentation.RGB_MAX_VALUE
+import com.swirlfist.sprited.presentation.RGB_MIN_VALUE
 import com.swirlfist.sprited.presentation.state.PaletteEditState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.IconButton
@@ -188,7 +190,11 @@ fun PaletteColorComponent(
     isEnabled: Boolean = true,
 ) {
     val textValue = textFieldState.text.toString()
-    val sliderPosition = if (textValue.isNotBlank()) textValue.toFloat() / 255 else 0F
+    val sliderPosition = if (textValue.isNotBlank()) {
+        textValue.toFloat() / RGB_MAX_VALUE
+    } else {
+        RGB_MIN_VALUE.toFloat()
+    }
 
     Row(
         modifier = Modifier
@@ -249,10 +255,10 @@ fun PaletteColorComponent(
                 } else {
                     try {
                         val value = charSequence.toString().toInt()
-                        if (value !in 0..255) {
+                        if (value !in RGB_MIN_VALUE..RGB_MAX_VALUE) {
                             revertAllChanges()
                         } else {
-                            onSliderChange(value.toFloat() / 255)
+                            onSliderChange(value.toFloat() / RGB_MAX_VALUE)
                         }
                     } catch (_: NumberFormatException) {
                         revertAllChanges()
@@ -286,4 +292,4 @@ fun PaletteColorComponentPreview() {
     }
 }
 
-private fun Float.toColorComponentString(): String = (this * 255).roundToInt().toString()
+private fun Float.toColorComponentString(): String = (this * RGB_MAX_VALUE).roundToInt().toString()

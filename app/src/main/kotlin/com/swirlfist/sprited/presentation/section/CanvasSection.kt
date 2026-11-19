@@ -44,6 +44,7 @@ fun CanvasSection(
     }
 }
 
+@Suppress("MagicNumber")
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun CanvasSectionPreview() {
@@ -83,6 +84,7 @@ fun CanvasSectionPreview() {
     }
 }
 
+@Suppress("MagicNumber")
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun CanvasSectionZoomedPreview() {

@@ -124,21 +124,11 @@ class UpdateRectangleSelectionUseCaseImpl @Inject constructor(
     ): PixelSelectionModel {
         val rectangleSelection = pixelSelection.rectangleSelection ?: return pixelSelection
 
-        val adjustedRectangleSelection = if (!isSameAction) {
-            when (actionType) {
-                RectangleSelectionActionType.RESIZE_TOP_LEFT_CORNER ->
-                    rectangleSelection.startFromBottomRight()
-                RectangleSelectionActionType.RESIZE_TOP_RIGHT_CORNER ->
-                    rectangleSelection.startFromBottomLeft()
-                RectangleSelectionActionType.RESIZE_BOTTOM_LEFT_CORNER ->
-                    rectangleSelection.startFromTopRight()
-                RectangleSelectionActionType.RESIZE_BOTTOM_RIGHT_CORNER ->
-                    rectangleSelection.startFromTopLeft()
-                else -> null
-            }
-        } else {
-            rectangleSelection
-        } ?: return pixelSelection
+        val adjustedRectangleSelection = adjustRectangleSelection(
+            rectangleSelection,
+            actionType,
+            isSameAction,
+        ) ?: return pixelSelection
 
         val adjustedX = when (actionType) {
             RectangleSelectionActionType.RESIZE_TOP_LEFT_CORNER,
@@ -189,6 +179,26 @@ class UpdateRectangleSelectionUseCaseImpl @Inject constructor(
         return pixelSelection.copy(
             rectangleSelection = updatedRectangleSelection,
         )
+    }
+
+    private fun adjustRectangleSelection(
+        rectangleSelection: RectangleSelectionModel,
+        actionType: RectangleSelectionActionType,
+        isSameAction: Boolean,
+    ): RectangleSelectionModel? = if (!isSameAction) {
+        when (actionType) {
+            RectangleSelectionActionType.RESIZE_TOP_LEFT_CORNER ->
+                rectangleSelection.startFromBottomRight()
+            RectangleSelectionActionType.RESIZE_TOP_RIGHT_CORNER ->
+                rectangleSelection.startFromBottomLeft()
+            RectangleSelectionActionType.RESIZE_BOTTOM_LEFT_CORNER ->
+                rectangleSelection.startFromTopRight()
+            RectangleSelectionActionType.RESIZE_BOTTOM_RIGHT_CORNER ->
+                rectangleSelection.startFromTopLeft()
+            else -> null
+        }
+    } else {
+        rectangleSelection
     }
 
     private fun resizeSelectionVertically(

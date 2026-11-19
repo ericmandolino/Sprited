@@ -26,6 +26,7 @@ import com.swirlfist.sprited.R
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PixelMatrixModel
 import com.swirlfist.sprited.presentation.section.ActionCancelButtonsDialogFooter
+import com.swirlfist.sprited.presentation.section.ActionCancelButtonsDialogFooterState
 import com.swirlfist.sprited.presentation.section.PaletteEditSection
 import com.swirlfist.sprited.presentation.section.PixelImagePreviewSection
 import com.swirlfist.sprited.presentation.state.PaletteEditDialogState
@@ -91,16 +92,18 @@ fun PaletteEditDialogContent(
                 }
 
                 ActionCancelButtonsDialogFooter(
-                    isActionEnabled = true,
-                    actionText = stringResource(R.string.save),
-                    cancelText = stringResource(android.R.string.cancel),
-                    onActionClick = {
-                        onSaveChangesClick(
-                            PaletteModel(paletteEditDialogState.paletteEditState.paletteColors),
-                            pixelImagePreviewSectionState?.pixelImageModel?.pixelMatrixModel,
-                        )
-                    },
-                    onCancelClick = onCancelClick,
+                    state = ActionCancelButtonsDialogFooterState(
+                        isActionEnabled = true,
+                        actionText = stringResource(R.string.save),
+                        cancelText = stringResource(android.R.string.cancel),
+                        onActionClick = {
+                            onSaveChangesClick(
+                                PaletteModel(paletteEditDialogState.paletteEditState.paletteColors),
+                                pixelImagePreviewSectionState?.pixelImageModel?.pixelMatrixModel,
+                            )
+                        },
+                        onCancelClick = onCancelClick,
+                    ),
                 )
             }
         }

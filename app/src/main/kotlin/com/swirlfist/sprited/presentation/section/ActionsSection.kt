@@ -203,7 +203,7 @@ fun SelectableButtonGroupDialog(
 
 @Preview
 @Composable
-private fun ButtonGroupActionOverflowPreview() {
+fun ButtonGroupActionOverflowPreview() {
     val selectableButtonGroupActionModel = ActionModel.ButtonGroupActionModel(
         actionType = ActionButtonType.OpenPaletteActionButtonType,
         childButtonActionModels = createOverflowButtonGroupChildren(),
@@ -222,7 +222,7 @@ private fun ButtonGroupActionOverflowPreview() {
 
 @Preview
 @Composable
-private fun ButtonGroupActionSelectableOverflowPreview() {
+fun ButtonGroupActionSelectableOverflowPreview() {
     val selectableButtonGroupActionModel = ActionModel.SelectableButtonGroupActionModel(
         actionType = ActionButtonType.OpenPaletteActionButtonType,
         childButtonActionModels = createOverflowButtonGroupChildren(),
@@ -292,6 +292,7 @@ private fun createOverflowButtonGroupChildren(): List<ActionModel.ButtonActionMo
     )
 }
 
+@Suppress("LongMethod")
 @Preview(name = "no-scroll-actions-section", showBackground = true, widthDp = 320, heightDp = 320)
 @Preview(name = "scroll-actions-section", showBackground = true, widthDp = 200, heightDp = 120)
 @Composable
@@ -387,6 +388,7 @@ fun SelectableButtonGroupDialogPreview() {
     }
 }
 
+@Suppress("CyclomaticComplexMethod")
 fun ActionButtonType.toActionsSectionEvent(): ActionSectionEvent = when (this) {
     ActionButtonType.NoParentActionUndoRedoButtonGroupType,
     ActionButtonType.NoParentActionZoomButtonGroupType,
@@ -394,54 +396,54 @@ fun ActionButtonType.toActionsSectionEvent(): ActionSectionEvent = when (this) {
     -> ActionSectionEvent.NoActionSectionEvent
 
     ActionButtonType.InkBucketActionButtonType ->
-        ActionSectionEvent.InkBucketButtonClicked
+        ToolButtonClicked.InkBucketButtonClicked
     ActionButtonType.InkEraserActionButtonType ->
-        ActionSectionEvent.InkEraserButtonClicked
+        PaletteButtonClicked.InkEraserButtonClicked
     ActionButtonType.InkPenActionButtonType ->
-        ActionSectionEvent.InkPenButtonClicked
+        ToolButtonClicked.InkPenButtonClicked
     ActionButtonType.MoveImageActionButtonType ->
         ActionSectionEvent.MoveImageActionButtonClicked
     ActionButtonType.MoveImageDownActionButtonType ->
-        ActionSectionEvent.MoveImageDownActionButtonClicked
+        MoveImageDirectionButtonClicked.MoveImageDownButtonClicked
     ActionButtonType.MoveImageLeftActionButtonType ->
-        ActionSectionEvent.MoveImageLeftActionButtonClicked
+        MoveImageDirectionButtonClicked.MoveImageLeftButtonClicked
     ActionButtonType.MoveImageRightActionButtonType ->
-        ActionSectionEvent.MoveImageRightActionButtonClicked
+        MoveImageDirectionButtonClicked.MoveImageRightButtonClicked
     ActionButtonType.MoveImageUpActionButtonType ->
-        ActionSectionEvent.MoveImageUpActionButtonClicked
+        MoveImageDirectionButtonClicked.MoveImageUpButtonClicked
     ActionButtonType.OpenToolsActionButtonType ->
-        ActionSectionEvent.OpenToolsButtonClicked
+        ToolButtonClicked.OpenToolsButtonClicked
     ActionButtonType.UndoActionButtonType ->
-        ActionSectionEvent.UndoButtonClicked
+        UndoRedoButtonClicked.UndoButtonClicked
     ActionButtonType.RedoActionButtonType ->
-        ActionSectionEvent.RedoButtonClicked
+        UndoRedoButtonClicked.RedoButtonClicked
     ActionButtonType.ZoomInActionButtonType ->
-        ActionSectionEvent.ZoomInButtonClicked
+        ZoomButtonClicked.ZoomInButtonClicked
     ActionButtonType.ZoomOutActionButtonType ->
-        ActionSectionEvent.ZoomOutButtonClicked
+        ZoomButtonClicked.ZoomOutButtonClicked
     ActionButtonType.OpenPaletteActionButtonType ->
-        ActionSectionEvent.OpenPaletteButtonClicked
+        PaletteButtonClicked.OpenPaletteButtonClicked
     ActionButtonType.EditPaletteActionButtonType ->
-        ActionSectionEvent.EditPaletteButtonClicked
+        PaletteButtonClicked.EditPaletteButtonClicked
     is ActionButtonType.PickPaletteColorActionButtonType ->
-        ActionSectionEvent.PickPaletteColorButtonClicked(
+        PaletteButtonClicked.PickPaletteColorButtonClicked(
             pickPaletteColorActionButtonType = this,
         )
 
     ActionButtonType.SavePixelImageActionButtonType ->
-        ActionSectionEvent.SavePixelImageButtonClicked
+        FileButtonClicked.SavePixelImageButtonClicked
     ActionButtonType.OpenPixelImageActionButtonType ->
-        ActionSectionEvent.OpenPixelImageButtonClicked
+        FileButtonClicked.OpenPixelImageButtonClicked
     ActionButtonType.ExportPixelImageActionButtonType ->
-        ActionSectionEvent.ExportPixelImageButtonClicked
+        FileButtonClicked.ExportPixelImageButtonClicked
     ActionButtonType.TogglePreviewActionButtonType ->
         ActionSectionEvent.TogglePreviewButtonClicked
     ActionButtonType.SelectRectangleActionButtonType ->
-        ActionSectionEvent.SelectRectangleActionButtonClicked
+        SelectionButtonClicked.SelectRectangleActionButtonClicked
     ActionButtonType.SelectTouchActionButtonType ->
-        ActionSectionEvent.SelectTouchActionButtonClicked
+        SelectionButtonClicked.SelectTouchActionButtonClicked
     ActionButtonType.SelectMagicWandActionButtonType ->
-        ActionSectionEvent.SelectMagicWandActionButtonClicked
+        SelectionButtonClicked.SelectMagicWandActionButtonClicked
     ActionButtonType.DeselectActionButtonType ->
         ActionSectionEvent.DeselectActionButtonClicked
     ActionButtonType.MoveSelectionActionButtonType ->

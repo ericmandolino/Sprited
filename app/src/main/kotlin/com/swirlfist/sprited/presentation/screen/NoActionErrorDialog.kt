@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.swirlfist.sprited.presentation.section.ConfirmButtonDialogFooter
+import com.swirlfist.sprited.presentation.section.ConfirmButtonDialogFooterState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 
 @Composable
@@ -61,8 +62,10 @@ fun NoActionErrorDialog(
                     }
                 }
                 ConfirmButtonDialogFooter(
-                    confirmText = stringResource(android.R.string.ok),
-                    onConfirmClick = onDismiss,
+                    state = ConfirmButtonDialogFooterState(
+                        confirmText = stringResource(android.R.string.ok),
+                        onConfirmClick = onDismiss,
+                    ),
                 )
             }
         }

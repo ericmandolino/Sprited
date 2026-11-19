@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.swirlfist.sprited.R
 import com.swirlfist.sprited.presentation.section.CancelButtonDialogFooter
+import com.swirlfist.sprited.presentation.section.CancelButtonDialogFooterState
 import com.swirlfist.sprited.presentation.state.PixelImageExportFormat
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 
@@ -60,7 +61,9 @@ fun PixelImageExportFormatSelectionDialog(
                 }
 
                 CancelButtonDialogFooter(
-                    onCancelClick = onDismiss,
+                    state = CancelButtonDialogFooterState(
+                        onCancelClick = onDismiss,
+                    ),
                 )
             }
         }
