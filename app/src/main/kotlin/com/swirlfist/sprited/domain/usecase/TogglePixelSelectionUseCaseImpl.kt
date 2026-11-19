@@ -13,19 +13,19 @@ import javax.inject.Inject
 class TogglePixelSelectionUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : TogglePixelSelectionUseCase {
-    override suspend fun invoke(params: TogglePixelSelectionUseCase.Params): Result<PixelSelectionModel> {
-        return try {
-            Result.success(
-                togglePixelSelection(
-                    actionContext = params.actionContext,
-                    x = params.x,
-                    y = params.y,
-                    isSameAction = params.isSameAction,
-                )
-            )
-        } catch(exception: Exception) {
-            Result.failure(TogglePixelSelectionError(exception))
-        }
+    override suspend fun invoke(
+        params: TogglePixelSelectionUseCase.Params,
+    ): Result<PixelSelectionModel> = try {
+        Result.success(
+            togglePixelSelection(
+                actionContext = params.actionContext,
+                x = params.x,
+                y = params.y,
+                isSameAction = params.isSameAction,
+            ),
+        )
+    } catch (exception: Exception) {
+        Result.failure(TogglePixelSelectionError(exception))
     }
 
     private suspend fun togglePixelSelection(
@@ -35,8 +35,8 @@ class TogglePixelSelectionUseCaseImpl @Inject constructor(
         isSameAction: Boolean,
     ): PixelSelectionModel {
         val pixelImage = actionContext.pixelImage
-        val pixelSelection = actionContext.pixelSelection ?:
-            pixelImage.createSelection(selectedCoordinates = listOf())
+        val pixelSelection = actionContext.pixelSelection
+            ?: pixelImage.createSelection(selectedCoordinates = listOf())
         val pixelInSelection = pixelSelection.isSelected(x, y)
         val selectedPixels = pixelSelection.selected
 
@@ -47,7 +47,7 @@ class TogglePixelSelectionUseCaseImpl @Inject constructor(
                     null
                 } else {
                     pixelImage.getPixelAt(x, y)
-                }
+                },
             )
         }.toList()
 
@@ -57,7 +57,7 @@ class TogglePixelSelectionUseCaseImpl @Inject constructor(
                     index = y,
                     element = updatedSelectionRow,
                 )
-            }.toList()
+            }.toList(),
         )
         val actionContextResult = actionContext.copy(
             pixelSelection = pixelSelectionResult,

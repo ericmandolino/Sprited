@@ -45,10 +45,14 @@ fun PixelImageExportFormatSelectionDialog(
                                 onClick = { onFormatSelected(exportFormat) },
                             ) {
                                 Text(
-                                    text = when(exportFormat) {
-                                        PixelImageExportFormat.PNG -> stringResource(R.string.pixel_image_export_format_png)
-                                        PixelImageExportFormat.SVG -> stringResource(R.string.pixel_image_export_format_svg)
-                                    }
+                                    text = when (exportFormat) {
+                                        PixelImageExportFormat.PNG -> stringResource(
+                                            R.string.pixel_image_export_format_png,
+                                        )
+                                        PixelImageExportFormat.SVG -> stringResource(
+                                            R.string.pixel_image_export_format_svg,
+                                        )
+                                    },
                                 )
                             }
                         }

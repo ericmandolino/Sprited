@@ -7,12 +7,10 @@ import javax.inject.Inject
 class DeletePalettePresetUseCaseImpl @Inject constructor(
     private val palettePresetsRepository: PalettePresetsRepository,
 ) : DeletePalettePresetUseCase {
-    override suspend fun invoke(params: DeletePalettePresetUseCase.Params): Result<Unit> {
-        return try {
-            palettePresetsRepository.deletePalettePreset(params.preset)
-            Result.success(Unit)
-        } catch(e: Exception) {
-            Result.failure(DeletePalettePresetError(e))
-        }
+    override suspend fun invoke(params: DeletePalettePresetUseCase.Params): Result<Unit> = try {
+        palettePresetsRepository.deletePalettePreset(params.preset)
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(DeletePalettePresetError(e))
     }
 }

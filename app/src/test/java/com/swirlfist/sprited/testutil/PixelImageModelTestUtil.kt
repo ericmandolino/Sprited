@@ -43,14 +43,14 @@ class PixelImageModelTestUtil {
 
             return PixelImageModel(
                 pixelMatrixModel = PixelMatrixModel(
-                    content = rows.toList()
+                    content = rows.toList(),
                 ),
                 paletteModel = PaletteModel(
                     colors = paletteColors.subList(
                         0,
-                        if (paletteSize > 0) paletteSize else maxPaletteIndex + 1
-                    )
-                )
+                        if (paletteSize > 0) paletteSize else maxPaletteIndex + 1,
+                    ),
+                ),
             )
         }
     }

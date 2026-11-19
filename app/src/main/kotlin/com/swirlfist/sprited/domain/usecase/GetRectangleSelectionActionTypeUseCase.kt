@@ -2,7 +2,8 @@ package com.swirlfist.sprited.domain.usecase
 
 import com.swirlfist.sprited.domain.model.RectangleSelectionModel
 
-interface GetRectangleSelectionActionTypeUseCase : UseCase<GetRectangleSelectionActionTypeUseCase.Params, RectangleSelectionActionType> {
+interface GetRectangleSelectionActionTypeUseCase :
+    UseCase<GetRectangleSelectionActionTypeUseCase.Params, RectangleSelectionActionType> {
 
     data class Params(
         val rectangleSelectionModel: RectangleSelectionModel?,

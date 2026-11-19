@@ -34,7 +34,7 @@ class UpdateBasePixelImageUseCaseImplTest {
 
         // When
         val result = useCase(
-            UpdateBasePixelImageUseCase.Params(pixelImage)
+            UpdateBasePixelImageUseCase.Params(pixelImage),
         )
 
         // Then

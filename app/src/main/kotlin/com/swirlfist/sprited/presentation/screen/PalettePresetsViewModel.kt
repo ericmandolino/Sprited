@@ -6,11 +6,11 @@ import com.swirlfist.sprited.domain.usecase.GetPalettePresetsUseCase
 import com.swirlfist.sprited.domain.usecase.UseCaseParams
 import com.swirlfist.sprited.presentation.state.PalettePresetsDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class PalettePresetsViewModel @Inject constructor(
@@ -19,13 +19,15 @@ class PalettePresetsViewModel @Inject constructor(
     private val _palettePresetsDialogState = MutableStateFlow(
         value = PalettePresetsDialogState(
             isLoadingPresets = true,
-        )
+        ),
     )
     val palettePresetsDialogState = _palettePresetsDialogState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            getPalettePresetsUseCase(UseCaseParams.NoParams).getOrNull()?.let { palettePresetsFlow ->
+            getPalettePresetsUseCase(
+                UseCaseParams.NoParams,
+            ).getOrNull()?.let { palettePresetsFlow ->
                 palettePresetsFlow.collect { palettePresets ->
                     _palettePresetsDialogState.update { state ->
                         state.copy(

@@ -6,32 +6,27 @@ import com.swirlfist.sprited.domain.error.OpenPixelImageError
 import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.presentation.mapper.toPixelImageModel
 import com.swirlfist.sprited.presentation.model.PixelImageSaveModel
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
+import kotlinx.serialization.json.Json
 
 class OpenPixelImageUseCaseImpl @Inject constructor(
     private val readFromFileUseCase: ReadFromFileUseCase,
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : OpenPixelImageUseCase {
-    override suspend fun invoke(params: OpenPixelImageUseCase.Params): Result<PixelImageModel> {
-        return try {
+    override suspend fun invoke(params: OpenPixelImageUseCase.Params): Result<PixelImageModel> =
+        try {
             val pixelImage = openPixelImage(params.uri)
             pixelImageEditorActionRepository.clearActions()
             Result.success(pixelImage)
         } catch (e: Exception) {
             Result.failure(OpenPixelImageError(e))
         }
-    }
 
-    private suspend fun openPixelImage(
-        uri: Uri,
-    ): PixelImageModel {
-        return readFromFileUseCase(
-            params = ReadFromFileUseCase.Params(
-                uri,
-            )
-        ).getOrThrow().let { content ->
-            Json.decodeFromString<PixelImageSaveModel>(content).toPixelImageModel()
-        }
+    private suspend fun openPixelImage(uri: Uri): PixelImageModel = readFromFileUseCase(
+        params = ReadFromFileUseCase.Params(
+            uri,
+        ),
+    ).getOrThrow().let { content ->
+        Json.decodeFromString<PixelImageSaveModel>(content).toPixelImageModel()
     }
 }

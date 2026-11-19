@@ -29,4 +29,3 @@ sealed interface ActionModel {
 sealed interface BaseButtonGroupActionModel : ActionModel {
     val childButtonActionModels: List<ButtonActionModel>
 }
-

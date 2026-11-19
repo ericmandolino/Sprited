@@ -18,6 +18,6 @@ suspend fun <P : UseCaseParams, T> UseCase<P, T>.execute(
 }.let { result ->
     result.fold(
         onSuccess = { value -> successBlock(value) },
-        onFailure = { error -> failureBlock(error) }
+        onFailure = { error -> failureBlock(error) },
     )
 }

@@ -23,10 +23,7 @@ import com.swirlfist.sprited.presentation.uielements.PixelCanvasSnapshot
 import com.swirlfist.sprited.presentation.uielements.createCheckersPixelImage
 
 @Composable
-fun PixelImagePreviewSection(
-    modifier: Modifier = Modifier,
-    state: PixelImagePreviewSectionState,
-) {
+fun PixelImagePreviewSection(modifier: Modifier = Modifier, state: PixelImagePreviewSectionState) {
     val pixelImage = state.pixelImageModel
     val selectedBackgroundColor = Color.fromColorLong(state.selectedPreviewBackgroundColorLong)
 
@@ -58,7 +55,7 @@ fun PixelImagePreviewBackgroundColorSelection(
     selectedBackgroundColor: Color,
     onPreviewBackgroundColorSelected: (Color) -> Unit,
 ) {
-    FlowRow (
+    FlowRow(
         maxLines = 2,
         modifier = modifier,
     ) {
@@ -96,9 +93,9 @@ fun PreviewBackgroundColorButton(
         size = 36.dp,
         isEnabled = true,
         contentDescriptionValue = stringResource(
-                R.string.cd_preview_section_button_pick_background_color,
-                color.toHexCode(),
-            ),
+            R.string.cd_preview_section_button_pick_background_color,
+            color.toHexCode(),
+        ),
         isSelected = selectedBackgroundColor == color,
         onClick = { onPreviewBackgroundColorSelected(color) },
     )

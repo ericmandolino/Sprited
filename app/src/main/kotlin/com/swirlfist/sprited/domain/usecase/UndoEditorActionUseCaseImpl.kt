@@ -8,7 +8,9 @@ import javax.inject.Inject
 class UndoEditorActionUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : UndoEditorActionUseCase {
-    override suspend fun invoke(params: UseCaseParams.NoParams): Result<PixelImageEditorActionContext> {
+    override suspend fun invoke(
+        params: UseCaseParams.NoParams,
+    ): Result<PixelImageEditorActionContext> {
         val undoResult = pixelImageEditorActionRepository.undoAction()
         return if (undoResult == null) {
             Result.failure(UndoEditorActionError())
@@ -16,5 +18,4 @@ class UndoEditorActionUseCaseImpl @Inject constructor(
             Result.success(undoResult)
         }
     }
-
 }

@@ -11,17 +11,16 @@ import javax.inject.Inject
 class ApplyBucketUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : ApplyBucketUseCase {
-    override suspend fun invoke(params: ApplyBucketUseCase.Params): Result<PixelImageModel> {
-        return Result.success(
+    override suspend fun invoke(params: ApplyBucketUseCase.Params): Result<PixelImageModel> =
+        Result.success(
             applyBucket(
                 actionContext = params.actionContext,
                 x = params.x,
                 y = params.y,
                 paletteIndex = params.paletteIndex,
                 isSameAction = params.isSameAction,
-            )
+            ),
         )
-    }
 
     private suspend fun applyBucket(
         actionContext: PixelImageEditorActionContext,
@@ -34,7 +33,7 @@ class ApplyBucketUseCaseImpl @Inject constructor(
         val pixel = pixelImage.getPixelAt(x, y)
 
         val pixelImageResult = if (pixel.paletteIndex == paletteIndex) {
-             pixelImage
+            pixelImage
         } else {
             val mutablePixelMatrix = mutableListOf<MutableList<PixelModel>>().apply {
                 pixelImage.pixelMatrixModel.content.forEach { row ->
@@ -53,7 +52,7 @@ class ApplyBucketUseCaseImpl @Inject constructor(
             pixelImage.copy(
                 pixelMatrixModel = pixelImage.pixelMatrixModel.copy(
                     content = mutablePixelMatrix,
-                )
+                ),
             )
         }
 
@@ -113,7 +112,9 @@ class ApplyBucketUseCaseImpl @Inject constructor(
         val pixel = pixelMatrix[y][x]
         val pixelPaletteIndex = pixel.paletteIndex
 
-        return if (pixelPaletteIndex == paletteIndexNew || pixelPaletteIndex != paletteIndexToReplace) {
+        return if (pixelPaletteIndex == paletteIndexNew ||
+            pixelPaletteIndex != paletteIndexToReplace
+        ) {
             false
         } else {
             pixelMatrix[y][x] = pixel.copy(paletteIndex = paletteIndexNew)

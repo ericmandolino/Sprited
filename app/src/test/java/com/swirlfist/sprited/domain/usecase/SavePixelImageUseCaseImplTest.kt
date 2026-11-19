@@ -49,7 +49,7 @@ class SavePixelImageUseCaseImplTest {
     fun `the use case invokes WriteToFileUseCase with the expected params`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val color0 = PixelImageModelTestUtil.paletteColors[0]
         val color1 = PixelImageModelTestUtil.paletteColors[1]
@@ -71,7 +71,7 @@ class SavePixelImageUseCaseImplTest {
             writeToFileUseCase(
                 match { params ->
                     params.uri == uri && params.content == expectedContent
-                }
+                },
             )
         }
     }
@@ -80,7 +80,7 @@ class SavePixelImageUseCaseImplTest {
     fun `when WriteToFileUseCase succeeds then the image is updated in the repository`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = SavePixelImageUseCase.Params(
             pixelImageModel,
@@ -97,7 +97,7 @@ class SavePixelImageUseCaseImplTest {
             basePixelImageRepository.updateBasePixelImage(
                 match { pixelImage ->
                     pixelImage == pixelImageModel
-                }
+                },
             )
         }
     }
@@ -106,7 +106,7 @@ class SavePixelImageUseCaseImplTest {
     fun `when WriteToFileUseCase fails then the use case fails`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = SavePixelImageUseCase.Params(
             pixelImageModel,
@@ -122,7 +122,7 @@ class SavePixelImageUseCaseImplTest {
         assertTrue { result.isFailure }
         assertEquals(
             expectedException,
-            (result.exceptionOrNull() as SavePixelImageError).innerException
+            (result.exceptionOrNull() as SavePixelImageError).innerException,
         )
     }
 }

@@ -5,9 +5,8 @@ import com.swirlfist.sprited.domain.model.PixelImageModel
 import javax.inject.Inject
 
 class GetBasePixelImageUseCaseImpl @Inject constructor(
-    private val basePixelImageRepository: BasePixelImageRepository
+    private val basePixelImageRepository: BasePixelImageRepository,
 ) : GetBasePixelImageUseCase {
-    override suspend fun invoke(params: UseCaseParams.NoParams): Result<PixelImageModel?> {
-        return Result.success(basePixelImageRepository.getBasePixelImage())
-    }
+    override suspend fun invoke(params: UseCaseParams.NoParams): Result<PixelImageModel?> =
+        Result.success(basePixelImageRepository.getBasePixelImage())
 }

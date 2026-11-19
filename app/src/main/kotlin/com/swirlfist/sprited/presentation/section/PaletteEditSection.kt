@@ -49,10 +49,7 @@ import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButton
 import kotlin.math.roundToInt
 
 @Composable
-fun PaletteEditSection(
-    modifier: Modifier = Modifier,
-    paletteEditState: PaletteEditState,
-) {
+fun PaletteEditSection(modifier: Modifier = Modifier, paletteEditState: PaletteEditState) {
     val colors = paletteEditState.paletteColors
     val selectedPaletteIndex = paletteEditState.selectedPaletteIndex
 
@@ -74,7 +71,7 @@ fun PaletteEditSection(
                     isEnabled = true,
                     contentDescriptionValue = stringResource(
                         R.string.cd_new_image_screen_edit_palette_color,
-                        paletteIndex
+                        paletteIndex,
                     ),
                     isSelected = paletteIndex == selectedPaletteIndex,
                     onClick = { paletteEditState.onPaletteColorClick(paletteIndex) },
@@ -123,13 +120,13 @@ fun PaletteColorEdit(
 
     LaunchedEffect(color) {
         redTextFieldState.setTextAndPlaceCursorAtEnd(
-            color?.red?.toColorComponentString() ?: ""
+            color?.red?.toColorComponentString() ?: "",
         )
         greenTextFieldState.setTextAndPlaceCursorAtEnd(
-            color?.green?.toColorComponentString() ?: ""
+            color?.green?.toColorComponentString() ?: "",
         )
         blueTextFieldState.setTextAndPlaceCursorAtEnd(
-            color?.blue?.toColorComponentString() ?: ""
+            color?.blue?.toColorComponentString() ?: "",
         )
     }
 
@@ -145,7 +142,7 @@ fun PaletteColorEdit(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 modifier = Modifier
@@ -158,7 +155,7 @@ fun PaletteColorEdit(
                 enabled = isDeleteEnabled,
             ) {
                 Text(
-                    text = stringResource(R.string.delete)
+                    text = stringResource(R.string.delete),
                 )
             }
         }
@@ -197,7 +194,7 @@ fun PaletteColorComponent(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(
             modifier = Modifier
@@ -233,8 +230,7 @@ fun PaletteColorComponent(
                         textFieldState.setTextAndPlaceCursorAtEnd("0")
                         onSliderChange(0F)
                     }
-                }
-            ,
+                },
             enabled = isEnabled,
             textStyle = MaterialTheme.typography.bodyMedium.copy(
                 textAlign = TextAlign.End,
@@ -290,6 +286,4 @@ fun PaletteColorComponentPreview() {
     }
 }
 
-private fun Float.toColorComponentString(): String {
-    return (this * 255).roundToInt().toString()
-}
+private fun Float.toColorComponentString(): String = (this * 255).roundToInt().toString()

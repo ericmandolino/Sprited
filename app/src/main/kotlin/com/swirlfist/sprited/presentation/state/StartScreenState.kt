@@ -9,6 +9,4 @@ data class StartScreenState(
     val launcherState: StartScreenLauncherState = StartScreenLauncherState(),
 )
 
-data class StartScreenLauncherState(
-    val launchSelectOpenPixelImage: Boolean = false,
-)
+data class StartScreenLauncherState(val launchSelectOpenPixelImage: Boolean = false)

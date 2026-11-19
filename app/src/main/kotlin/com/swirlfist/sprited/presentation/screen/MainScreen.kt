@@ -70,9 +70,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
-) {
+fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val mainScreenState = viewModel.mainScreenState.collectAsStateWithLifecycle().value
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -81,17 +79,18 @@ fun MainScreen(
 
     MainScreenLaunchers(
         mainScreenState.launcherState,
-        onSelectSavePixelImageLocationResult = viewModel::onSelectSavePixelImageLocationResult,
-        onSelectExportPixelImageLocationResult = viewModel::onSelectExportPixelImageLocationResult,
-        onSelectOpenPixelImageLocationResult = viewModel::onSelectOpenPixelImageLocationResult,
-        onSelectSavePixelImageLocationLaunched = viewModel::onSelectSavePixelImageLocationLaunched,
-        onSelectExportPixelImageLocationLaunched = viewModel::onSelectExportPixelImageLocationLaunched,
-        onSelectOpenPixelImageLocationLaunched = viewModel::onSelectOpenPixelImageLocationLaunched,
+        viewModel::onSelectSavePixelImageLocationResult,
+        viewModel::onSelectExportPixelImageLocationResult,
+        viewModel::onSelectOpenPixelImageLocationResult,
+        viewModel::onSelectSavePixelImageLocationLaunched,
+        viewModel::onSelectExportPixelImageLocationLaunched,
+        viewModel::onSelectOpenPixelImageLocationLaunched,
     )
 
     if (mainScreenState.isShowPalette) {
         val openPaletteActionButtonModel = mainScreenState.actionsSectionState
-            .actionModels[ActionButtonType.OpenPaletteActionButtonType] as? ActionModel.SelectableButtonGroupActionModel
+            .actionModels[ActionButtonType.OpenPaletteActionButtonType]
+            as? ActionModel.SelectableButtonGroupActionModel
         openPaletteActionButtonModel?.childButtonActionModels?.let { buttonActionModels ->
             SelectableButtonGroupDialog(
                 childButtonActionModels = buttonActionModels,
@@ -165,7 +164,7 @@ fun MainScreen(
             SnackbarHost(
                 hostState = snackbarHostState,
             )
-        }
+        },
     ) { contentPadding ->
         Surface(
             modifier = Modifier
@@ -194,7 +193,7 @@ fun MainScreenLaunchers(
     onSelectOpenPixelImageLocationLaunched: () -> Unit,
 ) {
     val selectSavePixelImageLocationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
+        contract = ActivityResultContracts.StartActivityForResult(),
     ) { activityResult ->
         SavePixelImageLocationLauncher.handleResult(
             activityResult,
@@ -203,7 +202,7 @@ fun MainScreenLaunchers(
     }
 
     val selectExportPixelImageLocationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
+        contract = ActivityResultContracts.StartActivityForResult(),
     ) { activityResult ->
         ExportPixelImageLocationLauncher.handleResult(
             activityResult,
@@ -212,7 +211,7 @@ fun MainScreenLaunchers(
     }
 
     val selectOpenPixelImageLocationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
+        contract = ActivityResultContracts.StartActivityForResult(),
     ) { activityResult ->
         OpenPixelImageLocationLauncher.handleResult(
             activityResult,
@@ -227,7 +226,8 @@ fun MainScreenLaunchers(
             onSelectSavePixelImageLocationLaunched()
         } else if (launcherState.launchSelectExportPixelImage) {
             val intent = ExportPixelImageLocationLauncher.getLaunchIntent(
-                exportFormat = launcherState.selectedPixelImageExportFormat ?: PixelImageExportFormat.SVG,
+                exportFormat =
+                launcherState.selectedPixelImageExportFormat ?: PixelImageExportFormat.SVG,
             )
             selectExportPixelImageLocationLauncher.launch(intent)
             onSelectExportPixelImageLocationLaunched()
@@ -344,14 +344,14 @@ fun ThreePaneContent(
             val interactionSource = remember { MutableInteractionSource() }
             VerticalDragHandle(
                 modifier =
-                    Modifier.paneExpansionDraggable(
-                        state,
-                        LocalMinimumInteractiveComponentSize.current,
-                        interactionSource
-                    ),
+                Modifier.paneExpansionDraggable(
+                    state,
+                    LocalMinimumInteractiveComponentSize.current,
+                    interactionSource,
+                ),
                 interactionSource = interactionSource,
             )
-        }
+        },
     )
 }
 
@@ -377,7 +377,7 @@ fun ThreePaneScaffoldPaneScope.MainPane(
                     coroutineScope.launch {
                         scaffoldNavigator.navigateTo(SupportingPaneScaffoldRole.Supporting)
                     }
-                }
+                },
             ) {
                 Text("SP") // TODO: use icon?
             }
@@ -409,9 +409,11 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
     ) {
         Column(
             modifier = Modifier
-                .requiredWidthIn(min = 64.dp)
+                .requiredWidthIn(min = 64.dp),
         ) {
-            if (scaffoldNavigator.isSupportingPaneExpanded() && scaffoldNavigator.isMainPaneHidden()) {
+            if (scaffoldNavigator.isSupportingPaneExpanded() &&
+                scaffoldNavigator.isMainPaneHidden()
+            ) {
                 Button(
                     modifier = Modifier
                         .align(Alignment.End)
@@ -420,7 +422,7 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
                         coroutineScope.launch {
                             scaffoldNavigator.navigateBack(backNavigationBehavior)
                         }
-                    }
+                    },
                 ) {
                     Text("<") // TODO: use icon?
                 }
@@ -445,24 +447,19 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<Any>.isMainPaneHidden(): Boolean {
-    return isPaneVisibilityMatch(SupportingPaneScaffoldRole.Main, PaneAdaptedValue.Hidden)
-}
+private fun ThreePaneScaffoldNavigator<Any>.isMainPaneHidden(): Boolean =
+    isPaneVisibilityMatch(SupportingPaneScaffoldRole.Main, PaneAdaptedValue.Hidden)
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<Any>.isSupportingPaneHidden(): Boolean {
-    return isPaneVisibilityMatch(SupportingPaneScaffoldRole.Supporting, PaneAdaptedValue.Hidden)
-}
+private fun ThreePaneScaffoldNavigator<Any>.isSupportingPaneHidden(): Boolean =
+    isPaneVisibilityMatch(SupportingPaneScaffoldRole.Supporting, PaneAdaptedValue.Hidden)
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-private fun ThreePaneScaffoldNavigator<Any>.isSupportingPaneExpanded(): Boolean {
-    return isPaneVisibilityMatch(SupportingPaneScaffoldRole.Supporting, PaneAdaptedValue.Expanded)
-}
+private fun ThreePaneScaffoldNavigator<Any>.isSupportingPaneExpanded(): Boolean =
+    isPaneVisibilityMatch(SupportingPaneScaffoldRole.Supporting, PaneAdaptedValue.Expanded)
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun ThreePaneScaffoldNavigator<Any>.isPaneVisibilityMatch(
     role: ThreePaneScaffoldRole,
     visibility: PaneAdaptedValue,
-): Boolean {
-    return scaffoldValue[role] == visibility
-}
+): Boolean = scaffoldValue[role] == visibility

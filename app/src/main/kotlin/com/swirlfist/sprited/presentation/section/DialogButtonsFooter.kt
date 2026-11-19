@@ -48,10 +48,7 @@ fun ConfirmButtonDialogFooter(
 }
 
 @Composable
-fun CancelButtonDialogFooter(
-    modifier: Modifier = Modifier,
-    onCancelClick: () -> Unit,
-) {
+fun CancelButtonDialogFooter(modifier: Modifier = Modifier, onCancelClick: () -> Unit) {
     BaseDialogButtonsFooter(
         modifier = modifier,
         leftText = stringResource(android.R.string.cancel),
@@ -67,7 +64,6 @@ fun BaseDialogButtonsFooter(
     isRightEnabled: Boolean = true,
     rightText: String? = null,
     onRightClick: () -> Unit = {},
-
 ) {
     Row(
         modifier = modifier
@@ -75,7 +71,7 @@ fun BaseDialogButtonsFooter(
         horizontalArrangement = Arrangement.spacedBy(
             8.dp,
             Alignment.End,
-        )
+        ),
     ) {
         TextButton(
             onClick = onLeftClick,

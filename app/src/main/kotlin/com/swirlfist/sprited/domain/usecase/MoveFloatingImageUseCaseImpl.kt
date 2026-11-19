@@ -8,15 +8,15 @@ import javax.inject.Inject
 class MoveFloatingImageUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : MoveFloatingImageUseCase {
-    override suspend fun invoke(params: MoveFloatingImageUseCase.Params): Result<PixelImageEditorActionContext> {
-        return Result.success(
-            moveFloatingImage(
-                actionContext = params.actionContext,
-                offsetDelta = params.offsetDelta,
-                isSameAction = params.isSameAction,
-            )
-        )
-    }
+    override suspend fun invoke(
+        params: MoveFloatingImageUseCase.Params,
+    ): Result<PixelImageEditorActionContext> = Result.success(
+        moveFloatingImage(
+            actionContext = params.actionContext,
+            offsetDelta = params.offsetDelta,
+            isSameAction = params.isSameAction,
+        ),
+    )
 
     private suspend fun moveFloatingImage(
         actionContext: PixelImageEditorActionContext,
@@ -37,7 +37,7 @@ class MoveFloatingImageUseCaseImpl @Inject constructor(
                 )
 
                 val floatingImageResult = floatingImage.copy(
-                    offset = offsetResult
+                    offset = offsetResult,
                 )
 
                 actionContext.copy(

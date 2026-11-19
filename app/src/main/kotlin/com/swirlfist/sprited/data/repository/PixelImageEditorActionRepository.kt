@@ -14,9 +14,7 @@ interface PixelImageEditorActionRepository {
         action: PixelImageEditorAction,
         actionContextResult: PixelImageEditorActionContext,
     )
-    suspend fun updateLastAction(
-        actionContextResult: PixelImageEditorActionContext,
-    )
+    suspend fun updateLastAction(actionContextResult: PixelImageEditorActionContext)
     suspend fun undoAction(): PixelImageEditorActionContext?
     suspend fun redoAction(): PixelImageEditorActionContext?
     fun isUndoAvailable(): Flow<Boolean>

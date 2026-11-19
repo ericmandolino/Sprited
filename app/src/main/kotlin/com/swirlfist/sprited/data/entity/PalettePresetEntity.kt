@@ -13,18 +13,14 @@ data class PalettePresetEntity(
     @ColumnInfo(name = "colors") val colors: List<Long>,
 )
 
-fun PalettePresetEntity.toModel(): PalettePresetModel {
-    return PalettePresetModel(
-        id = this.id,
-        name = this.presetName,
-        palette = PaletteModel(this.colors),
-    )
-}
+fun PalettePresetEntity.toModel(): PalettePresetModel = PalettePresetModel(
+    id = this.id,
+    name = this.presetName,
+    palette = PaletteModel(this.colors),
+)
 
-fun PalettePresetModel.toEntity(): PalettePresetEntity {
-    return PalettePresetEntity(
-        id = this.id,
-        presetName = this.name,
-        colors = this.palette.colors,
-    )
-}
+fun PalettePresetModel.toEntity(): PalettePresetEntity = PalettePresetEntity(
+    id = this.id,
+    presetName = this.name,
+    colors = this.palette.colors,
+)

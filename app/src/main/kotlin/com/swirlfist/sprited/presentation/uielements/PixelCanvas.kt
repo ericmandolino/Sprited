@@ -130,7 +130,7 @@ fun PixelCanvas(
                             imagePixelSize,
                             canvasSize = Size(
                                 lastCanvasSize.value.width.toFloat(),
-                                lastCanvasSize.value.height.toFloat()
+                                lastCanvasSize.value.height.toFloat(),
                             ),
                             imageOffset.value,
                             margin.value,
@@ -147,7 +147,6 @@ fun PixelCanvas(
                         event.changes.forEach { pointerInputChange ->
                             pointerInputChange.consume()
                         }
-
                     } while (event.changes.any { it.pressed })
 
                     lastPixelVisited = null
@@ -174,7 +173,8 @@ fun PixelCanvas(
                             imageOffset,
                         )
 
-                        val zoomDistance = (event.changes[0].position - event.changes[1].position).getDistance()
+                        val zoomDistance = (event.changes[0].position - event.changes[1].position)
+                            .getDistance()
                         if (pan.getDistance() < zoomDistance * PAN_VS_ZOOM_FACTOR) {
                             val zoom = event.calculateZoom()
                             zoomAcc += zoom - 1F
@@ -264,7 +264,7 @@ fun PixelCanvasSnapshot(
                         pixelSizeDp,
                         imagePixelSize,
                         zoomFactor.floatValue,
-                        imageOffset
+                        imageOffset,
                     )
                 }
             },
@@ -396,10 +396,8 @@ private fun getPixelCoordinatesAt(
     }
 }
 
-private fun Density.getPixelSizeInt(
-    dpSize: Int,
-    zoomFactor: Float,
-) = (dpSize.dp.toPx() * zoomFactor).toInt()
+private fun Density.getPixelSizeInt(dpSize: Int, zoomFactor: Float) =
+    (dpSize.dp.toPx() * zoomFactor).toInt()
 
 private fun DrawScope.drawCanvas(
     pixelImage: PixelImageModel,
@@ -512,8 +510,7 @@ private fun DrawScope.drawImageInCanvas(
         }
 
         val adjustedYMatrixCoordinate = yMatrixCoordinate - floatingOffset.second
-        if (adjustedYMatrixCoordinate in 0..< pixelImage.getPixelHeight()) {
-
+        if (adjustedYMatrixCoordinate in 0..<pixelImage.getPixelHeight()) {
             var x = margin.x
             var xMatrixCoordinate = ((imageOffset.x + x - margin.x) / pixelSizeInt).toInt()
             while (x < canvasSize.width && xMatrixCoordinate < imagePixelSize.width) {
@@ -669,8 +666,8 @@ private fun DrawScope.drawSelectionLine(
         end = end,
         pathEffect = PathEffect.dashPathEffect(
             intervals = floatArrayOf(interval, interval),
-            phase = 0F
-        )
+            phase = 0F,
+        ),
     )
     drawLine(
         color = color2,
@@ -679,8 +676,8 @@ private fun DrawScope.drawSelectionLine(
         end = end,
         pathEffect = PathEffect.dashPathEffect(
             intervals = floatArrayOf(interval, interval),
-            phase = 3 * interval
-        )
+            phase = 3 * interval,
+        ),
     )
 }
 
@@ -709,7 +706,7 @@ private fun DrawScope.drawRectangleSelection(
         bottomRight = Offset(
             x = max(rectStart.first, rectEnd.first).toFloat(),
             y = max(rectStart.second, rectEnd.second).toFloat(),
-        )
+        ),
     )
     val xSelectionOffset = selectionRect.topLeft.x * pixelSizeInt
     val ySelectionOffset = selectionRect.topLeft.y * pixelSizeInt
@@ -749,7 +746,7 @@ private fun DrawScope.drawRectangleSelection(
     drawRectangleSelectionMiddleSquares(
         rectangleSelectionContext,
         resizeSquareSize,
-        resizeSquareBorderWidth
+        resizeSquareBorderWidth,
     )
 }
 
@@ -969,7 +966,9 @@ private fun DrawScope.drawFloatingImage(
         imagePixelSize,
         imageOffset,
         margin,
-        palette = floatingPixelImage.pixelImageModel.paletteModel.colors.map { color -> Color.fromColorLong(color) },
+        palette = floatingPixelImage.pixelImageModel.paletteModel.colors.map { color ->
+            Color.fromColorLong(color)
+        },
         backGroundCheckersColors = null,
         floatingOffset = floatingPixelImage.offset,
     )
@@ -1076,7 +1075,7 @@ private fun addSelectionLines(
 ) {
     val isSelected = pixelSelection?.isSelected(
         x = xMatrixCoordinate,
-        y = yMatrixCoordinate
+        y = yMatrixCoordinate,
     ) ?: false
 
     if (!isSelected) {
@@ -1110,7 +1109,9 @@ private fun addSelectionLines(
     }
 
     if (!isSelectedBelow && (fullHeight || heightOffset < canvasSize.height)) {
-        selectionLines.add(Pair(offset.copy(y = heightOffset), offset.copy(y = heightOffset, x = widthOffset)))
+        selectionLines.add(
+            Pair(offset.copy(y = heightOffset), offset.copy(y = heightOffset, x = widthOffset)),
+        )
     }
 
     if (!isSelectedLeft && (fullWidth || widthOffset > pixelSizeInt)) {
@@ -1118,7 +1119,9 @@ private fun addSelectionLines(
     }
 
     if (!isSelectedRight && (fullWidth || widthOffset < canvasSize.width)) {
-        selectionLines.add(Pair(offset.copy(x = widthOffset), offset.copy(x = widthOffset, y = heightOffset)))
+        selectionLines.add(
+            Pair(offset.copy(x = widthOffset), offset.copy(x = widthOffset, y = heightOffset)),
+        )
     }
 }
 
@@ -1135,7 +1138,7 @@ private fun DrawScope.drawHorizontalGridLine(
         canvasSize,
         imageSize,
         width,
-        margin
+        margin,
     )
 }
 
@@ -1230,9 +1233,9 @@ private fun DrawScope.drawFloatingImageMoveHints() {
     val rightTriangleVertices = floatArrayOf(
         size.width - margin - halfTriangleHeight,
         centerHeight,
-        size.width - margin -  triangleHeight,
+        size.width - margin - triangleHeight,
         centerHeight - halfTriangleHeight,
-        size.width - margin -  triangleHeight,
+        size.width - margin - triangleHeight,
         centerHeight + halfTriangleHeight,
     )
 
@@ -1242,9 +1245,7 @@ private fun DrawScope.drawFloatingImageMoveHints() {
     drawFloatingImageMoveHint(rightTriangleVertices)
 }
 
-private fun DrawScope.drawFloatingImageMoveHint(
-    vertices: FloatArray,
-) {
+private fun DrawScope.drawFloatingImageMoveHint(vertices: FloatArray) {
     val path = Path().apply {
         moveTo(vertices[0], vertices[1])
         lineTo(vertices[2], vertices[3])
@@ -1273,19 +1274,17 @@ private fun getColor(
     isXMatrixCoordinateEven: Boolean,
     isYMatrixCoordinateEven: Boolean,
     backGroundCheckersColors: Pair<Color, Color>?,
-): Color? {
-    return palette.getColor(pixel)
-        ?: backGroundCheckersColors?.let { (first, second) ->
-            if (
-                (isXMatrixCoordinateEven && !isYMatrixCoordinateEven) ||
-                (!isXMatrixCoordinateEven && isYMatrixCoordinateEven)
-            ) {
-                first
-            } else {
-                second
-            }
+): Color? = palette.getColor(pixel)
+    ?: backGroundCheckersColors?.let { (first, second) ->
+        if (
+            (isXMatrixCoordinateEven && !isYMatrixCoordinateEven) ||
+            (!isXMatrixCoordinateEven && isYMatrixCoordinateEven)
+        ) {
+            first
+        } else {
+            second
         }
-}
+    }
 
 private fun createOffsetSaver() = Saver<Offset, SizeF>(
     save = { offset -> SizeF(offset.x, offset.y) },
@@ -1316,7 +1315,7 @@ fun createCheckersPixelImage(
             val isXEven = x % 2 == 0
             val isYEven = y % 2 == 0
             row.add(
-                PixelModel(if ((isXEven && !isYEven) || (!isXEven && isYEven)) 0 else 1)
+                PixelModel(if ((isXEven && !isYEven) || (!isXEven && isYEven)) 0 else 1),
             )
         }
         rows.add(row)
@@ -1324,7 +1323,7 @@ fun createCheckersPixelImage(
 
     return PixelImageModel(
         pixelMatrixModel = PixelMatrixModel(
-            content = rows
+            content = rows,
         ),
         paletteModel = PaletteModel(listOf(color1, color2)),
     )

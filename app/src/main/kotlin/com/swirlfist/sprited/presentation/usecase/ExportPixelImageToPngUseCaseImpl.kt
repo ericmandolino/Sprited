@@ -6,36 +6,31 @@ import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.fromColorLong
 import androidx.compose.ui.graphics.toArgb
-import com.swirlfist.sprited.domain.model.PixelImageModel
-import com.swirlfist.sprited.domain.usecase.ExportPixelImageToPngUseCase
-import javax.inject.Inject
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
 import com.swirlfist.sprited.domain.error.ExportPixelImageError
 import com.swirlfist.sprited.domain.getPixelHeight
 import com.swirlfist.sprited.domain.getPixelWidth
+import com.swirlfist.sprited.domain.model.PixelImageModel
+import com.swirlfist.sprited.domain.usecase.ExportPixelImageToPngUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.FileOutputStream
+import javax.inject.Inject
 
 class ExportPixelImageToPngUseCaseImpl @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
 ) : ExportPixelImageToPngUseCase {
-    override suspend fun invoke(params: ExportPixelImageToPngUseCase.Params): Result<Unit> {
-        return try {
-            exportPixelImageToPng(
-                params.pixelImageModel,
-                params.uri,
-            )
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(ExportPixelImageError(e))
-        }
+    override suspend fun invoke(params: ExportPixelImageToPngUseCase.Params): Result<Unit> = try {
+        exportPixelImageToPng(
+            params.pixelImageModel,
+            params.uri,
+        )
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(ExportPixelImageError(e))
     }
 
-    private fun exportPixelImageToPng(
-        pixelImageModel: PixelImageModel,
-        uri: Uri,
-    ) {
+    private fun exportPixelImageToPng(pixelImageModel: PixelImageModel, uri: Uri) {
         val width = pixelImageModel.getPixelWidth()
         val height = pixelImageModel.getPixelHeight()
 

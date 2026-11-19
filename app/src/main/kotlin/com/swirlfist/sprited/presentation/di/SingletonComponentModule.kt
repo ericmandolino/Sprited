@@ -16,14 +16,10 @@ import dagger.hilt.components.SingletonComponent
 abstract class SingletonComponentModule {
 
     @Binds
-    abstract fun bindWriteToFileUseCase(
-        impl: WriteToFileUseCaseImpl,
-    ): WriteToFileUseCase
+    abstract fun bindWriteToFileUseCase(impl: WriteToFileUseCaseImpl): WriteToFileUseCase
 
     @Binds
-    abstract fun bindReadFromFileUseCase(
-        impl: ReadFromFileUseCaseImpl,
-    ): ReadFromFileUseCase
+    abstract fun bindReadFromFileUseCase(impl: ReadFromFileUseCaseImpl): ReadFromFileUseCase
 
     @Binds
     abstract fun bindExportPixelImageToPngUseCase(

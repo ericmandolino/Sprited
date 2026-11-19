@@ -11,22 +11,17 @@ import javax.inject.Inject
 class WriteToFileUseCaseImpl @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
 ) : WriteToFileUseCase {
-    override suspend fun invoke(params: WriteToFileUseCase.Params): Result<Unit> {
-        return try {
-            writeToFile(
-                params.content,
-                params.uri,
-            )
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(WriteToFileError(e))
-        }
+    override suspend fun invoke(params: WriteToFileUseCase.Params): Result<Unit> = try {
+        writeToFile(
+            params.content,
+            params.uri,
+        )
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(WriteToFileError(e))
     }
 
-    private fun writeToFile(
-        content: String,
-        uri: Uri,
-    ) {
+    private fun writeToFile(content: String, uri: Uri) {
         val contentResolver = applicationContext.contentResolver
 
         contentResolver.openFileDescriptor(uri, "w")?.use { descriptor ->

@@ -18,19 +18,13 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideAppDatabase(
-        @ApplicationContext context: Context,
-    ): AppDatabase {
-        return Room.databaseBuilder<AppDatabase>(context, AppDatabase.NAME)
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder<AppDatabase>(context, AppDatabase.NAME)
             .setDriver(AndroidSQLiteDriver())
             .build()
-    }
 
     @Singleton
     @Provides
-    fun providePalettePresetDao(
-        appDatabase: AppDatabase,
-    ) : PalettePresetDao {
-        return appDatabase.palettePresetDao()
-    }
+    fun providePalettePresetDao(appDatabase: AppDatabase): PalettePresetDao =
+        appDatabase.palettePresetDao()
 }

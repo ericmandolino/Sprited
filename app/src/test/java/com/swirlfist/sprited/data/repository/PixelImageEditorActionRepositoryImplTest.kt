@@ -74,15 +74,27 @@ class PixelImageEditorActionRepositoryImplTest {
             val action3 = mockk<PixelImageEditorAction>().also { action ->
                 every { action.actionContext }.returns(PixelImageEditorActionContext(mockk()))
             }
-            repository.addAction(action1, actionContextResult = PixelImageEditorActionContext(mockk()))
-            repository.addAction(action2, actionContextResult = PixelImageEditorActionContext(mockk()))
-            repository.addAction(action3, actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.addAction(
+                action1,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
+            repository.addAction(
+                action2,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
+            repository.addAction(
+                action3,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
             repository.undoAction()
             repository.undoAction()
             val action4 = mockk<PixelImageEditorAction>()
 
             // When
-            repository.addAction(action4, actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.addAction(
+                action4,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
             val actions = repository.getActions()
             val currentAction = repository.getCurrentAction()
 
@@ -227,7 +239,10 @@ class PixelImageEditorActionRepositoryImplTest {
         val action = mockk<PixelImageEditorAction>().also { action ->
             every { action.actionContext }.returns(PixelImageEditorActionContext(pixelImage))
         }
-        repository.addAction(action, actionContextResult = PixelImageEditorActionContext(pixelImageResult))
+        repository.addAction(
+            action,
+            actionContextResult = PixelImageEditorActionContext(pixelImageResult),
+        )
         repository.undoAction()
 
         // When
@@ -371,11 +386,17 @@ class PixelImageEditorActionRepositoryImplTest {
                 }
             }
             actions.forEach { action ->
-                repository.addAction(action, actionContextResult = PixelImageEditorActionContext(mockk()))
+                repository.addAction(
+                    action,
+                    actionContextResult = PixelImageEditorActionContext(mockk()),
+                )
             }
 
             // When
-            repository.addAction(mockk(), actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.addAction(
+                mockk(),
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
 
             // Then
             val actionsInRepository = repository.getActions()
@@ -391,10 +412,15 @@ class PixelImageEditorActionRepositoryImplTest {
             val action1 = mockk<PixelImageEditorAction>().also { action ->
                 every { action.actionContext }.returns(PixelImageEditorActionContext(pixelImage1))
             }
-            repository.addAction(action1, actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.addAction(
+                action1,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
 
             // When
-            repository.updateLastAction(actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.updateLastAction(
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
 
             // Then
             val actions = repository.getActions()
@@ -410,10 +436,15 @@ class PixelImageEditorActionRepositoryImplTest {
             val action1 = mockk<PixelImageEditorAction>().also { action ->
                 every { action.actionContext }.returns(PixelImageEditorActionContext(pixelImage1))
             }
-            repository.addAction(action1, actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.addAction(
+                action1,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
 
             // When
-            repository.updateLastAction(actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.updateLastAction(
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
             val result = repository.undoAction()
 
             // Then
@@ -428,11 +459,16 @@ class PixelImageEditorActionRepositoryImplTest {
             val action1 = mockk<PixelImageEditorAction>().also { action ->
                 every { action.actionContext }.returns(PixelImageEditorActionContext(pixelImage1))
             }
-            repository.addAction(action1, actionContextResult = PixelImageEditorActionContext(mockk()))
+            repository.addAction(
+                action1,
+                actionContextResult = PixelImageEditorActionContext(mockk()),
+            )
             val finalPixelImage = mockk<PixelImageModel>()
 
             // When
-            repository.updateLastAction(actionContextResult = PixelImageEditorActionContext(finalPixelImage))
+            repository.updateLastAction(
+                actionContextResult = PixelImageEditorActionContext(finalPixelImage),
+            )
             repository.undoAction()
             val result = repository.redoAction()
 

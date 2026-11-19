@@ -66,7 +66,7 @@ fun PaletteColorSelectButton(
             .wrapContentSize()
             .selectedButtonModifier(
                 isSelected,
-                IconButtonDefaults.filledIconButtonColors().containerColor
+                IconButtonDefaults.filledIconButtonColors().containerColor,
             ),
     ) {
         PaletteColorButton(

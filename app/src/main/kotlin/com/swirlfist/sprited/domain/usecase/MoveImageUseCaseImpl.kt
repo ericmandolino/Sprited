@@ -13,14 +13,13 @@ import javax.inject.Inject
 class MoveImageUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : MoveImageUseCase {
-    override suspend fun invoke(params: MoveImageUseCase.Params): Result<PixelImageModel> {
-        return Result.success(
+    override suspend fun invoke(params: MoveImageUseCase.Params): Result<PixelImageModel> =
+        Result.success(
             moveImage(
                 actionContext = params.actionContext,
                 moveDirection = params.moveDirection,
-            )
+            ),
         )
-    }
 
     private suspend fun moveImage(
         actionContext: PixelImageEditorActionContext,
@@ -53,32 +52,21 @@ class MoveImageUseCaseImpl @Inject constructor(
         return pixelImageResult
     }
 
-    private fun PixelImageModel.moveImageUp(): PixelImageModel {
-        return copy(
-            pixelMatrixModel = pixelMatrixModel.moveUp()
-        )
-    }
+    private fun PixelImageModel.moveImageUp(): PixelImageModel = copy(
+        pixelMatrixModel = pixelMatrixModel.moveUp(),
+    )
 
-    private fun PixelImageModel.moveImageDown(
-    ): PixelImageModel {
-        return copy(
-            pixelMatrixModel = pixelMatrixModel.moveDown()
-        )
-    }
+    private fun PixelImageModel.moveImageDown(): PixelImageModel = copy(
+        pixelMatrixModel = pixelMatrixModel.moveDown(),
+    )
 
-    private fun PixelImageModel.moveImageLeft(
-    ): PixelImageModel {
-        return copy(
-            pixelMatrixModel = pixelMatrixModel.moveLeft()
-        )
-    }
+    private fun PixelImageModel.moveImageLeft(): PixelImageModel = copy(
+        pixelMatrixModel = pixelMatrixModel.moveLeft(),
+    )
 
-    private fun PixelImageModel.moveImageRight(
-    ): PixelImageModel {
-        return copy(
-            pixelMatrixModel = pixelMatrixModel.moveRight()
-        )
-    }
+    private fun PixelImageModel.moveImageRight(): PixelImageModel = copy(
+        pixelMatrixModel = pixelMatrixModel.moveRight(),
+    )
 
     private fun PixelMatrixModel.moveUp(): PixelMatrixModel {
         val matrix = content
@@ -90,7 +78,7 @@ class MoveImageUseCaseImpl @Inject constructor(
         }
 
         return copy(
-            content = listOf(newRow) + matrix.dropLast(1)
+            content = listOf(newRow) + matrix.dropLast(1),
         )
     }
 
@@ -104,7 +92,7 @@ class MoveImageUseCaseImpl @Inject constructor(
         }
 
         return copy(
-            content = matrix.drop(1).plusElement(newRow)
+            content = matrix.drop(1).plusElement(newRow),
         )
     }
 
@@ -116,7 +104,7 @@ class MoveImageUseCaseImpl @Inject constructor(
         }
 
         return copy(
-            content = newMatrix
+            content = newMatrix,
         )
     }
 
@@ -128,7 +116,7 @@ class MoveImageUseCaseImpl @Inject constructor(
         }
 
         return copy(
-            content = newMatrix
+            content = newMatrix,
         )
     }
 }

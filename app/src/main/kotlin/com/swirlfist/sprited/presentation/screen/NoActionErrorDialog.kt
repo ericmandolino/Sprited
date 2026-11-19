@@ -26,7 +26,7 @@ fun NoActionErrorDialog(
     onDismiss: () -> Unit = {},
 ) {
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
     ) {
         Card {
             Column(
@@ -56,7 +56,7 @@ fun NoActionErrorDialog(
                     ) {
                         Text(
                             text = dismissText,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }

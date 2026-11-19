@@ -5,7 +5,5 @@ import com.swirlfist.sprited.domain.model.PixelImageModel
 
 interface OpenPixelImageUseCase : UseCase<OpenPixelImageUseCase.Params, PixelImageModel> {
 
-    data class Params(
-        val uri: Uri,
-    ) : UseCaseParams
+    data class Params(val uri: Uri) : UseCaseParams
 }

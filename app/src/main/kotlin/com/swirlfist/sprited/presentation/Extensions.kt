@@ -20,7 +20,7 @@ fun List<Color>.invertColors(): List<Color> = map { color ->
 fun Color.invert() = copy(
     red = 1F - red,
     green = 1F - green,
-    blue = 1F - blue
+    blue = 1F - blue,
 )
 
 fun List<Color>.getColor(pixel: PixelModel): Color? {
@@ -33,8 +33,8 @@ fun List<Color>.getColor(pixel: PixelModel): Color? {
     }
 }
 
-fun PaletteModel.createPaletteButtons(): List<ActionModel.ButtonActionModel> {
-    return colors.indices.map { index ->
+fun PaletteModel.createPaletteButtons(): List<ActionModel.ButtonActionModel> =
+    colors.indices.map { index ->
         ActionModel.ButtonActionModel(
             actionType = ActionButtonType.PickPaletteColorActionButtonType(
                 paletteIndex = index,
@@ -43,13 +43,10 @@ fun PaletteModel.createPaletteButtons(): List<ActionModel.ButtonActionModel> {
             isSelected = index == 0,
         )
     } + ActionModel.ButtonActionModel(
-            actionType = ActionButtonType.InkEraserActionButtonType,
+        actionType = ActionButtonType.InkEraserActionButtonType,
     )
-}
 
-fun PixelImageModel.deletePaletteColor(
-    paletteIndex: Int
-): PixelImageModel {
+fun PixelImageModel.deletePaletteColor(paletteIndex: Int): PixelImageModel {
     val currentPaletteColors = paletteModel.colors
 
     if (paletteIndex !in currentPaletteColors.indices) {
@@ -57,7 +54,7 @@ fun PixelImageModel.deletePaletteColor(
     }
 
     val newPalette = PaletteModel(
-        colors = currentPaletteColors.toMutableList().apply { removeAt(paletteIndex) }.toList()
+        colors = currentPaletteColors.toMutableList().apply { removeAt(paletteIndex) }.toList(),
     )
     val currentPixelMatrixContent = pixelMatrixModel.content
     val newPixelMatrixContent = mutableListOf<List<PixelModel>>()
@@ -71,7 +68,7 @@ fun PixelImageModel.deletePaletteColor(
                     paletteIndex = EMPTY_PIXEL_PALETTE_INDEX,
                 )
                 currentPaletteIndex > paletteIndex -> PixelModel(
-                    paletteIndex = currentPaletteIndex- 1
+                    paletteIndex = currentPaletteIndex - 1,
                 )
                 else -> pixel
             }
@@ -86,8 +83,8 @@ fun PixelImageModel.deletePaletteColor(
     )
 }
 
-fun CanvasSectionState.createEditorActionContext(): PixelImageEditorActionContext? {
-    return if (pixelImageModel == null) {
+fun CanvasSectionState.createEditorActionContext(): PixelImageEditorActionContext? =
+    if (pixelImageModel == null) {
         null
     } else {
         PixelImageEditorActionContext(
@@ -96,7 +93,6 @@ fun CanvasSectionState.createEditorActionContext(): PixelImageEditorActionContex
             floatingPixelImageModel,
         )
     }
-}
 
 fun CanvasSectionState.updateWith(actionContext: PixelImageEditorActionContext) = copy(
     pixelImageModel = actionContext.pixelImage,
@@ -104,20 +100,15 @@ fun CanvasSectionState.updateWith(actionContext: PixelImageEditorActionContext) 
     floatingPixelImageModel = actionContext.floatingPixelImage,
 )
 
-fun ActionsSectionState.isSelected(
-    actionButtonType: ActionButtonType
-): Boolean {
-    return actionModels[actionButtonType]?.let { actionModel ->
+fun ActionsSectionState.isSelected(actionButtonType: ActionButtonType): Boolean =
+    actionModels[actionButtonType]?.let { actionModel ->
         when (actionModel) {
             is ActionModel.ButtonActionModel -> actionModel.isSelected
             is BaseButtonGroupActionModel -> false
         }
     } ?: isSelectedChild(actionButtonType)
-}
 
-private fun ActionsSectionState.isSelectedChild(
-    actionButtonType: ActionButtonType
-): Boolean {
+private fun ActionsSectionState.isSelectedChild(actionButtonType: ActionButtonType): Boolean {
     actionModels.values.forEach { actionModel ->
         (actionModel as? BaseButtonGroupActionModel)?.let { buttonGroup ->
             buttonGroup.childButtonActionModels.forEach { childButton ->
@@ -131,10 +122,7 @@ private fun ActionsSectionState.isSelectedChild(
     return false
 }
 
-fun BaseButtonGroupActionModel.isSelected(
-    actionButtonType: ActionButtonType
-): Boolean {
-    return childButtonActionModels.firstOrNull{ actionModel ->
+fun BaseButtonGroupActionModel.isSelected(actionButtonType: ActionButtonType): Boolean =
+    childButtonActionModels.firstOrNull { actionModel ->
         actionModel.actionType == actionButtonType
     }?.isSelected ?: false
-}

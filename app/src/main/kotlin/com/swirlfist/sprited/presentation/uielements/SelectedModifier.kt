@@ -8,14 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-fun Modifier.selectedButtonModifier(
-    isSelected: Boolean,
-    selectedColor: Color,
-): Modifier {
-    return if (!isSelected) {
+fun Modifier.selectedButtonModifier(isSelected: Boolean, selectedColor: Color): Modifier =
+    if (!isSelected) {
         this.then(
             other = Modifier
-                .padding(4.dp)
+                .padding(4.dp),
         )
     } else {
         this.then(
@@ -24,7 +21,6 @@ fun Modifier.selectedButtonModifier(
                     border = BorderStroke(width = 2.dp, color = selectedColor),
                     shape = RoundedCornerShape(4.dp),
                 )
-                .padding(4.dp)
+                .padding(4.dp),
         )
     }
-}

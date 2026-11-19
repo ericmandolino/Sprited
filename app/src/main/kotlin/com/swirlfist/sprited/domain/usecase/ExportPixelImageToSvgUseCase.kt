@@ -5,8 +5,5 @@ import com.swirlfist.sprited.domain.model.PixelImageModel
 
 interface ExportPixelImageToSvgUseCase : UseCase<ExportPixelImageToSvgUseCase.Params, Unit> {
 
-    data class Params(
-        val pixelImageModel: PixelImageModel,
-        val uri: Uri,
-    ) : UseCaseParams
+    data class Params(val pixelImageModel: PixelImageModel, val uri: Uri) : UseCaseParams
 }

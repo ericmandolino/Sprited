@@ -16,22 +16,17 @@ import javax.inject.Inject
 class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
     private val writeToFileUseCase: WriteToFileUseCase,
 ) : ExportPixelImageToSvgUseCase {
-    override suspend fun invoke(params: ExportPixelImageToSvgUseCase.Params): Result<Unit> {
-        return try {
-            exportPixelImage(
-                params.pixelImageModel,
-                params.uri,
-            )
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(ExportPixelImageError(e))
-        }
+    override suspend fun invoke(params: ExportPixelImageToSvgUseCase.Params): Result<Unit> = try {
+        exportPixelImage(
+            params.pixelImageModel,
+            params.uri,
+        )
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(ExportPixelImageError(e))
     }
 
-    private suspend fun exportPixelImage(
-        pixelImageModel: PixelImageModel,
-        uri: Uri,
-    ) {
+    private suspend fun exportPixelImage(pixelImageModel: PixelImageModel, uri: Uri) {
         val stringBuilder = StringBuilder()
         val pixelMatrix = pixelImageModel.pixelMatrixModel
         writeHeader(
@@ -50,27 +45,21 @@ class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
             WriteToFileUseCase.Params(
                 content = stringBuilder.toString(),
                 uri,
-            )
+            ),
         ).fold(
             onSuccess = {},
-            onFailure = { throwable -> throw throwable }
+            onFailure = { throwable -> throw throwable },
         )
     }
 
-    private fun writeHeader(
-        stringBuilder: StringBuilder,
-        width: Int,
-        height: Int,
-    ) {
+    private fun writeHeader(stringBuilder: StringBuilder, width: Int, height: Int) {
         val header = """<svg width="$width" height="$height" xmlns="http://www.w3.org/2000/svg">
             |
         """.trimMargin()
         stringBuilder.append(header)
     }
 
-    private fun writeFooter(
-        stringBuilder: StringBuilder,
-    ) {
+    private fun writeFooter(stringBuilder: StringBuilder) {
         stringBuilder.append("</svg>")
     }
 

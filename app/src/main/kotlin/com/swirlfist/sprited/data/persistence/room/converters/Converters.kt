@@ -18,11 +18,10 @@ object Converters {
     }
 
     @ColumnTypeConverter
-    fun longListFromLongString(value: String): List<Long> {
-        return value.split(LONG_LIST_SEPARATOR).filter { value ->
+    fun longListFromLongString(value: String): List<Long> =
+        value.split(LONG_LIST_SEPARATOR).filter { value ->
             value.isNotBlank()
         }.map { value ->
             value.toLong()
         }
-    }
 }

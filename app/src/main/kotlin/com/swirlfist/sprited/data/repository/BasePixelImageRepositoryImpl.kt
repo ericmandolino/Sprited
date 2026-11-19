@@ -6,9 +6,7 @@ import javax.inject.Inject
 class BasePixelImageRepositoryImpl @Inject constructor() : BasePixelImageRepository {
     private var _basePixelImage: PixelImageModel? = null
 
-    override suspend fun getBasePixelImage(): PixelImageModel? {
-        return _basePixelImage
-    }
+    override suspend fun getBasePixelImage(): PixelImageModel? = _basePixelImage
 
     override suspend fun updateBasePixelImage(pixelImage: PixelImageModel) {
         _basePixelImage = pixelImage

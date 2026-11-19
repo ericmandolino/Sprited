@@ -20,10 +20,7 @@ fun PaletteEditState.addNewColor() = copy(
     paletteColors = paletteColors + Color.Black.toColorLong(),
 )
 
-
-fun PaletteEditState.updateSelectedColor(
-    paletteIndex: Int,
-) = copy(
+fun PaletteEditState.updateSelectedColor(paletteIndex: Int) = copy(
     selectedPaletteIndex = if (selectedPaletteIndex == paletteIndex) {
         null
     } else {
@@ -36,50 +33,47 @@ fun PaletteEditState.deleteSelectedColor() = copy(
         if (selectedPaletteIndex != null && selectedPaletteIndex in paletteColors.indices) {
             removeAt(selectedPaletteIndex)
         }
-    }
+    },
 )
 
-fun PaletteEditState.updateColorComponentRed(
-    value: Float,
-) = updateColorComponent(value, ColorComponent.RED)
+fun PaletteEditState.updateColorComponentRed(value: Float) =
+    updateColorComponent(value, ColorComponent.RED)
 
-fun PaletteEditState.updateColorComponentGreen(
-    value: Float,
-) = updateColorComponent(value, ColorComponent.GREEN)
+fun PaletteEditState.updateColorComponentGreen(value: Float) =
+    updateColorComponent(value, ColorComponent.GREEN)
 
-fun PaletteEditState.updateColorComponentBlue(
-    value: Float,
-) = updateColorComponent(value, ColorComponent.BLUE)
+fun PaletteEditState.updateColorComponentBlue(value: Float) =
+    updateColorComponent(value, ColorComponent.BLUE)
 
-private fun PaletteEditState.updateColorComponent(
-    value: Float,
-    colorComponent: ColorComponent,
-) = copy(
-    paletteColors = paletteColors.toMutableList().apply {
-        if (value in 0F..1F && selectedPaletteIndex != null && selectedPaletteIndex in paletteColors.indices) {
-            val color = Color.fromColorLong(paletteColors[selectedPaletteIndex])
+private fun PaletteEditState.updateColorComponent(value: Float, colorComponent: ColorComponent) =
+    copy(
+        paletteColors = paletteColors.toMutableList().apply {
+            if (value in 0F..1F &&
+                selectedPaletteIndex != null &&
+                selectedPaletteIndex in paletteColors.indices
+            ) {
+                val color = Color.fromColorLong(paletteColors[selectedPaletteIndex])
 
-            val newColor = when (colorComponent) {
-                ColorComponent.RED -> color.copy(
-                    red = value,
-                )
+                val newColor = when (colorComponent) {
+                    ColorComponent.RED -> color.copy(
+                        red = value,
+                    )
 
-                ColorComponent.GREEN -> color.copy(
-                    green = value,
-                )
+                    ColorComponent.GREEN -> color.copy(
+                        green = value,
+                    )
 
-                ColorComponent.BLUE -> color.copy(
-                    blue = value,
-                )
+                    ColorComponent.BLUE -> color.copy(
+                        blue = value,
+                    )
+                }
+                set(selectedPaletteIndex, newColor.toColorLong())
             }
-            set(selectedPaletteIndex, newColor.toColorLong())
-        }
-    }
-)
+        },
+    )
 
 private enum class ColorComponent {
     RED,
     GREEN,
     BLUE,
 }
-

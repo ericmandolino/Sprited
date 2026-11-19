@@ -5,33 +5,30 @@ import com.swirlfist.sprited.domain.model.PixelImageEditorAction
 import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
 import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.domain.model.PixelSelectionModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 class PixelImageEditorActionRepositoryImpl @Inject constructor() :
     PixelImageEditorActionRepository {
-    private var _actions = mutableListOf<PixelImageEditorAction>()
-    private var _currentActionIndex: Int = -1
-    private var _undoAvailableFlow = MutableStateFlow(false)
-    private var _redoAvailableFlow = MutableStateFlow(false)
-    private var _finalPixelImage: PixelImageModel? = null
-    private var _finalPixelSelection: PixelSelectionModel? = null
-    private var _finalFloatingPixelImage: FloatingPixelImageModel? = null
+    private var actions = mutableListOf<PixelImageEditorAction>()
+    private var currentActionIndex: Int = -1
+    private var undoAvailableFlow = MutableStateFlow(false)
+    private var redoAvailableFlow = MutableStateFlow(false)
+    private var finalPixelImage: PixelImageModel? = null
+    private var finalPixelSelection: PixelSelectionModel? = null
+    private var finalFloatingPixelImage: FloatingPixelImageModel? = null
 
-    override suspend fun getCurrentAction(): PixelImageEditorAction? {
-        return _actions.getOrNull(_currentActionIndex)
-    }
+    override suspend fun getCurrentAction(): PixelImageEditorAction? =
+        actions.getOrNull(currentActionIndex)
 
-    override suspend fun getActions(): List<PixelImageEditorAction> {
-        return _actions.toList()
-    }
+    override suspend fun getActions(): List<PixelImageEditorAction> = actions.toList()
 
     override suspend fun clearActions() {
-        _actions.clear()
-        _currentActionIndex = -1
+        actions.clear()
+        currentActionIndex = -1
         updateAvailableOperations()
     }
 
@@ -39,88 +36,82 @@ class PixelImageEditorActionRepositoryImpl @Inject constructor() :
         action: PixelImageEditorAction,
         actionContextResult: PixelImageEditorActionContext,
     ) {
-        clearActionsFromIndex(_currentActionIndex + 1)
-        if (_actions.size == MAX_UNDO_ACTIONS) {
-            _actions = _actions.subList(1, MAX_UNDO_ACTIONS)
+        clearActionsFromIndex(currentActionIndex + 1)
+        if (actions.size == MAX_UNDO_ACTIONS) {
+            actions = actions.subList(1, MAX_UNDO_ACTIONS)
         }
-        _actions.add(action)
-        _currentActionIndex = _actions.size - 1
-        _finalPixelImage = actionContextResult.pixelImage
-        _finalPixelSelection = actionContextResult.pixelSelection
-        _finalFloatingPixelImage = actionContextResult.floatingPixelImage
+        actions.add(action)
+        currentActionIndex = actions.size - 1
+        finalPixelImage = actionContextResult.pixelImage
+        finalPixelSelection = actionContextResult.pixelSelection
+        finalFloatingPixelImage = actionContextResult.floatingPixelImage
         updateAvailableOperations()
     }
 
-    override suspend fun updateLastAction(
-        actionContextResult: PixelImageEditorActionContext,
-    ) {
-        if (_currentActionIndex != _actions.size - 1) {
+    override suspend fun updateLastAction(actionContextResult: PixelImageEditorActionContext) {
+        if (currentActionIndex != actions.size - 1) {
             return
         }
 
-        _finalPixelImage = actionContextResult.pixelImage
-        _finalPixelSelection = actionContextResult.pixelSelection
-        _finalFloatingPixelImage = actionContextResult.floatingPixelImage
+        finalPixelImage = actionContextResult.pixelImage
+        finalPixelSelection = actionContextResult.pixelSelection
+        finalFloatingPixelImage = actionContextResult.floatingPixelImage
     }
 
     override suspend fun undoAction(): PixelImageEditorActionContext? {
-        if (_currentActionIndex !in _actions.indices) {
+        if (currentActionIndex !in actions.indices) {
             return null
         }
 
-        val currentAction = _actions[_currentActionIndex]
-        _currentActionIndex--
+        val currentAction = actions[currentActionIndex]
+        currentActionIndex--
         updateAvailableOperations()
 
         return currentAction.actionContext
     }
 
     override suspend fun redoAction(): PixelImageEditorActionContext? {
-        val newCurrentActionIndex = _currentActionIndex + 1
-        return if (newCurrentActionIndex !in _actions.indices) {
+        val newCurrentActionIndex = currentActionIndex + 1
+        return if (newCurrentActionIndex !in actions.indices) {
             null
         } else {
-            _currentActionIndex = newCurrentActionIndex
+            currentActionIndex = newCurrentActionIndex
             updateAvailableOperations()
-            val nextActionIndex = _currentActionIndex + 1
-            if (nextActionIndex in _actions.indices) {
-                val nextAction = _actions[nextActionIndex]
+            val nextActionIndex = currentActionIndex + 1
+            if (nextActionIndex in actions.indices) {
+                val nextAction = actions[nextActionIndex]
                 nextAction.actionContext
             } else {
-                _finalPixelImage?.let { pixelImage ->
+                finalPixelImage?.let { pixelImage ->
                     PixelImageEditorActionContext(
                         pixelImage,
-                        _finalPixelSelection,
-                        _finalFloatingPixelImage,
+                        finalPixelSelection,
+                        finalFloatingPixelImage,
                     )
                 }
             }
         }
     }
 
-    override fun isUndoAvailable(): Flow<Boolean> {
-        return _undoAvailableFlow.asStateFlow()
-    }
+    override fun isUndoAvailable(): Flow<Boolean> = undoAvailableFlow.asStateFlow()
 
-    override fun isRedoAvailable(): Flow<Boolean> {
-        return _redoAvailableFlow.asStateFlow()
-    }
+    override fun isRedoAvailable(): Flow<Boolean> = redoAvailableFlow.asStateFlow()
 
     private fun clearActionsFromIndex(actionIndex: Int) {
-        if (actionIndex !in _actions.indices) {
+        if (actionIndex !in actions.indices) {
             return
         }
 
-        _actions = _actions.subList(0, actionIndex)
-        _currentActionIndex = _actions.size - 1
+        actions = actions.subList(0, actionIndex)
+        currentActionIndex = actions.size - 1
     }
 
     private fun updateAvailableOperations() {
-        _undoAvailableFlow.update {
-            _currentActionIndex in _actions.indices
+        undoAvailableFlow.update {
+            currentActionIndex in actions.indices
         }
-        _redoAvailableFlow.update {
-            (_currentActionIndex + 1) in _actions.indices
+        redoAvailableFlow.update {
+            (currentActionIndex + 1) in actions.indices
         }
     }
 }

@@ -5,7 +5,5 @@ import com.swirlfist.sprited.domain.model.PixelSelectionModel
 
 interface DeselectUseCase : UseCase<DeselectUseCase.Params, PixelSelectionModel?> {
 
-    data class Params(
-        val actionContext: PixelImageEditorActionContext,
-    ) : UseCaseParams
+    data class Params(val actionContext: PixelImageEditorActionContext) : UseCaseParams
 }

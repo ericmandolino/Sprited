@@ -1,7 +1,7 @@
 package com.swirlfist.sprited
 
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 
 class CoroutineDispatcherProviderImpl @Inject constructor() : CoroutineDispatcherProvider {
 

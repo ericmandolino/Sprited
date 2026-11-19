@@ -38,7 +38,7 @@ class ExportPixelImageToSvgUseCaseImplTest {
     @Before
     fun setup() {
         useCase = ExportPixelImageToSvgUseCaseImpl(
-            writeToFileUseCase
+            writeToFileUseCase,
         )
     }
 
@@ -46,7 +46,7 @@ class ExportPixelImageToSvgUseCaseImplTest {
     fun `the use case invokes WriteToFileUseCase with the expected params`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val hexColor0 = Color.fromColorLong(PixelImageModelTestUtil.paletteColors[0]).toHexCode()
         val hexColor1 = Color.fromColorLong(PixelImageModelTestUtil.paletteColors[1]).toHexCode()
@@ -73,7 +73,7 @@ class ExportPixelImageToSvgUseCaseImplTest {
             writeToFileUseCase(
                 match { params ->
                     params.uri == uri && params.content == expectedContent
-                }
+                },
             )
         }
     }
@@ -82,7 +82,7 @@ class ExportPixelImageToSvgUseCaseImplTest {
     fun `when WriteToFileUseCase fails then the use case fails`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = ExportPixelImageToSvgUseCase.Params(
             pixelImageModel,
@@ -98,7 +98,7 @@ class ExportPixelImageToSvgUseCaseImplTest {
         assertTrue { result.isFailure }
         assertEquals(
             expectedException,
-            (result.exceptionOrNull() as ExportPixelImageError).innerException
+            (result.exceptionOrNull() as ExportPixelImageError).innerException,
         )
     }
 }

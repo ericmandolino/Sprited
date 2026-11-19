@@ -58,7 +58,7 @@ class OpenPixelImageUseCaseImplTest {
             readFromFileUseCase(
                 match { params ->
                     params.uri == uri
-                }
+                },
             )
         }
     }
@@ -79,7 +79,7 @@ class OpenPixelImageUseCaseImplTest {
         assertTrue { result.isFailure }
         assertEquals(
             expectedException,
-            (result.exceptionOrNull() as OpenPixelImageError).innerException
+            (result.exceptionOrNull() as OpenPixelImageError).innerException,
         )
     }
 
@@ -94,12 +94,12 @@ class OpenPixelImageUseCaseImplTest {
                 pixelImageString = """
                 1 0
                 1 1
-                """.trimIndent()
+                """.trimIndent(),
             )
             coEvery { readFromFileUseCase(any()) }.returns(
                 Result.success(
-                    Json.encodeToString(pixelImageModel.toPixelImageSaveModel())
-                )
+                    Json.encodeToString(pixelImageModel.toPixelImageSaveModel()),
+                ),
             )
 
             // When
@@ -119,8 +119,8 @@ class OpenPixelImageUseCaseImplTest {
             )
             coEvery { readFromFileUseCase(any()) }.returns(
                 Result.success(
-                    "invalid content"
-                )
+                    "invalid content",
+                ),
             )
 
             // When
@@ -149,30 +149,29 @@ class OpenPixelImageUseCaseImplTest {
     }
 
     @Test
-    fun `when the use case succeeds the editor actions are cleared`() =
-        runTest {
-            // Given
-            val useCaseParams = OpenPixelImageUseCase.Params(
-                uri,
-            )
-            val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-                pixelImageString = """
+    fun `when the use case succeeds the editor actions are cleared`() = runTest {
+        // Given
+        val useCaseParams = OpenPixelImageUseCase.Params(
+            uri,
+        )
+        val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
+            pixelImageString = """
                 1 0
                 1 1
-                """.trimIndent()
-            )
-            coEvery { readFromFileUseCase(any()) }.returns(
-                Result.success(
-                    Json.encodeToString(pixelImageModel.toPixelImageSaveModel())
-                )
-            )
+            """.trimIndent(),
+        )
+        coEvery { readFromFileUseCase(any()) }.returns(
+            Result.success(
+                Json.encodeToString(pixelImageModel.toPixelImageSaveModel()),
+            ),
+        )
 
-            // When
-            useCase(useCaseParams)
+        // When
+        useCase(useCaseParams)
 
-            // Then
-            coVerify(exactly = 1) {
-                pixelImageEditorActionRepository.clearActions()
-            }
+        // Then
+        coVerify(exactly = 1) {
+            pixelImageEditorActionRepository.clearActions()
         }
+    }
 }

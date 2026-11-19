@@ -20,21 +20,21 @@ import javax.inject.Inject
 class ConvertSelectionToFloatingImageUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : ConvertSelectionToFloatingImageUseCase {
-    override suspend fun invoke(params: ConvertSelectionToFloatingImageUseCase.Params): Result<PixelImageEditorActionContext> {
-        return try {
-            Result.success(
-                convertSelectionToFloatingImage(
-                    actionContext = params.actionContext,
-                )
-            )
-        } catch (exception: Exception) {
-            Result.failure(SelectionToFloatingImageError(exception))
-        }
+    override suspend fun invoke(
+        params: ConvertSelectionToFloatingImageUseCase.Params,
+    ): Result<PixelImageEditorActionContext> = try {
+        Result.success(
+            convertSelectionToFloatingImage(
+                actionContext = params.actionContext,
+            ),
+        )
+    } catch (exception: Exception) {
+        Result.failure(SelectionToFloatingImageError(exception))
     }
 
     private suspend fun convertSelectionToFloatingImage(
         actionContext: PixelImageEditorActionContext,
-    ) : PixelImageEditorActionContext {
+    ): PixelImageEditorActionContext {
         val pixelImage = actionContext.pixelImage
         val pixelMatrix = pixelImage.pixelMatrixModel
         val imageHeight = pixelImage.getPixelHeight()
@@ -68,7 +68,7 @@ class ConvertSelectionToFloatingImageUseCaseImpl @Inject constructor(
             pixelImageModel = pixelImage.copy(
                 pixelMatrixModel = pixelMatrix.copy(
                     content = floatingImageContent.toList(),
-                )
+                ),
             ),
             offset = Pair(0, 0),
         )
@@ -76,7 +76,7 @@ class ConvertSelectionToFloatingImageUseCaseImpl @Inject constructor(
         val pixelImageResult = pixelImage.copy(
             pixelMatrixModel = pixelMatrix.copy(
                 content = updatedImageContent.toList(),
-            )
+            ),
         )
 
         val actionContextResult = actionContext.copy(
@@ -96,19 +96,11 @@ class ConvertSelectionToFloatingImageUseCaseImpl @Inject constructor(
     }
 }
 
-internal class Rectangle(
-    rectangleSelection: RectangleSelectionModel,
-    imageHeight: Int,
-) {
+internal class Rectangle(rectangleSelection: RectangleSelectionModel, imageHeight: Int) {
     private val left = rectangleSelection.left()
     private val top = imageHeight - rectangleSelection.top()
     private val right = rectangleSelection.right()
     private val bottom = imageHeight - rectangleSelection.bottom()
 
-    fun contains(
-        x: Int,
-        y: Int,
-    ) : Boolean {
-        return x in left..<right && y in bottom..<top
-    }
+    fun contains(x: Int, y: Int): Boolean = x in left..<right && y in bottom..<top
 }

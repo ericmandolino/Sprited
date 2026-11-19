@@ -28,15 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.swirlfist.sprited.R
 import com.swirlfist.sprited.domain.model.PaletteModel
-import com.swirlfist.sprited.presentation.state.PalettePresetsDialogState
-import com.swirlfist.sprited.presentation.theme.SpritedTheme
-import kotlin.collections.forEach
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.swirlfist.sprited.domain.model.PalettePresetModel
 import com.swirlfist.sprited.presentation.section.CancelButtonDialogFooter
+import com.swirlfist.sprited.presentation.state.PalettePresetsDialogState
+import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.LoadingIndeterminateProgress
+import kotlin.collections.forEach
 
 @Composable
 fun PalettePresetsDialog(
@@ -45,7 +45,8 @@ fun PalettePresetsDialog(
     onDeletePalettePresetClick: (PalettePresetModel) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val palettePresetsDialogState = viewModel.palettePresetsDialogState.collectAsStateWithLifecycle().value
+    val palettePresetsDialogState = viewModel.palettePresetsDialogState
+        .collectAsStateWithLifecycle().value
 
     PalettePresetsDialogContent(
         palettePresetsDialogState,
@@ -66,7 +67,7 @@ fun PalettePresetsDialogContent(
         Card {
             if (palettePresetsDialogState.isLoadingPresets) {
                 LoadingIndeterminateProgress(
-                    message = stringResource(R.string.loading_palette_presets)
+                    message = stringResource(R.string.loading_palette_presets),
                 )
             } else {
                 Column(
@@ -133,7 +134,7 @@ fun PalettePresetItem(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .weight(1F),
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -163,7 +164,7 @@ fun PalettePresetItem(
                 onClick = onDeleteClick,
             ) {
                 Text(
-                    text = stringResource(R.string.delete)
+                    text = stringResource(R.string.delete),
                 )
             }
         }
@@ -214,7 +215,7 @@ fun PalettePresetItemPreview() {
             preset = PalettePresetModel(
                 id = 0,
                 name = "PRESET",
-                palette = PaletteModel(colors)
+                palette = PaletteModel(colors),
             ),
             onPresetClick = {},
             onDeleteClick = {},
@@ -234,9 +235,9 @@ private fun getPreviewPalettePresets(): List<PalettePresetModel> {
                 colors = listOf(
                     Color.Black.toColorLong(),
                     Color.White.toColorLong(),
-                )
-            )
-        )
+                ),
+            ),
+        ),
     )
 
     // Game Boy
@@ -250,9 +251,9 @@ private fun getPreviewPalettePresets(): List<PalettePresetModel> {
                     Color(139, 172, 15, 255).toColorLong(),
                     Color(48, 98, 48, 255).toColorLong(),
                     Color(15, 56, 15, 255).toColorLong(),
-                )
-            )
-        )
+                ),
+            ),
+        ),
     )
 
     return presets

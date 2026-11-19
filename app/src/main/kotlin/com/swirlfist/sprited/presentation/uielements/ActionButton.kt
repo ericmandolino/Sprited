@@ -30,14 +30,14 @@ fun ActionButton(
         modifier = modifier
             .selectedButtonModifier(
                 isSelected,
-                IconButtonDefaults.filledIconButtonColors().containerColor
+                IconButtonDefaults.filledIconButtonColors().containerColor,
             ),
     ) {
         when (actionButtonType) {
             ActionButtonType.NoParentActionUndoRedoButtonGroupType,
             ActionButtonType.NoParentActionZoomButtonGroupType,
             ActionButtonType.NoParentActionSelectionButtonGroupType,
-                -> {}
+            -> {}
 
             ActionButtonType.InkBucketActionButtonType,
             ActionButtonType.InkEraserActionButtonType,
@@ -63,7 +63,7 @@ fun ActionButton(
             ActionButtonType.SelectMagicWandActionButtonType,
             ActionButtonType.DeselectActionButtonType,
             ActionButtonType.MoveSelectionActionButtonType,
-                -> {
+            -> {
                 ActionIconButton(
                     modifier,
                     actionIconButtonType = actionButtonType as ActionIconButtonType,
@@ -114,7 +114,7 @@ private fun ActionPickPaletteColorButton(
     val color = Color.fromColorLong(pickPaletteColorActionButtonType.palette.colors[paletteIndex])
     val contentDescriptionValue = stringResource(
         R.string.cd_actions_section_button_pick_palette_color,
-        paletteIndex
+        paletteIndex,
     )
 
     PaletteColorButton(
@@ -184,8 +184,8 @@ fun ActionPickPaletteColorButtonPreview() {
                 palette = PaletteModel(
                     colors = listOf(
                         Color.Blue.toColorLong(),
-                        Color.Red.toColorLong()
-                    )
+                        Color.Red.toColorLong(),
+                    ),
                 ),
             ),
             size = 48.dp,
@@ -207,8 +207,8 @@ fun ActionPickPaletteColorButtonSelectedPreview() {
                 palette = PaletteModel(
                     colors = listOf(
                         Color.Blue.toColorLong(),
-                        Color.Red.toColorLong()
-                    )
+                        Color.Red.toColorLong(),
+                    ),
                 ),
             ),
             size = 48.dp,

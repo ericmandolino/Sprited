@@ -7,12 +7,12 @@ import com.swirlfist.sprited.data.entity.toModel
 import com.swirlfist.sprited.data.persistence.room.dao.PalettePresetDao
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PalettePresetModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class PalettePresetsRepositoryImpl @Inject constructor(
     private val palettePresetDao: PalettePresetDao,
@@ -27,37 +27,32 @@ class PalettePresetsRepositoryImpl @Inject constructor(
                     colors = listOf(
                         Color.Black.toColorLong(),
                         Color.White.toColorLong(),
-                    )
-                )
-            )
-        )
+                    ),
+                ),
+            ),
+        ),
     ).asStateFlow()
 
-    override suspend fun addPalettePreset(
-        preset: PalettePresetModel,
-    ) {
+    override suspend fun addPalettePreset(preset: PalettePresetModel) {
         palettePresetDao.addPalettePreset(
-            preset.toEntity()
+            preset.toEntity(),
         )
     }
 
-    override suspend fun deletePalettePreset(
-        preset: PalettePresetModel,
-    ) {
+    override suspend fun deletePalettePreset(preset: PalettePresetModel) {
         palettePresetDao.deletePalettePreset(
             preset.toEntity(),
         )
     }
 
-    override suspend fun getPalettePresets(): Flow<List<PalettePresetModel>> {
-        return basePalettePresets.combine(
+    override suspend fun getPalettePresets(): Flow<List<PalettePresetModel>> =
+        basePalettePresets.combine(
             palettePresetDao.observePalettePresets().map { palettePresetList ->
                 palettePresetList.map { entity ->
                     entity.toModel()
                 }
-            }
+            },
         ) { basePresets, loadedPresets ->
             basePresets + loadedPresets
         }
-    }
 }

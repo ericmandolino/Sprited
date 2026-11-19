@@ -42,7 +42,8 @@ fun PaletteEditDialog(
     onSaveChangesClick: (PaletteModel, PixelMatrixModel?) -> Unit,
     onCancelClick: () -> Unit,
 ) {
-    val paletteEditDialogState = viewModel.paletteEditDialogState.collectAsStateWithLifecycle().value
+    val paletteEditDialogState = viewModel.paletteEditDialogState.collectAsStateWithLifecycle()
+        .value
     var viewModelInitialized by rememberSaveable { mutableStateOf(false) }
 
     if (!viewModelInitialized) {

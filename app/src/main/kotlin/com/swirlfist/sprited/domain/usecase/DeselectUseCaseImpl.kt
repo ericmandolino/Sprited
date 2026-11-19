@@ -18,9 +18,7 @@ class DeselectUseCaseImpl @Inject constructor(
         return Result.success(null)
     }
 
-    private suspend fun deselect(
-        actionContext: PixelImageEditorActionContext,
-    ) {
+    private suspend fun deselect(actionContext: PixelImageEditorActionContext) {
         pixelImageEditorActionRepository.addAction(
             PixelImageEditorAction.DeselectAction(
                 actionContext,

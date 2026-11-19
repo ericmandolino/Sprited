@@ -13,21 +13,21 @@ import javax.inject.Inject
 class LandFloatingImageUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : LandFloatingImageUseCase {
-    override suspend fun invoke(params: LandFloatingImageUseCase.Params): Result<PixelImageEditorActionContext> {
-        return try {
-            Result.success(
-                landFloatingImage(
-                    actionContext = params.actionContext,
-                )
-            )
-        } catch (exception: Exception) {
-            Result.failure(LandFloatingImageError(exception))
-        }
+    override suspend fun invoke(
+        params: LandFloatingImageUseCase.Params,
+    ): Result<PixelImageEditorActionContext> = try {
+        Result.success(
+            landFloatingImage(
+                actionContext = params.actionContext,
+            ),
+        )
+    } catch (exception: Exception) {
+        Result.failure(LandFloatingImageError(exception))
     }
 
     private suspend fun landFloatingImage(
         actionContext: PixelImageEditorActionContext,
-    ) : PixelImageEditorActionContext {
+    ): PixelImageEditorActionContext {
         val pixelImage = actionContext.pixelImage
         val pixelMatrix = pixelImage.pixelMatrixModel
         val floatingPixelImage = actionContext.floatingPixelImage
@@ -45,8 +45,12 @@ class LandFloatingImageUseCaseImpl @Inject constructor(
                 row.mapIndexed { x, pixel ->
                     val floatingX = x - offsetX
                     when {
-                        floatingX in (0..<floatingImageWidth) && floatingY in (0..<floatingImageHeight) -> {
-                            val floatingPixel = floatingPixelImage.pixelImageModel.getPixelAt(floatingX, floatingY)
+                        floatingX in (0..<floatingImageWidth) &&
+                            floatingY in (0..<floatingImageHeight) -> {
+                            val floatingPixel = floatingPixelImage.pixelImageModel.getPixelAt(
+                                floatingX,
+                                floatingY,
+                            )
                             if (floatingPixel.paletteIndex != EMPTY_PIXEL_PALETTE_INDEX) {
                                 floatingPixel
                             } else {

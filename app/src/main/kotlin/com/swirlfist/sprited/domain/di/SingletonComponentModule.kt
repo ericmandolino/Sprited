@@ -70,9 +70,7 @@ abstract class SingletonComponentModule {
     ): GetNextZoomFactorUseCase
 
     @Binds
-    abstract fun bindSavePixelImageUseCase(
-        impl: SavePixelImageUseCaseImpl,
-    ): SavePixelImageUseCase
+    abstract fun bindSavePixelImageUseCase(impl: SavePixelImageUseCaseImpl): SavePixelImageUseCase
 
     @Binds
     abstract fun bindExportPixelImageToSvgUseCase(
@@ -80,19 +78,13 @@ abstract class SingletonComponentModule {
     ): ExportPixelImageToSvgUseCase
 
     @Binds
-    abstract fun bindOpenPixelImageUseCase(
-        impl: OpenPixelImageUseCaseImpl,
-    ): OpenPixelImageUseCase
+    abstract fun bindOpenPixelImageUseCase(impl: OpenPixelImageUseCaseImpl): OpenPixelImageUseCase
 
     @Binds
-    abstract fun bindMoveImageUseCase(
-        impl: MoveImageUseCaseImpl,
-    ): MoveImageUseCase
+    abstract fun bindMoveImageUseCase(impl: MoveImageUseCaseImpl): MoveImageUseCase
 
     @Binds
-    abstract fun bindApplyBucketUseCase(
-        impl: ApplyBucketUseCaseImpl,
-    ): ApplyBucketUseCase
+    abstract fun bindApplyBucketUseCase(impl: ApplyBucketUseCaseImpl): ApplyBucketUseCase
 
     @Binds
     abstract fun bindGetUndoEditorActionAvailableUseCase(
@@ -165,9 +157,7 @@ abstract class SingletonComponentModule {
     ): UpdateRectangleSelectionUseCase
 
     @Binds
-    abstract fun bindDeselectUseCase(
-        impl: DeselectUseCaseImpl,
-    ): DeselectUseCase
+    abstract fun bindDeselectUseCase(impl: DeselectUseCaseImpl): DeselectUseCase
 
     @Binds
     abstract fun bindConvertSelectionToFloatingImageUseCase(

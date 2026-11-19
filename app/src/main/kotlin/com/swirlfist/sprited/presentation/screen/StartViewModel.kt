@@ -9,11 +9,11 @@ import com.swirlfist.sprited.domain.usecase.UpdateBasePixelImageUseCase
 import com.swirlfist.sprited.domain.usecase.execute
 import com.swirlfist.sprited.presentation.state.StartScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class StartViewModel @Inject constructor(
@@ -21,7 +21,7 @@ class StartViewModel @Inject constructor(
     private val openPixelImageUseCase: OpenPixelImageUseCase,
 ) : ViewModel() {
     private val _startScreenState = MutableStateFlow(
-        value = StartScreenState()
+        value = StartScreenState(),
     )
     val startScreenState = _startScreenState.asStateFlow()
 
@@ -53,9 +53,7 @@ class StartViewModel @Inject constructor(
         }
     }
 
-    fun onSelectOpenPixelImageLocationResult(
-        result: Result<Uri>,
-    ) {
+    fun onSelectOpenPixelImageLocationResult(result: Result<Uri>) {
         _startScreenState.update { startScreenState ->
             startScreenState.copy(
                 isLoadingImage = true,
@@ -72,7 +70,7 @@ class StartViewModel @Inject constructor(
                         isLoadingImage = false,
                     )
                 }
-            }
+            },
         )
     }
 
@@ -82,7 +80,7 @@ class StartViewModel @Inject constructor(
                 successBlock = { loadedPixelImage ->
                     viewModelScope.launch {
                         updateBasePixelImageUseCase(
-                            UpdateBasePixelImageUseCase.Params(loadedPixelImage)
+                            UpdateBasePixelImageUseCase.Params(loadedPixelImage),
                         )
                         _startScreenState.update { startScreenState ->
                             startScreenState.copy(
@@ -100,7 +98,7 @@ class StartViewModel @Inject constructor(
                     }
                 },
                 params = OpenPixelImageUseCase.Params(
-                    uri
+                    uri,
                 ),
             )
         }

@@ -1,5 +1,3 @@
 package com.swirlfist.sprited.domain.error
 
-class UpdatePixelError(
-    val innerException: Throwable
-) : Throwable()
+class UpdatePixelError(val innerException: Throwable) : Throwable()

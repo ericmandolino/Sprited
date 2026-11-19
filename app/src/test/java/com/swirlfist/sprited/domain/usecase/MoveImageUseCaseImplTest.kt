@@ -42,7 +42,7 @@ class MoveImageUseCaseImplTest {
             pixelImageString = """
                 -1 -1
                 -1 -1
-                """.trimIndent(),
+            """.trimIndent(),
             paletteSize = 4,
         )
         val useCaseParams = MoveImageUseCase.Params(
@@ -65,7 +65,7 @@ class MoveImageUseCaseImplTest {
             pixelImageString = """
                 -1 -1
                 -1 -1
-                """.trimIndent(),
+            """.trimIndent(),
             paletteSize = 4,
         )
         val useCaseParams = MoveImageUseCase.Params(
@@ -86,20 +86,21 @@ class MoveImageUseCaseImplTest {
     fun `when moving image up all pixels move up and empty pixels fill the bottom`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = MoveImageUseCase.Params(
             actionContext = PixelImageEditorActionContext(pixelImageModel),
             MoveDirection.UP,
         )
         val expected = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = ("""
+            pixelImageString = (
+                """
                 -1 -1 -1 -1
                 1 2 2 1
                 1 1 2 0
                 1 2 1 1
                 """.trimIndent()
-                    ),
+                ),
             paletteSize = 4,
         )
 
@@ -115,20 +116,21 @@ class MoveImageUseCaseImplTest {
     fun `when moving image down all pixels move down and empty pixels fill the top`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = MoveImageUseCase.Params(
             actionContext = PixelImageEditorActionContext(pixelImageModel),
             MoveDirection.DOWN,
         )
         val expected = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = ("""
+            pixelImageString = (
+                """
                 1 1 2 0
                 1 2 1 1
                 1 1 3 3
                 -1 -1 -1 -1
                 """.trimIndent()
-                    ),
+                ),
             paletteSize = 4,
         )
 
@@ -144,20 +146,21 @@ class MoveImageUseCaseImplTest {
     fun `when moving image left all pixels move left and empty pixels fill the right`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = MoveImageUseCase.Params(
             actionContext = PixelImageEditorActionContext(pixelImageModel),
             MoveDirection.LEFT,
         )
         val expected = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = ("""
+            pixelImageString = (
+                """
                 2 2 1 -1
                 1 2 0 -1
                 2 1 1 -1
                 1 3 3 -1
                 """.trimIndent()
-                    ),
+                ),
             paletteSize = 4,
         )
 
@@ -173,20 +176,21 @@ class MoveImageUseCaseImplTest {
     fun `when moving image right all pixels move right and empty pixels fill the left`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = MoveImageUseCase.Params(
             actionContext = PixelImageEditorActionContext(pixelImageModel),
             MoveDirection.RIGHT,
         )
         val expected = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = ("""
+            pixelImageString = (
+                """
                 -1 1 2 2
                 -1 1 1 2
                 -1 1 2 1
                 -1 1 1 3
                 """.trimIndent()
-                    ),
+                ),
             paletteSize = 4,
         )
 
@@ -202,7 +206,7 @@ class MoveImageUseCaseImplTest {
     fun `when moving the image the undo action is added`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val useCaseParams = MoveImageUseCase.Params(
             actionContext = PixelImageEditorActionContext(pixelImageModel),

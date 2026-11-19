@@ -61,12 +61,12 @@ fun CanvasSectionPreview() {
                 Pair(1, 1),
                 Pair(2, 3),
                 Pair(0, 1),
-            )
+            ),
         ).copy(
             rectangleSelection = RectangleSelectionModel(
                 start = Pair(3, 2),
                 end = Pair(4, 4),
-            )
+            ),
         )
 
         CanvasSection(
@@ -76,7 +76,7 @@ fun CanvasSectionPreview() {
                 pixelSelectionModel = pixelSelection,
                 zoomFactor = 1F,
                 isShowGridEnabled = false,
-            )
+            ),
         ) { event ->
             Log.d("CanvasSection", "event: $event")
         }
@@ -100,12 +100,12 @@ fun CanvasSectionZoomedPreview() {
                 Pair(1, 1),
                 Pair(2, 3),
                 Pair(0, 1),
-            )
+            ),
         ).copy(
             rectangleSelection = RectangleSelectionModel(
                 start = Pair(2, 2),
                 end = Pair(3, 4),
-            )
+            ),
         )
 
         CanvasSection(
@@ -115,7 +115,7 @@ fun CanvasSectionZoomedPreview() {
                 pixelSelectionModel = pixelSelection,
                 zoomFactor = 4F,
                 isShowGridEnabled = true,
-            )
+            ),
         ) { event ->
             Log.d("CanvasSection", "event: $event")
         }
@@ -135,7 +135,7 @@ fun CanvasSectionEmptyImagePreview() {
                     colors = listOf(Color.Black.toColorLong(), Color.Yellow.toColorLong()),
                 ),
                 zoomFactor = 1F,
-            )
+            ),
         ) { event ->
             Log.d("CanvasSection", "event: $event")
         }
@@ -172,11 +172,11 @@ fun CanvasSectionFloatingImagePreview() {
                             PixelModel(EMPTY_PIXEL_PALETTE_INDEX),
                             PixelModel(0),
                         ),
-                    )
+                    ),
                 ),
                 paletteModel = PaletteModel(
                     colors = listOf(Color.White.toColorLong()),
-                )
+                ),
             ),
             offset = Pair(-1, 1),
         )
@@ -188,7 +188,7 @@ fun CanvasSectionFloatingImagePreview() {
                 floatingPixelImageModel = floatingPixelImage,
                 zoomFactor = 1F,
                 isShowGridEnabled = true,
-            )
+            ),
         ) { event ->
             Log.d("CanvasSection", "event: $event")
         }

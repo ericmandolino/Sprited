@@ -47,10 +47,7 @@ private const val DIMENSION_VALUE_MIN = 1
 private const val DIMENSION_VALUE_MAX = 1024
 
 @Composable
-fun NewImageScreen(
-    viewModel: NewImageViewModel = hiltViewModel(),
-    navigateToMain: () -> Unit,
-) {
+fun NewImageScreen(viewModel: NewImageViewModel = hiltViewModel(), navigateToMain: () -> Unit) {
     val newImageScreenState = viewModel.newImageScreenState.collectAsStateWithLifecycle().value
 
     LaunchedEffect(newImageScreenState) {
@@ -142,8 +139,8 @@ fun NewImageScreenContent(
 
         val isCreateButtonEnabled =
             widthTextFieldState.text.isNotBlank() &&
-                    heightTextFieldState.text.isNotBlank() &&
-                    paletteEditState.paletteColors.isNotEmpty()
+                heightTextFieldState.text.isNotBlank() &&
+                paletteEditState.paletteColors.isNotEmpty()
 
         TextButton(
             modifier = Modifier
@@ -159,14 +156,11 @@ fun NewImageScreenContent(
 }
 
 @Composable
-fun CreateImageSectionTitle(
-    modifier: Modifier = Modifier,
-    text: String,
-) {
+fun CreateImageSectionTitle(modifier: Modifier = Modifier, text: String) {
     Text(
         modifier = modifier.padding(4.dp),
         text = text,
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium,
     )
 }
 
@@ -239,11 +233,7 @@ fun DimensionTextField(
 }
 
 @Composable
-fun ImagePalette(
-    modifier: Modifier = Modifier,
-    paletteState: NewImagePaletteState
-
-) {
+fun ImagePalette(modifier: Modifier = Modifier, paletteState: NewImagePaletteState) {
     val paletteEditState = paletteState.paletteEditState
 
     Column(
@@ -254,7 +244,7 @@ fun ImagePalette(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(
                 8.dp,
-                Alignment.End
+                Alignment.End,
             ),
         ) {
             CreateImageSectionTitle(
@@ -263,7 +253,9 @@ fun ImagePalette(
             )
             TextButton(
                 onClick = paletteState.onStartSavePalettePresetClick,
-                enabled = paletteEditState.paletteColors.isNotEmpty() && !paletteState.isSavingPalettePreset,
+                enabled =
+                paletteEditState.paletteColors.isNotEmpty() &&
+                    !paletteState.isSavingPalettePreset,
             ) {
                 Text(
                     text = stringResource(R.string.save_palette_as_preset),
@@ -326,4 +318,3 @@ fun ImagePalettePreview() {
         )
     }
 }
-

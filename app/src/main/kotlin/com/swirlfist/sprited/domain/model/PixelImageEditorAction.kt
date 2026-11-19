@@ -46,21 +46,18 @@ sealed interface PixelImageEditorAction {
         val y: Int,
     ) : PixelImageEditorAction
 
-    data class DeselectAction(
-        override val actionContext: PixelImageEditorActionContext,
-    ) : PixelImageEditorAction
+    data class DeselectAction(override val actionContext: PixelImageEditorActionContext) :
+        PixelImageEditorAction
 
     data class ConvertSelectionToFloatingImageAction(
         override val actionContext: PixelImageEditorActionContext,
     ) : PixelImageEditorAction
 
-    data class LandFloatingImageAction(
-        override val actionContext: PixelImageEditorActionContext,
-    ) : PixelImageEditorAction
+    data class LandFloatingImageAction(override val actionContext: PixelImageEditorActionContext) :
+        PixelImageEditorAction
 
     data class MoveFloatingImageAction(
         override val actionContext: PixelImageEditorActionContext,
         val offsetDelta: Pair<Int, Int>,
     ) : PixelImageEditorAction
 }
-

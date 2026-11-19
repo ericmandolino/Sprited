@@ -37,7 +37,7 @@ class UndoEditorActionUseCaseImplTest {
             // Given
             val pixelImage = mockk<PixelImageModel>()
             coEvery { pixelImageEditorActionRepository.undoAction() }.returns(
-                PixelImageEditorActionContext(pixelImage)
+                PixelImageEditorActionContext(pixelImage),
             )
 
             // When

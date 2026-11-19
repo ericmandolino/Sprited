@@ -16,9 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 
 @Composable
-fun LoadingIndeterminateProgress(
-    message: String,
-) {
+fun LoadingIndeterminateProgress(message: String) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -26,14 +24,14 @@ fun LoadingIndeterminateProgress(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium,
             )
             CircularProgressIndicator(
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
     }
@@ -46,4 +44,3 @@ fun LoadingIndeterminateProgressPreview() {
         LoadingIndeterminateProgress("Loading...")
     }
 }
-

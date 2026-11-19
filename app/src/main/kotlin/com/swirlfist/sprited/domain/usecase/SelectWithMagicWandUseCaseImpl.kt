@@ -13,18 +13,18 @@ import javax.inject.Inject
 class SelectWithMagicWandUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : SelectWithMagicWandUseCase {
-    override suspend fun invoke(params: SelectWithMagicWandUseCase.Params): Result<PixelSelectionModel> {
-        return try {
-            Result.success(
-                selectWithMagicWand(
-                    actionContext = params.actionContext,
-                    x = params.x,
-                    y = params.y,
-                )
-            )
-        } catch (exception: Exception) {
-            Result.failure(MagicWandSelectionError(exception))
-        }
+    override suspend fun invoke(
+        params: SelectWithMagicWandUseCase.Params,
+    ): Result<PixelSelectionModel> = try {
+        Result.success(
+            selectWithMagicWand(
+                actionContext = params.actionContext,
+                x = params.x,
+                y = params.y,
+            ),
+        )
+    } catch (exception: Exception) {
+        Result.failure(MagicWandSelectionError(exception))
     }
 
     private suspend fun selectWithMagicWand(
@@ -33,8 +33,8 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
         y: Int,
     ): PixelSelectionModel {
         val pixelImage = actionContext.pixelImage
-        val pixelSelection = actionContext.pixelSelection ?:
-            pixelImage.createSelection(selectedCoordinates = listOf())
+        val pixelSelection = actionContext.pixelSelection
+            ?: pixelImage.createSelection(selectedCoordinates = listOf())
         val pixel = pixelImage.getPixelAt(x, y)
         val mutableSelectionMatrix = mutableListOf<MutableList<PixelModel?>>().apply {
             pixelSelection.selected.forEach { row ->
@@ -58,7 +58,7 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
         )
 
         val pixelSelectionResult = pixelSelection.copy(
-            selected = mutableSelectionMatrix.toList()
+            selected = mutableSelectionMatrix.toList(),
         )
         val actionContextResult = actionContext.copy(
             pixelSelection = pixelSelectionResult,
@@ -93,16 +93,45 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
         }
 
         visitedPixels[y][x] = true
-        val addedToSelection = addToSelection(pixelMatrix, pixelSelection, x, y, paletteIndexToSelect)
+        val addedToSelection =
+            addToSelection(pixelMatrix, pixelSelection, x, y, paletteIndexToSelect)
 
         if (!addedToSelection) {
             return
         }
 
-        applySelection(pixelMatrix, visitedPixels, pixelSelection, x = x - 1, y, paletteIndexToSelect)
-        applySelection(pixelMatrix, visitedPixels, pixelSelection, x = x + 1, y, paletteIndexToSelect)
-        applySelection(pixelMatrix, visitedPixels, pixelSelection, x, y = y - 1, paletteIndexToSelect)
-        applySelection(pixelMatrix, visitedPixels, pixelSelection, x, y = y + 1, paletteIndexToSelect)
+        applySelection(
+            pixelMatrix,
+            visitedPixels,
+            pixelSelection,
+            x = x - 1,
+            y,
+            paletteIndexToSelect,
+        )
+        applySelection(
+            pixelMatrix,
+            visitedPixels,
+            pixelSelection,
+            x = x + 1,
+            y,
+            paletteIndexToSelect,
+        )
+        applySelection(
+            pixelMatrix,
+            visitedPixels,
+            pixelSelection,
+            x,
+            y = y - 1,
+            paletteIndexToSelect,
+        )
+        applySelection(
+            pixelMatrix,
+            visitedPixels,
+            pixelSelection,
+            x,
+            y = y + 1,
+            paletteIndexToSelect,
+        )
     }
 
     private fun addToSelection(

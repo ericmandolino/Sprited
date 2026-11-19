@@ -8,17 +8,13 @@ data class PixelImageModel(
     val paletteModel: PaletteModel,
 ) {
     companion object {
-        fun createEmpty(
-            width: Int,
-            height: Int,
-            colors: List<Long>,
-        ): PixelImageModel {
+        fun createEmpty(width: Int, height: Int, colors: List<Long>): PixelImageModel {
             val rows = mutableListOf<List<PixelModel>>()
             repeat(height) {
                 val row = mutableListOf<PixelModel>()
                 repeat(width) {
                     row.add(
-                        PixelModel(-1)
+                        PixelModel(-1),
                     )
                 }
                 rows.add(row)
@@ -26,11 +22,10 @@ data class PixelImageModel(
 
             return PixelImageModel(
                 pixelMatrixModel = PixelMatrixModel(
-                    content = rows
+                    content = rows,
                 ),
                 paletteModel = PaletteModel(colors),
             )
         }
-
     }
 }

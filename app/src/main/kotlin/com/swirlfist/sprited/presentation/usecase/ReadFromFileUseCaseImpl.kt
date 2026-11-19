@@ -12,18 +12,14 @@ import javax.inject.Inject
 class ReadFromFileUseCaseImpl @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
 ) : ReadFromFileUseCase {
-    override suspend fun invoke(params: ReadFromFileUseCase.Params): Result<String> {
-        return try {
-            val content = readFromFile(params.uri)
-            Result.success(content)
-        } catch (e: Exception) {
-            Result.failure(ReadFromFileError(e))
-        }
+    override suspend fun invoke(params: ReadFromFileUseCase.Params): Result<String> = try {
+        val content = readFromFile(params.uri)
+        Result.success(content)
+    } catch (e: Exception) {
+        Result.failure(ReadFromFileError(e))
     }
 
-    private fun readFromFile(
-        uri: Uri,
-    ): String {
+    private fun readFromFile(uri: Uri): String {
         val contentResolver = applicationContext.contentResolver
 
         val stringBuilder = StringBuilder()

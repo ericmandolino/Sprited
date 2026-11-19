@@ -37,7 +37,7 @@ fun SpritedApp() {
                     navController.navigate(
                         route = Main,
                     )
-                }
+                },
             )
         }
         composable<Main> {
@@ -50,7 +50,7 @@ fun SpritedApp() {
                     navController.navigate(
                         route = Main,
                     )
-                }
+                },
             )
         }
     }

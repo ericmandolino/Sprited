@@ -15,10 +15,8 @@ private const val EXPORT_FILE_EXTENSION_SVG = ".svg"
 class ExportPixelImageLocationLauncher {
     companion object {
 
-        fun getLaunchIntent(
-            exportFormat: PixelImageExportFormat,
-        ): Intent {
-            val fileExtension = when(exportFormat) {
+        fun getLaunchIntent(exportFormat: PixelImageExportFormat): Intent {
+            val fileExtension = when (exportFormat) {
                 PixelImageExportFormat.PNG -> EXPORT_FILE_EXTENSION_PNG
                 PixelImageExportFormat.SVG -> EXPORT_FILE_EXTENSION_SVG
             }
@@ -30,21 +28,18 @@ class ExportPixelImageLocationLauncher {
             }
         }
 
-        fun handleResult(
-            activityResult: ActivityResult,
-            onResult: (Result<Uri>) -> Unit,
-        ) {
+        fun handleResult(activityResult: ActivityResult, onResult: (Result<Uri>) -> Unit) {
             val result = when (activityResult.resultCode) {
-                RESULT_OK
-                    -> activityResult.data?.data?.let { uri ->
+                RESULT_OK,
+                -> activityResult.data?.data?.let { uri ->
                     Result.success(uri)
                 } ?: Result.failure(SelectExportPixelImageLocationError(false))
 
-                RESULT_CANCELED
-                    -> Result.failure(SelectExportPixelImageLocationError(true))
+                RESULT_CANCELED,
+                -> Result.failure(SelectExportPixelImageLocationError(true))
 
                 else
-                    -> Result.failure(SelectExportPixelImageLocationError(false))
+                -> Result.failure(SelectExportPixelImageLocationError(false))
             }
             onResult(result)
         }

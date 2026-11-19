@@ -16,13 +16,12 @@ import com.swirlfist.sprited.presentation.state.updateColorComponentGreen
 import com.swirlfist.sprited.presentation.state.updateColorComponentRed
 import com.swirlfist.sprited.presentation.state.updateSelectedColor
 import com.swirlfist.sprited.presentation.state.updateSelectedPreviewBackgroundColor
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
-class PaletteEditViewModel @Inject constructor(
-) : ViewModel() {
+class PaletteEditViewModel @Inject constructor() : ViewModel() {
     private val _paletteEditDialogState = MutableStateFlow(
         value = PaletteEditDialogState(
             paletteEditState = PaletteEditState(
@@ -32,14 +31,12 @@ class PaletteEditViewModel @Inject constructor(
                 onColorComponentRedSliderChange = ::updatePaletteColorComponentRed,
                 onColorComponentGreenSliderChange = ::updatePaletteColorComponentGreen,
                 onColorComponentBlueSliderChange = ::updatePaletteColorComponentBlue,
-            )
-        )
+            ),
+        ),
     )
     val paletteEditDialogState = _paletteEditDialogState.asStateFlow()
 
-    fun setOriginalPalette(
-        palette: PaletteModel,
-    ) {
+    fun setOriginalPalette(palette: PaletteModel) {
         _paletteEditDialogState.update { state ->
             state.copy(
                 paletteEditState = state.paletteEditState.copy(
@@ -50,9 +47,7 @@ class PaletteEditViewModel @Inject constructor(
         }
     }
 
-    fun setOriginalPixelMatrix(
-        pixelMatrix: PixelMatrixModel,
-    ) {
+    fun setOriginalPixelMatrix(pixelMatrix: PixelMatrixModel) {
         val paletteColors = _paletteEditDialogState.value.paletteEditState.paletteColors
 
         _paletteEditDialogState.update { state ->
@@ -77,9 +72,7 @@ class PaletteEditViewModel @Inject constructor(
         }
     }
 
-    private fun updateSelectedPaletteColor(
-        paletteIndex: Int,
-    ) {
+    private fun updateSelectedPaletteColor(paletteIndex: Int) {
         _paletteEditDialogState.update { state ->
             state.copy(
                 paletteEditState = state.paletteEditState.updateSelectedColor(paletteIndex),
@@ -89,13 +82,16 @@ class PaletteEditViewModel @Inject constructor(
 
     private fun deleteColorFromPalette() {
         _paletteEditDialogState.update { state ->
-            val newPixelImagePreviewSectionState = state.pixelImagePreviewSectionState?.let { previewState ->
-                state.paletteEditState.selectedPaletteIndex?.let { paletteIndex ->
-                    previewState.copy(
-                        pixelImageModel = previewState.pixelImageModel?.deletePaletteColor(paletteIndex)
-                    )
+            val newPixelImagePreviewSectionState = state.pixelImagePreviewSectionState
+                ?.let { previewState ->
+                    state.paletteEditState.selectedPaletteIndex?.let { paletteIndex ->
+                        previewState.copy(
+                            pixelImageModel = previewState.pixelImageModel?.deletePaletteColor(
+                                paletteIndex,
+                            ),
+                        )
+                    }
                 }
-            }
 
             state.copy(
                 paletteEditState = state.paletteEditState.deleteSelectedColor(),
@@ -104,25 +100,19 @@ class PaletteEditViewModel @Inject constructor(
         }
     }
 
-    private fun updatePaletteColorComponentRed(
-        value: Float,
-    ) {
+    private fun updatePaletteColorComponentRed(value: Float) {
         _paletteEditDialogState.updateColorComponent { paletteEditState ->
             paletteEditState.updateColorComponentRed(value)
         }
     }
 
-    private fun updatePaletteColorComponentGreen(
-        value: Float,
-    ) {
+    private fun updatePaletteColorComponentGreen(value: Float) {
         _paletteEditDialogState.updateColorComponent { paletteEditState ->
             paletteEditState.updateColorComponentGreen(value)
         }
     }
 
-    private fun updatePaletteColorComponentBlue(
-        value: Float,
-    ) {
+    private fun updatePaletteColorComponentBlue(value: Float) {
         _paletteEditDialogState.updateColorComponent { paletteEditState ->
             paletteEditState.updateColorComponentBlue(value)
         }
@@ -136,28 +126,27 @@ class PaletteEditViewModel @Inject constructor(
         state.copy(
             paletteEditState = newPaletteEditState,
             pixelImagePreviewSectionState = state.pixelImagePreviewSectionState?.replacePalette(
-                newPaletteColors
+                newPaletteColors,
             ),
         )
     }
 
-    private fun PixelImagePreviewSectionState.replacePalette(
-        newPaletteColors: List<Long>,
-    ) = copy(
+    private fun PixelImagePreviewSectionState.replacePalette(newPaletteColors: List<Long>) = copy(
         pixelImageModel = pixelImageModel?.let { pixelImage ->
             PixelImageModel(
                 pixelMatrixModel = pixelImage.pixelMatrixModel,
                 paletteModel = PaletteModel(newPaletteColors),
             )
-        }
+        },
     )
 
-    private fun onPreviewBackgroundColorSelected(
-        color: Color,
-    ) {
+    private fun onPreviewBackgroundColorSelected(color: Color) {
         _paletteEditDialogState.update { state ->
             state.copy(
-                pixelImagePreviewSectionState = state.pixelImagePreviewSectionState?.updateSelectedPreviewBackgroundColor(color)
+                pixelImagePreviewSectionState = state.pixelImagePreviewSectionState
+                    ?.updateSelectedPreviewBackgroundColor(
+                        color,
+                    ),
             )
         }
     }

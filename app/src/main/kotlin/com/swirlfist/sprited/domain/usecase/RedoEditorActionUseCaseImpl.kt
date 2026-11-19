@@ -8,7 +8,9 @@ import javax.inject.Inject
 class RedoEditorActionUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : RedoEditorActionUseCase {
-    override suspend fun invoke(params: UseCaseParams.NoParams): Result<PixelImageEditorActionContext> {
+    override suspend fun invoke(
+        params: UseCaseParams.NoParams,
+    ): Result<PixelImageEditorActionContext> {
         val redoResult = pixelImageEditorActionRepository.redoAction()
         return if (redoResult == null) {
             Result.failure(RedoEditorActionError())

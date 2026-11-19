@@ -81,14 +81,11 @@ fun StartScreen(
 }
 
 @Composable
-fun StartScreenContent(
-    onNewImageClick: () -> Unit,
-    onLoadImageClick: () -> Unit,
-) {
+fun StartScreenContent(onNewImageClick: () -> Unit, onLoadImageClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TextButton(
             modifier = Modifier.fillMaxWidth(0.5F),
@@ -96,24 +93,28 @@ fun StartScreenContent(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_actions_section_new_pixel_image_24dp),
-                contentDescription = stringResource(R.string.cd_actions_section_button_open_pixel_image),
+                contentDescription = stringResource(
+                    R.string.cd_actions_section_button_open_pixel_image,
+                ),
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.new_image)
+                text = stringResource(R.string.new_image),
             )
         }
         TextButton(
             modifier = Modifier.fillMaxWidth(0.5F),
-            onClick = onLoadImageClick
+            onClick = onLoadImageClick,
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_actions_section_open_pixel_image_24dp),
-                contentDescription = stringResource(R.string.cd_actions_section_button_open_pixel_image),
+                contentDescription = stringResource(
+                    R.string.cd_actions_section_button_open_pixel_image,
+                ),
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.load_image)
+                text = stringResource(R.string.load_image),
             )
         }
     }
@@ -126,7 +127,7 @@ fun StartScreenLaunchers(
     onSelectOpenPixelImageLocationLaunched: () -> Unit,
 ) {
     val selectOpenPixelImageLocationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
+        contract = ActivityResultContracts.StartActivityForResult(),
     ) { activityResult ->
         OpenPixelImageLocationLauncher.handleResult(
             activityResult,

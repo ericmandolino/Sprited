@@ -34,10 +34,7 @@ fun PixelImageModel.getPixelWidth(): Int = pixelMatrixModel.width()
 
 fun PixelImageModel.getPixelHeight(): Int = pixelMatrixModel.height()
 
-fun PixelSelectionModel.isSelected(
-    x: Int,
-    y: Int,
-): Boolean {
+fun PixelSelectionModel.isSelected(x: Int, y: Int): Boolean {
     if (y !in selected.indices) {
         return false
     }
@@ -102,19 +99,17 @@ fun RectangleSelectionModel.right() = max(start.first, end.first)
 
 fun RectangleSelectionModel.isEmpty() = start.first == end.first || start.second == end.second
 
-fun PixelImageModel.selectNonEmpty(): PixelSelectionModel {
-    return PixelSelectionModel(
-        selected = pixelMatrixModel.content.map { row ->
-            row.map { pixel ->
-                if (pixel.paletteIndex == EMPTY_PIXEL_PALETTE_INDEX) {
-                    null
-                } else {
-                    pixel
-                }
+fun PixelImageModel.selectNonEmpty(): PixelSelectionModel = PixelSelectionModel(
+    selected = pixelMatrixModel.content.map { row ->
+        row.map { pixel ->
+            if (pixel.paletteIndex == EMPTY_PIXEL_PALETTE_INDEX) {
+                null
+            } else {
+                pixel
             }
         }
-    )
-}
+    },
+)
 
 fun Color.toHexCode(): String {
     val red = this.red * 255

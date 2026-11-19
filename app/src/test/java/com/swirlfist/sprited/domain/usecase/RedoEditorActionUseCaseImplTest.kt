@@ -37,7 +37,7 @@ class RedoEditorActionUseCaseImplTest {
             // Given
             val pixelImage = mockk<PixelImageModel>()
             coEvery { pixelImageEditorActionRepository.redoAction() }.returns(
-                PixelImageEditorActionContext(pixelImage, null)
+                PixelImageEditorActionContext(pixelImage, null),
             )
 
             // When

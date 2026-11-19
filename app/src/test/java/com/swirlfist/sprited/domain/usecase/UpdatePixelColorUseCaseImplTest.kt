@@ -41,7 +41,7 @@ class UpdatePixelColorUseCaseImplTest {
     fun `when the palette index is the same the image does not change`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val x = 1
         val y = 1
@@ -66,7 +66,7 @@ class UpdatePixelColorUseCaseImplTest {
         runTest {
             // Given
             val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-                pixelImageString = testPixelImageString
+                pixelImageString = testPixelImageString,
             )
             val x = 1
             val y = 1
@@ -78,13 +78,14 @@ class UpdatePixelColorUseCaseImplTest {
                 paletteIndex = 3,
             )
             val expected = PixelImageModelTestUtil.createPixelImageModel(
-                pixelImageString = ("""
+                pixelImageString = (
+                    """
                 1 2 2 1
                 1 3 2 0
                 1 2 1 1
                 1 1 3 3
-                """.trimIndent()
-                        )
+                    """.trimIndent()
+                    ),
             )
 
             // When
@@ -99,7 +100,7 @@ class UpdatePixelColorUseCaseImplTest {
     fun `when the pixel coordinates are outside the image then the use case fails`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val x = 6
         val y = 1
@@ -123,7 +124,7 @@ class UpdatePixelColorUseCaseImplTest {
     fun `when the use case fails the undo action is not added or updated`() = runTest {
         // Given
         val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-            pixelImageString = testPixelImageString
+            pixelImageString = testPixelImageString,
         )
         val x = 6
         val y = 1
@@ -150,7 +151,7 @@ class UpdatePixelColorUseCaseImplTest {
         runTest {
             // Given
             val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-                pixelImageString = testPixelImageString
+                pixelImageString = testPixelImageString,
             )
             val x = 1
             val y = 1
@@ -187,7 +188,7 @@ class UpdatePixelColorUseCaseImplTest {
         runTest {
             // Given
             val pixelImageModel = PixelImageModelTestUtil.createPixelImageModel(
-                pixelImageString = testPixelImageString
+                pixelImageString = testPixelImageString,
             )
             val x = 1
             val y = 1

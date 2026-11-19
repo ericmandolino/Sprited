@@ -11,8 +11,8 @@ import javax.inject.Inject
 class UpdatePixelColorUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : UpdatePixelColorUseCase {
-    override suspend fun invoke(params: UpdatePixelColorUseCase.Params): Result<PixelImageModel> {
-        return try {
+    override suspend fun invoke(params: UpdatePixelColorUseCase.Params): Result<PixelImageModel> =
+        try {
             Result.success(
                 updatePixel(
                     actionContext = params.actionContext,
@@ -20,12 +20,11 @@ class UpdatePixelColorUseCaseImpl @Inject constructor(
                     y = params.y,
                     paletteIndex = params.paletteIndex,
                     isSameAction = params.isSameAction,
-                )
+                ),
             )
         } catch (exception: Exception) {
             Result.failure(UpdatePixelError(exception))
         }
-    }
 
     private suspend fun updatePixel(
         actionContext: PixelImageEditorActionContext,
