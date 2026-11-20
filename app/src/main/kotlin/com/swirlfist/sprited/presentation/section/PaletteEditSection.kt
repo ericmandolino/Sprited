@@ -96,26 +96,21 @@ fun PaletteEditSection(modifier: Modifier = Modifier, paletteEditState: PaletteE
         }
 
         PaletteColorEdit(
-            color = color,
-            isDeleteEnabled = color != null && colors.size > 1,
-            onDeleteClick = paletteEditState.onDeletePaletteColorClick,
-            onColorComponentRedSliderChange = paletteEditState.onColorComponentRedSliderChange,
-            onColorComponentGreenSliderChange = paletteEditState.onColorComponentGreenSliderChange,
-            onColorComponentBlueSliderChange = paletteEditState.onColorComponentBlueSliderChange,
+            state = PaletteColorEditState(
+                color = color,
+                isDeleteEnabled = color != null && colors.size > 1,
+                onDeleteClick = paletteEditState.onDeletePaletteColorClick,
+                onRedComponentSliderChange = paletteEditState.onRedComponentSliderChange,
+                onGreenComponentSliderChange = paletteEditState.onGreenComponentSliderChange,
+                onColorBlueComponentSliderChange = paletteEditState.onBlueComponentSliderChange,
+            ),
         )
     }
 }
 
 @Composable
-fun PaletteColorEdit(
-    modifier: Modifier = Modifier,
-    color: Color?,
-    isDeleteEnabled: Boolean,
-    onDeleteClick: () -> Unit,
-    onColorComponentRedSliderChange: (Float) -> Unit,
-    onColorComponentGreenSliderChange: (Float) -> Unit,
-    onColorComponentBlueSliderChange: (Float) -> Unit,
-) {
+fun PaletteColorEdit(modifier: Modifier = Modifier, state: PaletteColorEditState) {
+    val color = state.color
     val redTextFieldState = rememberTextFieldState()
     val greenTextFieldState = rememberTextFieldState()
     val blueTextFieldState = rememberTextFieldState()
@@ -142,43 +137,52 @@ fun PaletteColorEdit(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .weight(1F),
-                text = color?.toHexCode()?.uppercase() ?: "",
-                style = MaterialTheme.typography.titleMedium,
-            )
-            TextButton(
-                onClick = onDeleteClick,
-                enabled = isDeleteEnabled,
-            ) {
-                Text(
-                    text = stringResource(R.string.delete),
-                )
-            }
-        }
+        PaletteColorEditHeader(
+            color,
+            isDeleteEnabled = state.isDeleteEnabled,
+            onDeleteClick = state.onDeleteClick,
+        )
         PaletteColorComponent(
             componentColor = Color.Red,
             textFieldState = redTextFieldState,
-            onSliderChange = onColorComponentRedSliderChange,
+            onSliderChange = state.onRedComponentSliderChange,
             isEnabled = color != null,
         )
         PaletteColorComponent(
             componentColor = Color.Green,
             textFieldState = greenTextFieldState,
-            onSliderChange = onColorComponentGreenSliderChange,
+            onSliderChange = state.onGreenComponentSliderChange,
             isEnabled = color != null,
         )
         PaletteColorComponent(
             componentColor = Color.Blue,
             textFieldState = blueTextFieldState,
-            onSliderChange = onColorComponentBlueSliderChange,
+            onSliderChange = state.onColorBlueComponentSliderChange,
             isEnabled = color != null,
         )
+    }
+}
+
+@Composable
+fun PaletteColorEditHeader(color: Color?, isDeleteEnabled: Boolean, onDeleteClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            modifier = Modifier
+                .weight(1F),
+            text = color?.toHexCode()?.uppercase() ?: "",
+            style = MaterialTheme.typography.titleMedium,
+        )
+        TextButton(
+            onClick = onDeleteClick,
+            enabled = isDeleteEnabled,
+        ) {
+            Text(
+                text = stringResource(R.string.delete),
+            )
+        }
     }
 }
 
@@ -227,46 +231,59 @@ fun PaletteColorComponent(
             steps = 256,
             enabled = isEnabled,
         )
-        TextField(
-            state = textFieldState,
-            modifier = Modifier
-                .width(64.dp)
-                .onFocusChanged { focusState ->
-                    if (!focusState.hasFocus && textFieldState.text.isBlank()) {
-                        textFieldState.setTextAndPlaceCursorAtEnd("0")
-                        onSliderChange(0F)
-                    }
-                },
-            enabled = isEnabled,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                textAlign = TextAlign.End,
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-            ),
-            lineLimits = TextFieldLineLimits.SingleLine,
-            inputTransformation = InputTransformation.then {
-                val charSequence = asCharSequence()
-                if (charSequence.isEmpty()) {
-                    return@then
-                }
-                if (!charSequence.isDigitsOnly()) {
-                    revertAllChanges()
-                } else {
-                    try {
-                        val value = charSequence.toString().toInt()
-                        if (value !in RGB_MIN_VALUE..RGB_MAX_VALUE) {
-                            revertAllChanges()
-                        } else {
-                            onSliderChange(value.toFloat() / RGB_MAX_VALUE)
-                        }
-                    } catch (_: NumberFormatException) {
-                        revertAllChanges()
-                    }
-                }
-            },
+        PaletteColorComponentValue(
+            textFieldState,
+            onSliderChange,
+            isEnabled,
         )
     }
+}
+
+@Composable
+fun PaletteColorComponentValue(
+    textFieldState: TextFieldState,
+    onSliderChange: (Float) -> Unit,
+    isEnabled: Boolean,
+) {
+    TextField(
+        state = textFieldState,
+        modifier = Modifier
+            .width(64.dp)
+            .onFocusChanged { focusState ->
+                if (!focusState.hasFocus && textFieldState.text.isBlank()) {
+                    textFieldState.setTextAndPlaceCursorAtEnd("0")
+                    onSliderChange(0F)
+                }
+            },
+        enabled = isEnabled,
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            textAlign = TextAlign.End,
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+        ),
+        lineLimits = TextFieldLineLimits.SingleLine,
+        inputTransformation = InputTransformation.then {
+            val charSequence = asCharSequence()
+            if (charSequence.isEmpty()) {
+                return@then
+            }
+            if (!charSequence.isDigitsOnly()) {
+                revertAllChanges()
+            } else {
+                try {
+                    val value = charSequence.toString().toInt()
+                    if (value !in RGB_MIN_VALUE..RGB_MAX_VALUE) {
+                        revertAllChanges()
+                    } else {
+                        onSliderChange(value.toFloat() / RGB_MAX_VALUE)
+                    }
+                } catch (_: NumberFormatException) {
+                    revertAllChanges()
+                }
+            }
+        },
+    )
 }
 
 @Preview(showBackground = true, widthDp = 320, heightDp = 480)
@@ -291,5 +308,14 @@ fun PaletteColorComponentPreview() {
         )
     }
 }
+
+data class PaletteColorEditState(
+    val color: Color?,
+    val isDeleteEnabled: Boolean,
+    val onDeleteClick: () -> Unit,
+    val onRedComponentSliderChange: (Float) -> Unit,
+    val onGreenComponentSliderChange: (Float) -> Unit,
+    val onColorBlueComponentSliderChange: (Float) -> Unit,
+)
 
 private fun Float.toColorComponentString(): String = (this * RGB_MAX_VALUE).roundToInt().toString()

@@ -28,9 +28,9 @@ class PaletteEditViewModel @Inject constructor() : ViewModel() {
                 onAddPaletteColorClick = ::addColorToPalette,
                 onPaletteColorClick = ::updateSelectedPaletteColor,
                 onDeletePaletteColorClick = ::deleteColorFromPalette,
-                onColorComponentRedSliderChange = ::updatePaletteColorComponentRed,
-                onColorComponentGreenSliderChange = ::updatePaletteColorComponentGreen,
-                onColorComponentBlueSliderChange = ::updatePaletteColorComponentBlue,
+                onRedComponentSliderChange = ::updatePaletteColorComponentRed,
+                onGreenComponentSliderChange = ::updatePaletteColorComponentGreen,
+                onBlueComponentSliderChange = ::updatePaletteColorComponentBlue,
             ),
         ),
     )

@@ -11,9 +11,9 @@ data class PaletteEditState(
     val onAddPaletteColorClick: () -> Unit = {},
     val onPaletteColorClick: (Int) -> Unit = {},
     val onDeletePaletteColorClick: () -> Unit = {},
-    val onColorComponentRedSliderChange: (Float) -> Unit = {},
-    val onColorComponentGreenSliderChange: (Float) -> Unit = {},
-    val onColorComponentBlueSliderChange: (Float) -> Unit = {},
+    val onRedComponentSliderChange: (Float) -> Unit = {},
+    val onGreenComponentSliderChange: (Float) -> Unit = {},
+    val onBlueComponentSliderChange: (Float) -> Unit = {},
 )
 
 fun PaletteEditState.addNewColor() = copy(
