@@ -19,6 +19,7 @@ import com.swirlfist.sprited.domain.toHexCode
 import com.swirlfist.sprited.presentation.state.PixelImagePreviewSectionState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButton
+import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButtonState
 import com.swirlfist.sprited.presentation.uielements.PixelCanvasSnapshot
 import com.swirlfist.sprited.presentation.uielements.createCheckersPixelImage
 
@@ -89,15 +90,17 @@ fun PreviewBackgroundColorButton(
     onPreviewBackgroundColorSelected: (Color) -> Unit,
 ) {
     PaletteColorSelectButton(
-        color = color,
-        size = 36.dp,
-        isEnabled = true,
-        contentDescriptionValue = stringResource(
-            R.string.cd_preview_section_button_pick_background_color,
-            color.toHexCode(),
+        state = PaletteColorSelectButtonState(
+            color = color,
+            size = 36.dp,
+            isEnabled = true,
+            contentDescriptionValue = stringResource(
+                R.string.cd_preview_section_button_pick_background_color,
+                color.toHexCode(),
+            ),
+            isSelected = selectedBackgroundColor == color,
+            onClick = { onPreviewBackgroundColorSelected(color) },
         ),
-        isSelected = selectedBackgroundColor == color,
-        onClick = { onPreviewBackgroundColorSelected(color) },
     )
 }
 

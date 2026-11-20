@@ -47,7 +47,9 @@ import com.swirlfist.sprited.presentation.RGB_MIN_VALUE
 import com.swirlfist.sprited.presentation.state.PaletteEditState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.IconButton
+import com.swirlfist.sprited.presentation.uielements.IconButtonState
 import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButton
+import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButtonState
 import kotlin.math.roundToInt
 
 @Composable
@@ -68,24 +70,28 @@ fun PaletteEditSection(modifier: Modifier = Modifier, paletteEditState: PaletteE
         ) {
             colors.forEachIndexed { paletteIndex, colorLong ->
                 PaletteColorSelectButton(
-                    Color.fromColorLong(colorLong),
-                    size = 48.dp,
-                    isEnabled = true,
-                    contentDescriptionValue = stringResource(
-                        R.string.cd_new_image_screen_edit_palette_color,
-                        paletteIndex,
+                    state = PaletteColorSelectButtonState(
+                        Color.fromColorLong(colorLong),
+                        size = 48.dp,
+                        isEnabled = true,
+                        contentDescriptionValue = stringResource(
+                            R.string.cd_new_image_screen_edit_palette_color,
+                            paletteIndex,
+                        ),
+                        isSelected = paletteIndex == selectedPaletteIndex,
+                        onClick = { paletteEditState.onPaletteColorClick(paletteIndex) },
                     ),
-                    isSelected = paletteIndex == selectedPaletteIndex,
-                    onClick = { paletteEditState.onPaletteColorClick(paletteIndex) },
                 )
             }
             IconButton(
                 modifier = Modifier.padding(4.dp),
-                drawableResId = R.drawable.ic_new_image_screen_add_palette_color_24dp,
-                contentDescriptionResId = R.string.cd_new_image_screen_add_palette_color,
-                size = 48.dp,
-                isEnabled = true,
-                onClick = paletteEditState.onAddPaletteColorClick,
+                state = IconButtonState(
+                    drawableResId = R.drawable.ic_new_image_screen_add_palette_color_24dp,
+                    contentDescriptionResId = R.string.cd_new_image_screen_add_palette_color,
+                    size = 48.dp,
+                    isEnabled = true,
+                    onClick = paletteEditState.onAddPaletteColorClick,
+                ),
             )
         }
 

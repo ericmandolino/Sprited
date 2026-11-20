@@ -14,24 +14,25 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun IconButton(
-    modifier: Modifier = Modifier,
-    @DrawableRes drawableResId: Int,
-    @StringRes contentDescriptionResId: Int,
-    size: Dp,
-    isEnabled: Boolean,
-    onClick: () -> Unit,
-) {
+fun IconButton(modifier: Modifier = Modifier, state: IconButtonState) {
     FilledIconButton(
         modifier = modifier
-            .size(size),
-        onClick = onClick,
+            .size(state.size),
+        onClick = state.onClick,
         shape = RoundedCornerShape(4.dp),
-        enabled = isEnabled,
+        enabled = state.isEnabled,
     ) {
         Icon(
-            painter = painterResource(drawableResId),
-            contentDescription = stringResource(contentDescriptionResId),
+            painter = painterResource(state.drawableResId),
+            contentDescription = stringResource(state.contentDescriptionResId),
         )
     }
 }
+
+data class IconButtonState(
+    @DrawableRes val drawableResId: Int,
+    @StringRes val contentDescriptionResId: Int,
+    val size: Dp,
+    val isEnabled: Boolean,
+    val onClick: () -> Unit,
+)

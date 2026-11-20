@@ -87,11 +87,13 @@ private fun ActionIconButton(
 ) {
     IconButton(
         modifier,
-        drawableResId = actionIconButtonType.icon,
-        contentDescriptionResId = actionIconButtonType.contentDescription,
-        size,
-        isEnabled,
-        onClick,
+        state = IconButtonState(
+            drawableResId = actionIconButtonType.icon,
+            contentDescriptionResId = actionIconButtonType.contentDescription,
+            size,
+            isEnabled,
+            onClick,
+        ),
     )
 }
 
@@ -112,11 +114,13 @@ private fun ActionPickPaletteColorButton(
 
     PaletteColorButton(
         modifier,
-        color,
-        size,
-        isEnabled,
-        contentDescriptionValue,
-        onClick,
+        state = PaletteColorButtonState(
+            color,
+            size,
+            isEnabled,
+            contentDescriptionValue,
+            onClick,
+        ),
     )
 }
 

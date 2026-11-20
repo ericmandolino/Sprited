@@ -20,14 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 
 @Composable
-fun PaletteColorButton(
-    modifier: Modifier = Modifier,
-    color: Color,
-    size: Dp,
-    isEnabled: Boolean,
-    contentDescriptionValue: String,
-    onClick: () -> Unit,
-) {
+fun PaletteColorButton(modifier: Modifier = Modifier, state: PaletteColorButtonState) {
     Button(
         modifier = modifier
             .border(
@@ -37,45 +30,34 @@ fun PaletteColorButton(
                 ),
                 shape = RoundedCornerShape(4.dp),
             )
-            .size(size)
+            .size(state.size)
             .semantics {
-                contentDescription = contentDescriptionValue
+                contentDescription = state.contentDescriptionValue
             },
-        onClick = onClick,
+        onClick = state.onClick,
         shape = RoundedCornerShape(4.dp),
-        enabled = isEnabled,
+        enabled = state.isEnabled,
         colors = ButtonDefaults.buttonColors().copy(
-            containerColor = color,
-            contentColor = color,
+            containerColor = state.color,
+            contentColor = state.color,
         ),
     ) {
     }
 }
 
 @Composable
-fun PaletteColorSelectButton(
-    color: Color,
-    size: Dp,
-    isEnabled: Boolean,
-    contentDescriptionValue: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-) {
+fun PaletteColorSelectButton(state: PaletteColorSelectButtonState) {
     Box(
         modifier = Modifier
             .wrapContentSize()
             .selectedButtonModifier(
-                isSelected,
+                state.isSelected,
                 IconButtonDefaults.filledIconButtonColors().containerColor,
             ),
     ) {
         PaletteColorButton(
             modifier = Modifier,
-            color,
-            size,
-            isEnabled,
-            contentDescriptionValue,
-            onClick,
+            state = state.toPaletteColorButtonState(),
         )
     }
 }
@@ -85,12 +67,14 @@ fun PaletteColorSelectButton(
 fun PaletteColorSelectButtonPreview() {
     SpritedTheme {
         PaletteColorSelectButton(
-            color = Color.Red,
-            size = 48.dp,
-            isEnabled = true,
-            contentDescriptionValue = "",
-            isSelected = true,
-            onClick = {},
+            state = PaletteColorSelectButtonState(
+                color = Color.Red,
+                size = 48.dp,
+                isEnabled = true,
+                contentDescriptionValue = "",
+                isSelected = true,
+                onClick = {},
+            ),
         )
     }
 }
@@ -100,11 +84,38 @@ fun PaletteColorSelectButtonPreview() {
 fun PaletteColorButtonPreview() {
     SpritedTheme {
         PaletteColorButton(
-            color = Color.Red,
-            size = 48.dp,
-            isEnabled = true,
-            contentDescriptionValue = "",
-            onClick = {},
+            state = PaletteColorButtonState(
+                color = Color.Red,
+                size = 48.dp,
+                isEnabled = true,
+                contentDescriptionValue = "",
+                onClick = {},
+            ),
         )
     }
 }
+
+data class PaletteColorButtonState(
+    val color: Color,
+    val size: Dp,
+    val isEnabled: Boolean,
+    val contentDescriptionValue: String,
+    val onClick: () -> Unit,
+)
+
+data class PaletteColorSelectButtonState(
+    val color: Color,
+    val size: Dp,
+    val isEnabled: Boolean,
+    val contentDescriptionValue: String,
+    val isSelected: Boolean,
+    val onClick: () -> Unit,
+)
+
+private fun PaletteColorSelectButtonState.toPaletteColorButtonState() = PaletteColorButtonState(
+    color,
+    size,
+    isEnabled,
+    contentDescriptionValue,
+    onClick,
+)
