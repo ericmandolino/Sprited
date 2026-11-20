@@ -28,6 +28,7 @@ import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.presentation.state.ActionsSectionState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.ActionButton
+import com.swirlfist.sprited.presentation.uielements.ActionButtonState
 import kotlin.collections.listOf
 
 private const val MAX_BUTTON_GROUP_RENDER = 5
@@ -84,11 +85,13 @@ private fun ButtonAction(
     onEvent: (ActionSectionEvent) -> Unit,
 ) {
     ActionButton(
-        actionButtonType = buttonActionModel.actionType,
-        size = BUTTON_SIZE_DP.dp,
-        isEnabled = buttonActionModel.isEnabled,
-        isSelected = buttonActionModel.isSelected,
-        onClick = { onEvent(buttonActionModel.actionType.toActionsSectionEvent()) },
+        state = ActionButtonState(
+            actionButtonType = buttonActionModel.actionType,
+            size = BUTTON_SIZE_DP.dp,
+            isEnabled = buttonActionModel.isEnabled,
+            isSelected = buttonActionModel.isSelected,
+            onClick = { onEvent(buttonActionModel.actionType.toActionsSectionEvent()) },
+        ),
     )
 }
 

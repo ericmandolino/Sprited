@@ -18,22 +18,15 @@ import com.swirlfist.sprited.presentation.section.ActionIconButtonType
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 
 @Composable
-fun ActionButton(
-    modifier: Modifier = Modifier,
-    actionButtonType: ActionButtonType,
-    size: Dp = 48.dp,
-    isEnabled: Boolean,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-) {
+fun ActionButton(modifier: Modifier = Modifier, state: ActionButtonState) {
     Box(
         modifier = modifier
             .selectedButtonModifier(
-                isSelected,
+                state.isSelected,
                 IconButtonDefaults.filledIconButtonColors().containerColor,
             ),
     ) {
-        when (actionButtonType) {
+        when (val actionButtonType = state.actionButtonType) {
             ActionButtonType.NoParentActionUndoRedoButtonGroupType,
             ActionButtonType.NoParentActionZoomButtonGroupType,
             ActionButtonType.NoParentActionSelectionButtonGroupType,
@@ -67,18 +60,18 @@ fun ActionButton(
                 ActionIconButton(
                     modifier,
                     actionIconButtonType = actionButtonType as ActionIconButtonType,
-                    size,
-                    isEnabled,
-                    onClick,
+                    state.size,
+                    state.isEnabled,
+                    state.onClick,
                 )
             }
 
             is ActionButtonType.PickPaletteColorActionButtonType -> ActionPickPaletteColorButton(
                 modifier,
                 pickPaletteColorActionButtonType = actionButtonType,
-                size,
-                isEnabled,
-                onClick,
+                state.size,
+                state.isEnabled,
+                state.onClick,
             )
         }
     }
@@ -132,13 +125,16 @@ private fun ActionPickPaletteColorButton(
 fun IconButtonEnabledPreview() {
     SpritedTheme {
         ActionButton(
-            actionButtonType = ActionButtonType.RedoActionButtonType,
-            size = 48.dp,
-            isEnabled = true,
-            isSelected = false,
-        ) {
-            android.util.Log.d("ActionIconButton", "clicked!")
-        }
+            state = ActionButtonState(
+                actionButtonType = ActionButtonType.RedoActionButtonType,
+                size = 48.dp,
+                isEnabled = true,
+                isSelected = false,
+                onClick = {
+                    android.util.Log.d("ActionIconButton", "clicked!")
+                },
+            ),
+        )
     }
 }
 
@@ -147,13 +143,16 @@ fun IconButtonEnabledPreview() {
 fun IconButtonSelectedPreview() {
     SpritedTheme {
         ActionButton(
-            actionButtonType = ActionButtonType.RedoActionButtonType,
-            size = 48.dp,
-            isEnabled = true,
-            isSelected = true,
-        ) {
-            android.util.Log.d("ActionIconButton", "clicked!")
-        }
+            state = ActionButtonState(
+                actionButtonType = ActionButtonType.RedoActionButtonType,
+                size = 48.dp,
+                isEnabled = true,
+                isSelected = true,
+                onClick = {
+                    android.util.Log.d("ActionIconButton", "clicked!")
+                },
+            ),
+        )
     }
 }
 
@@ -163,13 +162,16 @@ fun IconButtonDisabledPreview() {
     SpritedTheme {
         SpritedTheme {
             ActionButton(
-                actionButtonType = ActionButtonType.RedoActionButtonType,
-                size = 48.dp,
-                isEnabled = false,
-                isSelected = false,
-            ) {
-                android.util.Log.d("ActionIconButton", "clicked!")
-            }
+                state = ActionButtonState(
+                    actionButtonType = ActionButtonType.RedoActionButtonType,
+                    size = 48.dp,
+                    isEnabled = false,
+                    isSelected = false,
+                    onClick = {
+                        android.util.Log.d("ActionIconButton", "clicked!")
+                    },
+                ),
+            )
         }
     }
 }
@@ -179,21 +181,24 @@ fun IconButtonDisabledPreview() {
 fun ActionPickPaletteColorButtonPreview() {
     SpritedTheme {
         ActionButton(
-            actionButtonType = ActionButtonType.PickPaletteColorActionButtonType(
-                paletteIndex = 0,
-                palette = PaletteModel(
-                    colors = listOf(
-                        Color.Blue.toColorLong(),
-                        Color.Red.toColorLong(),
+            state = ActionButtonState(
+                actionButtonType = ActionButtonType.PickPaletteColorActionButtonType(
+                    paletteIndex = 0,
+                    palette = PaletteModel(
+                        colors = listOf(
+                            Color.Blue.toColorLong(),
+                            Color.Red.toColorLong(),
+                        ),
                     ),
                 ),
+                size = 48.dp,
+                isEnabled = true,
+                isSelected = false,
+                onClick = {
+                    android.util.Log.d("ActionPickPaletteColorButton", "clicked!")
+                },
             ),
-            size = 48.dp,
-            isEnabled = true,
-            isSelected = false,
-        ) {
-            android.util.Log.d("ActionPickPaletteColorButton", "clicked!")
-        }
+        )
     }
 }
 
@@ -202,20 +207,31 @@ fun ActionPickPaletteColorButtonPreview() {
 fun ActionPickPaletteColorButtonSelectedPreview() {
     SpritedTheme {
         ActionButton(
-            actionButtonType = ActionButtonType.PickPaletteColorActionButtonType(
-                paletteIndex = 0,
-                palette = PaletteModel(
-                    colors = listOf(
-                        Color.Blue.toColorLong(),
-                        Color.Red.toColorLong(),
+            state = ActionButtonState(
+                actionButtonType = ActionButtonType.PickPaletteColorActionButtonType(
+                    paletteIndex = 0,
+                    palette = PaletteModel(
+                        colors = listOf(
+                            Color.Blue.toColorLong(),
+                            Color.Red.toColorLong(),
+                        ),
                     ),
                 ),
+                size = 48.dp,
+                isEnabled = true,
+                isSelected = true,
+                onClick = {
+                    android.util.Log.d("ActionPickPaletteColorButton", "clicked!")
+                },
             ),
-            size = 48.dp,
-            isEnabled = true,
-            isSelected = true,
-        ) {
-            android.util.Log.d("ActionPickPaletteColorButton", "clicked!")
-        }
+        )
     }
 }
+
+data class ActionButtonState(
+    val actionButtonType: ActionButtonType,
+    val size: Dp = 48.dp,
+    val isEnabled: Boolean,
+    val isSelected: Boolean,
+    val onClick: () -> Unit,
+)
