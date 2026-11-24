@@ -15,6 +15,7 @@ import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.domain.usecase.ExportPixelImageToPngUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 private const val PNG_QUALITY = 100
@@ -28,7 +29,7 @@ class ExportPixelImageToPngUseCaseImpl @Inject constructor(
             params.uri,
         )
         Result.success(Unit)
-    } catch (e: Exception) {
+    } catch (e: IOException) {
         Result.failure(ExportPixelImageError(e))
     }
 

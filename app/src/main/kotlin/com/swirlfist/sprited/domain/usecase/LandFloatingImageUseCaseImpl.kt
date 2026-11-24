@@ -1,7 +1,6 @@
 package com.swirlfist.sprited.domain.usecase
 
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
-import com.swirlfist.sprited.domain.error.LandFloatingImageError
 import com.swirlfist.sprited.domain.getPixelAt
 import com.swirlfist.sprited.domain.getPixelHeight
 import com.swirlfist.sprited.domain.getPixelWidth
@@ -15,15 +14,11 @@ class LandFloatingImageUseCaseImpl @Inject constructor(
 ) : LandFloatingImageUseCase {
     override suspend fun invoke(
         params: LandFloatingImageUseCase.Params,
-    ): Result<PixelImageEditorActionContext> = try {
-        Result.success(
-            landFloatingImage(
-                actionContext = params.actionContext,
-            ),
-        )
-    } catch (exception: Exception) {
-        Result.failure(LandFloatingImageError(exception))
-    }
+    ): Result<PixelImageEditorActionContext> = Result.success(
+        landFloatingImage(
+            actionContext = params.actionContext,
+        ),
+    )
 
     private suspend fun landFloatingImage(
         actionContext: PixelImageEditorActionContext,
@@ -51,7 +46,9 @@ class LandFloatingImageUseCaseImpl @Inject constructor(
                                 floatingX,
                                 floatingY,
                             )
-                            if (floatingPixel.paletteIndex != EMPTY_PIXEL_PALETTE_INDEX) {
+                            if (floatingPixel != null &&
+                                floatingPixel.paletteIndex != EMPTY_PIXEL_PALETTE_INDEX
+                            ) {
                                 floatingPixel
                             } else {
                                 pixel

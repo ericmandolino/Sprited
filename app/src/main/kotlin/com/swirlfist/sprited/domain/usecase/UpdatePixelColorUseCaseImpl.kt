@@ -22,8 +22,8 @@ class UpdatePixelColorUseCaseImpl @Inject constructor(
                     isSameAction = params.isSameAction,
                 ),
             )
-        } catch (exception: Exception) {
-            Result.failure(UpdatePixelError(exception))
+        } catch (exception: UpdatePixelError) {
+            Result.failure(exception)
         }
 
     private suspend fun updatePixel(
@@ -35,7 +35,7 @@ class UpdatePixelColorUseCaseImpl @Inject constructor(
     ): PixelImageModel {
         val pixelImage = actionContext.pixelImage
         val pixelMatrix = pixelImage.pixelMatrixModel
-        val pixel = pixelImage.getPixelAt(x, y)
+        val pixel = pixelImage.getPixelAt(x, y) ?: throw UpdatePixelError()
 
         val pixelImageResult = if (pixel.paletteIndex == paletteIndex) {
             pixelImage

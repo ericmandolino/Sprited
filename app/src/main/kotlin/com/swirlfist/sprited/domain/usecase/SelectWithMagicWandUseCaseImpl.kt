@@ -23,8 +23,8 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
                 y = params.y,
             ),
         )
-    } catch (exception: Exception) {
-        Result.failure(MagicWandSelectionError(exception))
+    } catch (exception: MagicWandSelectionError) {
+        Result.failure(exception)
     }
 
     private suspend fun selectWithMagicWand(
@@ -35,7 +35,7 @@ class SelectWithMagicWandUseCaseImpl @Inject constructor(
         val pixelImage = actionContext.pixelImage
         val pixelSelection = actionContext.pixelSelection
             ?: pixelImage.createSelection(selectedCoordinates = listOf())
-        val pixel = pixelImage.getPixelAt(x, y)
+        val pixel = pixelImage.getPixelAt(x, y) ?: throw MagicWandSelectionError()
         val mutableSelectionMatrix = mutableListOf<MutableList<PixelModel?>>().apply {
             pixelSelection.selected.forEach { row ->
                 add(row.toMutableList())

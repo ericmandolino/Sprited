@@ -6,6 +6,7 @@ import com.swirlfist.sprited.domain.error.WriteToFileError
 import com.swirlfist.sprited.domain.usecase.WriteToFileUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.FileOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
 class WriteToFileUseCaseImpl @Inject constructor(
@@ -17,7 +18,7 @@ class WriteToFileUseCaseImpl @Inject constructor(
             params.uri,
         )
         Result.success(Unit)
-    } catch (e: Exception) {
+    } catch (e: IOException) {
         Result.failure(WriteToFileError(e))
     }
 

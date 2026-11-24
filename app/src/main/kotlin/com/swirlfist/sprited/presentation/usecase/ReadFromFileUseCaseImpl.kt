@@ -6,6 +6,7 @@ import com.swirlfist.sprited.domain.error.ReadFromFileError
 import com.swirlfist.sprited.domain.usecase.ReadFromFileUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class ReadFromFileUseCaseImpl @Inject constructor(
     override suspend fun invoke(params: ReadFromFileUseCase.Params): Result<String> = try {
         val content = readFromFile(params.uri)
         Result.success(content)
-    } catch (e: Exception) {
+    } catch (e: IOException) {
         Result.failure(ReadFromFileError(e))
     }
 

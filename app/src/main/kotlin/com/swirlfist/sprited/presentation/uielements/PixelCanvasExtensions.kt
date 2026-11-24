@@ -259,7 +259,7 @@ private fun DrawScope.drawPixelInCanvas(
     pixelDrawContext: PixelDrawContext,
     state: CanvasDrawImageState,
     backGroundCheckersColors: Pair<Color, Color>?,
-) = with(state) {
+): Unit = with(state) {
     val canvasSize = size
     val pixelOffset = pixelDrawContext.pixelOffset
     val xMatrixCoordinate = pixelDrawContext.matrixCoordinates.x
@@ -270,7 +270,7 @@ private fun DrawScope.drawPixelInCanvas(
     val pixel = pixelImage.getPixelAt(
         x = adjustedXMatrixCoordinate,
         y = adjustedYMatrixCoordinate,
-    )
+    ) ?: return
 
     val visiblePixelWidth =
         min(pixelDrawContext.adjustedPixelSize.width.toFloat(), canvasSize.width - pixelOffset.x)

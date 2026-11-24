@@ -3,6 +3,7 @@ package com.swirlfist.sprited.domain.usecase
 import android.net.Uri
 import com.swirlfist.sprited.data.repository.BasePixelImageRepository
 import com.swirlfist.sprited.domain.error.SavePixelImageError
+import com.swirlfist.sprited.domain.error.WriteToFileError
 import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.presentation.mapper.toPixelImageSaveModel
 import javax.inject.Inject
@@ -18,7 +19,7 @@ class SavePixelImageUseCaseImpl @Inject constructor(
             params.uri,
         )
         Result.success(Unit)
-    } catch (e: Exception) {
+    } catch (e: WriteToFileError) {
         Result.failure(SavePixelImageError(e))
     }
 

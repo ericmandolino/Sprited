@@ -28,7 +28,18 @@ fun PixelMatrixModel.isBlank(): Boolean {
     return true
 }
 
-fun PixelImageModel.getPixelAt(x: Int, y: Int): PixelModel = pixelMatrixModel.content[y][x]
+fun PixelImageModel.getPixelAt(x: Int, y: Int): PixelModel? {
+    val content = pixelMatrixModel.content
+
+    if (y in content.indices) {
+        val row = content[y]
+        if (x in row.indices) {
+            return content[y][x]
+        }
+    }
+
+    return null
+}
 
 fun PixelImageModel.getPixelWidth(): Int = pixelMatrixModel.width()
 
@@ -96,8 +107,6 @@ fun RectangleSelectionModel.bottom() = max(start.second, end.second)
 fun RectangleSelectionModel.left() = min(start.first, end.first)
 
 fun RectangleSelectionModel.right() = max(start.first, end.first)
-
-fun RectangleSelectionModel.isEmpty() = start.first == end.first || start.second == end.second
 
 fun PixelImageModel.selectNonEmpty(): PixelSelectionModel = PixelSelectionModel(
     selected = pixelMatrixModel.content.map { row ->

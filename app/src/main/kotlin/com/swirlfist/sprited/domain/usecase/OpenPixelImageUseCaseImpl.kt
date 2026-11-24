@@ -3,6 +3,7 @@ package com.swirlfist.sprited.domain.usecase
 import android.net.Uri
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
 import com.swirlfist.sprited.domain.error.OpenPixelImageError
+import com.swirlfist.sprited.domain.error.ReadFromFileError
 import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.presentation.mapper.toPixelImageModel
 import com.swirlfist.sprited.presentation.model.PixelImageSaveModel
@@ -18,7 +19,7 @@ class OpenPixelImageUseCaseImpl @Inject constructor(
             val pixelImage = openPixelImage(params.uri)
             pixelImageEditorActionRepository.clearActions()
             Result.success(pixelImage)
-        } catch (e: Exception) {
+        } catch (e: ReadFromFileError) {
             Result.failure(OpenPixelImageError(e))
         }
 

@@ -2,7 +2,6 @@ package com.swirlfist.sprited.domain.usecase
 
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
 import com.swirlfist.sprited.domain.createSelection
-import com.swirlfist.sprited.domain.error.TogglePixelSelectionError
 import com.swirlfist.sprited.domain.getPixelAt
 import com.swirlfist.sprited.domain.isSelected
 import com.swirlfist.sprited.domain.model.PixelImageEditorAction
@@ -15,18 +14,14 @@ class TogglePixelSelectionUseCaseImpl @Inject constructor(
 ) : TogglePixelSelectionUseCase {
     override suspend fun invoke(
         params: TogglePixelSelectionUseCase.Params,
-    ): Result<PixelSelectionModel> = try {
-        Result.success(
-            togglePixelSelection(
-                actionContext = params.actionContext,
-                x = params.x,
-                y = params.y,
-                isSameAction = params.isSameAction,
-            ),
-        )
-    } catch (exception: Exception) {
-        Result.failure(TogglePixelSelectionError(exception))
-    }
+    ): Result<PixelSelectionModel> = Result.success(
+        togglePixelSelection(
+            actionContext = params.actionContext,
+            x = params.x,
+            y = params.y,
+            isSameAction = params.isSameAction,
+        ),
+    )
 
     private suspend fun togglePixelSelection(
         actionContext: PixelImageEditorActionContext,

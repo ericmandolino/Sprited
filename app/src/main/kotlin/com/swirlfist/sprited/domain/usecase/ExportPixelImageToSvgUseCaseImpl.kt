@@ -11,6 +11,7 @@ import com.swirlfist.sprited.domain.model.PixelMatrixModel
 import com.swirlfist.sprited.domain.model.PixelModel
 import com.swirlfist.sprited.domain.toHexCode
 import com.swirlfist.sprited.domain.width
+import java.io.IOException
 import javax.inject.Inject
 
 class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
@@ -22,7 +23,7 @@ class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
             params.uri,
         )
         Result.success(Unit)
-    } catch (e: Exception) {
+    } catch (e: IOException) {
         Result.failure(ExportPixelImageError(e))
     }
 

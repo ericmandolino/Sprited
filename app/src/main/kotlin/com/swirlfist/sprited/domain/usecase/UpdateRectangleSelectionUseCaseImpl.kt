@@ -5,7 +5,6 @@ import com.swirlfist.sprited.domain.bottom
 import com.swirlfist.sprited.domain.bottomLeft
 import com.swirlfist.sprited.domain.bottomRight
 import com.swirlfist.sprited.domain.createSelection
-import com.swirlfist.sprited.domain.error.UpdateRectangleSelectionError
 import com.swirlfist.sprited.domain.left
 import com.swirlfist.sprited.domain.model.PixelImageEditorAction
 import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
@@ -22,19 +21,15 @@ class UpdateRectangleSelectionUseCaseImpl @Inject constructor(
 ) : UpdateRectangleSelectionUseCase {
     override suspend fun invoke(
         params: UpdateRectangleSelectionUseCase.Params,
-    ): Result<PixelSelectionModel> = try {
-        Result.success(
-            updateRectangleSelection(
-                actionContext = params.actionContext,
-                x = params.x,
-                y = params.y,
-                actionType = params.actionType,
-                isSameAction = params.isSameAction,
-            ),
-        )
-    } catch (exception: Exception) {
-        Result.failure(UpdateRectangleSelectionError(exception))
-    }
+    ): Result<PixelSelectionModel> = Result.success(
+        updateRectangleSelection(
+            actionContext = params.actionContext,
+            x = params.x,
+            y = params.y,
+            actionType = params.actionType,
+            isSameAction = params.isSameAction,
+        ),
+    )
 
     private suspend fun updateRectangleSelection(
         actionContext: PixelImageEditorActionContext,

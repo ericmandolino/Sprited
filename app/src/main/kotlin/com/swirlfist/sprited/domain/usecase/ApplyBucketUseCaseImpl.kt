@@ -1,6 +1,7 @@
 package com.swirlfist.sprited.domain.usecase
 
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
+import com.swirlfist.sprited.domain.error.ApplyBuckerError
 import com.swirlfist.sprited.domain.getPixelAt
 import com.swirlfist.sprited.domain.model.PixelImageEditorAction
 import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
@@ -11,7 +12,7 @@ import javax.inject.Inject
 class ApplyBucketUseCaseImpl @Inject constructor(
     private val pixelImageEditorActionRepository: PixelImageEditorActionRepository,
 ) : ApplyBucketUseCase {
-    override suspend fun invoke(params: ApplyBucketUseCase.Params): Result<PixelImageModel> =
+    override suspend fun invoke(params: ApplyBucketUseCase.Params): Result<PixelImageModel> = try {
         Result.success(
             applyBucket(
                 actionContext = params.actionContext,
@@ -21,6 +22,9 @@ class ApplyBucketUseCaseImpl @Inject constructor(
                 isSameAction = params.isSameAction,
             ),
         )
+    } catch (exception: ApplyBuckerError) {
+        Result.failure(exception)
+    }
 
     private suspend fun applyBucket(
         actionContext: PixelImageEditorActionContext,
@@ -30,7 +34,7 @@ class ApplyBucketUseCaseImpl @Inject constructor(
         isSameAction: Boolean,
     ): PixelImageModel {
         val pixelImage = actionContext.pixelImage
-        val pixel = pixelImage.getPixelAt(x, y)
+        val pixel = pixelImage.getPixelAt(x, y) ?: throw ApplyBuckerError()
 
         val pixelImageResult = if (pixel.paletteIndex == paletteIndex) {
             pixelImage
