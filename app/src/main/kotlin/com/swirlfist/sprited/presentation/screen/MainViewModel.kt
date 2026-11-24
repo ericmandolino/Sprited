@@ -134,7 +134,6 @@ class MainViewModel @Inject constructor(
                     ),
                     pixelImagePreviewSectionState = mainScreenState.pixelImagePreviewSectionState
                         .copy(
-                            pixelImageModel = pixelImageModel,
                             isFitAvailableSpace = true,
                         ),
                 )
@@ -580,8 +579,7 @@ class MainViewModel @Inject constructor(
         _mainScreenState.update { mainScreenState ->
             val canvasSectionState = mainScreenState.canvasSectionState
             val actionsSectionState = mainScreenState.actionsSectionState
-            val pixelImagePreviewSectionState =
-                mainScreenState.pixelImagePreviewSectionState
+
             mainScreenState.copy(
                 canvasSectionState = canvasSectionState.copy(
                     pixelImageModel = pixelImage,
@@ -593,9 +591,6 @@ class MainViewModel @Inject constructor(
                 } else {
                     actionsSectionState
                 },
-                pixelImagePreviewSectionState = pixelImagePreviewSectionState.copy(
-                    pixelImageModel = pixelImage,
-                ),
             )
         }
     }
@@ -1275,10 +1270,6 @@ class MainViewModel @Inject constructor(
                             actionsSectionState = state.actionsSectionState.updatePaletteButtons(
                                 palette = pixelImage.paletteModel,
                             ),
-                            pixelImagePreviewSectionState = state.pixelImagePreviewSectionState
-                                .copy(
-                                    pixelImageModel = pixelImage,
-                                ),
                         )
                     }
                 },

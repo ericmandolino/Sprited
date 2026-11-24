@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.swirlfist.sprited.R
 import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.domain.toHexCode
+import com.swirlfist.sprited.presentation.state.CanvasSectionState
 import com.swirlfist.sprited.presentation.state.PixelImagePreviewSectionState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.PaletteColorSelectButton
@@ -24,9 +25,15 @@ import com.swirlfist.sprited.presentation.uielements.PixelCanvasSnapshot
 import com.swirlfist.sprited.presentation.uielements.createCheckersPixelImage
 
 @Composable
-fun PixelImagePreviewSection(modifier: Modifier = Modifier, state: PixelImagePreviewSectionState) {
-    val pixelImage = state.pixelImageModel
-    val selectedBackgroundColor = Color.fromColorLong(state.selectedPreviewBackgroundColorLong)
+fun PixelImagePreviewSection(
+    modifier: Modifier = Modifier,
+    previewState: PixelImagePreviewSectionState,
+    canvasState: CanvasSectionState,
+) {
+    val pixelImage = canvasState.pixelImageModel
+    val selectedBackgroundColor = Color.fromColorLong(
+        previewState.selectedPreviewBackgroundColorLong,
+    )
 
     if (pixelImage != null) {
         Row(
@@ -39,12 +46,12 @@ fun PixelImagePreviewSection(modifier: Modifier = Modifier, state: PixelImagePre
                 modifier = modifier
                     .weight(1F),
                 pixelImage = pixelImage,
-                isFitAvailableSpace = state.isFitAvailableSpace,
+                isFitAvailableSpace = previewState.isFitAvailableSpace,
                 backgroundColor = selectedBackgroundColor,
             )
             PixelImagePreviewBackgroundColorSelection(
                 selectedBackgroundColor = selectedBackgroundColor,
-                onPreviewBackgroundColorSelected = state.onPreviewBackgroundColorSelected,
+                onPreviewBackgroundColorSelected = previewState.onPreviewBackgroundColorSelected,
             )
         }
     }
@@ -110,16 +117,18 @@ fun PixelImagePreviewSectionFitPreview() {
     SpritedTheme {
         PixelImagePreviewSection(
             modifier = Modifier.fillMaxSize(),
-            state = PixelImagePreviewSectionState(
+            previewState = PixelImagePreviewSectionState(
                 onPreviewBackgroundColorSelected = {},
             ).copy(
+                isFitAvailableSpace = true,
+            ),
+            canvasState = CanvasSectionState(
                 pixelImageModel = createCheckersPixelImage(
                     width = 32,
                     height = 32,
                     color1 = Color.Black.toColorLong(),
                     color2 = Color.Yellow.toColorLong(),
                 ),
-                isFitAvailableSpace = true,
             ),
         )
     }
@@ -131,16 +140,18 @@ fun PixelImagePreviewSectionNoFitPreview() {
     SpritedTheme {
         PixelImagePreviewSection(
             modifier = Modifier.fillMaxSize(),
-            state = PixelImagePreviewSectionState(
+            previewState = PixelImagePreviewSectionState(
                 onPreviewBackgroundColorSelected = {},
             ).copy(
+                isFitAvailableSpace = false,
+            ),
+            canvasState = CanvasSectionState(
                 pixelImageModel = createCheckersPixelImage(
                     width = 32,
                     height = 32,
                     color1 = Color.Black.toColorLong(),
                     color2 = Color.Yellow.toColorLong(),
                 ),
-                isFitAvailableSpace = false,
             ),
         )
     }
@@ -152,15 +163,17 @@ fun PixelImagePreviewSectionEmptyNoFitPreview() {
     SpritedTheme {
         PixelImagePreviewSection(
             modifier = Modifier.fillMaxSize(),
-            state = PixelImagePreviewSectionState(
+            previewState = PixelImagePreviewSectionState(
                 onPreviewBackgroundColorSelected = {},
             ).copy(
+                isFitAvailableSpace = false,
+            ),
+            canvasState = CanvasSectionState(
                 pixelImageModel = PixelImageModel.createEmpty(
                     width = 32,
                     height = 32,
                     colors = listOf(Color.Black.toColorLong(), Color.Yellow.toColorLong()),
                 ),
-                isFitAvailableSpace = false,
             ),
         )
     }

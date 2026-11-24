@@ -29,6 +29,7 @@ import com.swirlfist.sprited.presentation.section.ActionCancelButtonsDialogFoote
 import com.swirlfist.sprited.presentation.section.ActionCancelButtonsDialogFooterState
 import com.swirlfist.sprited.presentation.section.PaletteEditSection
 import com.swirlfist.sprited.presentation.section.PixelImagePreviewSection
+import com.swirlfist.sprited.presentation.state.CanvasSectionState
 import com.swirlfist.sprited.presentation.state.PaletteEditDialogState
 import com.swirlfist.sprited.presentation.state.PaletteEditState
 import com.swirlfist.sprited.presentation.state.PixelImagePreviewSectionState
@@ -87,7 +88,10 @@ fun PaletteEditDialogContent(
                         modifier = Modifier
                             .height(128.dp)
                             .fillMaxWidth(),
-                        state = pixelImagePreviewSectionState,
+                        previewState = pixelImagePreviewSectionState,
+                        canvasState = CanvasSectionState(
+                            pixelImageModel = paletteEditDialogState.pixelImageModel,
+                        ),
                     )
                 }
 
@@ -99,7 +103,7 @@ fun PaletteEditDialogContent(
                         onActionClick = {
                             onSaveChangesClick(
                                 PaletteModel(paletteEditDialogState.paletteEditState.paletteColors),
-                                pixelImagePreviewSectionState?.pixelImageModel?.pixelMatrixModel,
+                                paletteEditDialogState.pixelImageModel?.pixelMatrixModel,
                             )
                         },
                         onCancelClick = onCancelClick,
@@ -149,10 +153,10 @@ fun PaletteEditDialogContentPreview() {
                     selectedPaletteIndex = 1,
                 ),
                 pixelImagePreviewSectionState = PixelImagePreviewSectionState(
-                    pixelImageModel = pixelImage,
                     isFitAvailableSpace = true,
                     onPreviewBackgroundColorSelected = {},
                 ),
+                pixelImageModel = pixelImage,
             ),
             onSaveChangesClick = { _, _ -> },
             onCancelClick = {},

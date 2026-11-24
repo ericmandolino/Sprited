@@ -278,7 +278,8 @@ fun MainScreenContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(FLOAT_30_PERCENT),
-                    state = mainScreenState.pixelImagePreviewSectionState,
+                    previewState = mainScreenState.pixelImagePreviewSectionState,
+                    canvasState = mainScreenState.canvasSectionState,
                 )
             }
         }
@@ -333,6 +334,7 @@ fun ThreePaneContent(
         supportingPane = {
             SupportingPane(
                 actionsSectionState = mainScreenState.actionsSectionState,
+                canvasSectionState = mainScreenState.canvasSectionState,
                 pixelImagePreviewSectionState = mainScreenState.pixelImagePreviewSectionState,
                 onActionsSectionEvent = onActionsSectionEvent,
                 scaffoldNavigator = scaffoldNavigator,
@@ -398,6 +400,7 @@ fun ThreePaneScaffoldPaneScope.MainPane(
 fun ThreePaneScaffoldPaneScope.SupportingPane(
     modifier: Modifier = Modifier,
     actionsSectionState: ActionsSectionState,
+    canvasSectionState: CanvasSectionState,
     pixelImagePreviewSectionState: PixelImagePreviewSectionState,
     onActionsSectionEvent: (ActionSectionEvent) -> Unit,
     scaffoldNavigator: ThreePaneScaffoldNavigator<Any>,
@@ -442,7 +445,8 @@ fun ThreePaneScaffoldPaneScope.SupportingPane(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(FLOAT_30_PERCENT),
-                state = pixelImagePreviewSectionState,
+                previewState = pixelImagePreviewSectionState,
+                canvasState = canvasSectionState,
             )
         }
     }

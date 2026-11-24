@@ -53,12 +53,12 @@ class PaletteEditViewModel @Inject constructor() : ViewModel() {
         _paletteEditDialogState.update { state ->
             state.copy(
                 pixelImagePreviewSectionState = PixelImagePreviewSectionState(
-                    pixelImageModel = PixelImageModel(
-                        pixelMatrixModel = pixelMatrix,
-                        paletteModel = PaletteModel(paletteColors),
-                    ),
                     isFitAvailableSpace = true,
                     onPreviewBackgroundColorSelected = ::onPreviewBackgroundColorSelected,
+                ),
+                pixelImageModel = PixelImageModel(
+                    pixelMatrixModel = pixelMatrix,
+                    paletteModel = PaletteModel(paletteColors),
                 ),
             )
         }
@@ -82,20 +82,15 @@ class PaletteEditViewModel @Inject constructor() : ViewModel() {
 
     private fun deleteColorFromPalette() {
         _paletteEditDialogState.update { state ->
-            val newPixelImagePreviewSectionState = state.pixelImagePreviewSectionState
-                ?.let { previewState ->
-                    state.paletteEditState.selectedPaletteIndex?.let { paletteIndex ->
-                        previewState.copy(
-                            pixelImageModel = previewState.pixelImageModel?.deletePaletteColor(
-                                paletteIndex,
-                            ),
-                        )
-                    }
-                }
+            val paletteEditState = state.paletteEditState
+
+            val newPixelImageModel = paletteEditState.selectedPaletteIndex?.let { paletteIndex ->
+                state.pixelImageModel?.deletePaletteColor(paletteIndex)
+            }
 
             state.copy(
-                paletteEditState = state.paletteEditState.deleteSelectedColor(),
-                pixelImagePreviewSectionState = newPixelImagePreviewSectionState,
+                paletteEditState = paletteEditState.deleteSelectedColor(),
+                pixelImageModel = newPixelImageModel,
             )
         }
     }
@@ -125,19 +120,14 @@ class PaletteEditViewModel @Inject constructor() : ViewModel() {
         val newPaletteColors = newPaletteEditState.paletteColors
         state.copy(
             paletteEditState = newPaletteEditState,
-            pixelImagePreviewSectionState = state.pixelImagePreviewSectionState?.replacePalette(
+            pixelImageModel = state.pixelImageModel?.replacePalette(
                 newPaletteColors,
             ),
         )
     }
 
-    private fun PixelImagePreviewSectionState.replacePalette(newPaletteColors: List<Long>) = copy(
-        pixelImageModel = pixelImageModel?.let { pixelImage ->
-            PixelImageModel(
-                pixelMatrixModel = pixelImage.pixelMatrixModel,
-                paletteModel = PaletteModel(newPaletteColors),
-            )
-        },
+    private fun PixelImageModel.replacePalette(newPaletteColors: List<Long>) = copy(
+        paletteModel = PaletteModel(newPaletteColors),
     )
 
     private fun onPreviewBackgroundColorSelected(color: Color) {
