@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.fromColorLong
 import com.swirlfist.sprited.domain.error.ExportPixelImageError
+import com.swirlfist.sprited.domain.error.WriteToFileError
 import com.swirlfist.sprited.domain.toHexCode
 import com.swirlfist.sprited.testutil.PixelImageModelTestUtil
 import io.mockk.MockKAnnotations
@@ -88,7 +89,7 @@ class ExportPixelImageToSvgUseCaseImplTest {
             pixelImageModel,
             uri,
         )
-        val expectedException = mockk<Exception>()
+        val expectedException = mockk<WriteToFileError>()
         coEvery { writeToFileUseCase(any()) }.returns(Result.failure(expectedException))
 
         // When

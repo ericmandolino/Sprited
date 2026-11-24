@@ -3,6 +3,7 @@ package com.swirlfist.sprited.domain.usecase
 import android.net.Uri
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
 import com.swirlfist.sprited.domain.error.OpenPixelImageError
+import com.swirlfist.sprited.domain.error.ReadFromFileError
 import com.swirlfist.sprited.presentation.mapper.toPixelImageSaveModel
 import com.swirlfist.sprited.testutil.PixelImageModelTestUtil
 import io.mockk.MockKAnnotations
@@ -49,6 +50,7 @@ class OpenPixelImageUseCaseImplTest {
         val useCaseParams = OpenPixelImageUseCase.Params(
             uri,
         )
+        coEvery { readFromFileUseCase(any()) }.returns(Result.failure(mockk<ReadFromFileError>()))
 
         // When
         useCase(useCaseParams)
@@ -69,7 +71,7 @@ class OpenPixelImageUseCaseImplTest {
         val useCaseParams = OpenPixelImageUseCase.Params(
             uri,
         )
-        val expectedException = mockk<Exception>()
+        val expectedException = mockk<ReadFromFileError>()
         coEvery { readFromFileUseCase(any()) }.returns(Result.failure(expectedException))
 
         // When
@@ -136,7 +138,7 @@ class OpenPixelImageUseCaseImplTest {
         val useCaseParams = OpenPixelImageUseCase.Params(
             uri,
         )
-        val expectedException = mockk<Exception>()
+        val expectedException = mockk<ReadFromFileError>()
         coEvery { readFromFileUseCase(any()) }.returns(Result.failure(expectedException))
 
         // When

@@ -3,6 +3,7 @@ package com.swirlfist.sprited.domain.usecase
 import android.net.Uri
 import com.swirlfist.sprited.data.repository.BasePixelImageRepository
 import com.swirlfist.sprited.domain.error.SavePixelImageError
+import com.swirlfist.sprited.domain.error.WriteToFileError
 import com.swirlfist.sprited.testutil.PixelImageModelTestUtil
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -112,7 +113,7 @@ class SavePixelImageUseCaseImplTest {
             pixelImageModel,
             uri,
         )
-        val expectedException = mockk<Exception>()
+        val expectedException = mockk<WriteToFileError>()
         coEvery { writeToFileUseCase(any()) }.returns(Result.failure(expectedException))
 
         // When

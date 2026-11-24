@@ -2,6 +2,7 @@ package com.swirlfist.sprited.domain.usecase
 
 import com.swirlfist.sprited.data.repository.PixelImageEditorActionRepository
 import com.swirlfist.sprited.domain.getPixelAt
+import com.swirlfist.sprited.domain.model.EMPTY_PIXEL_PALETTE_INDEX
 import com.swirlfist.sprited.domain.model.PixelImageEditorAction
 import com.swirlfist.sprited.domain.model.PixelImageEditorActionContext
 import com.swirlfist.sprited.testutil.PixelImageModelTestUtil
@@ -49,7 +50,7 @@ class ApplyBucketUseCaseImplTest {
             x,
             y,
             isSameAction = false,
-            paletteIndex = pixelImageModel.getPixelAt(x, y).paletteIndex,
+            paletteIndex = pixelImageModel.getPixelAt(x, y)?.paletteIndex ?: EMPTY_PIXEL_PALETTE_INDEX,
         )
 
         // When

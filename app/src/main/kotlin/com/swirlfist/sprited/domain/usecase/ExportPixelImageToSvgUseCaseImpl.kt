@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.fromColorLong
 import com.swirlfist.sprited.domain.error.ExportPixelImageError
+import com.swirlfist.sprited.domain.error.WriteToFileError
 import com.swirlfist.sprited.domain.height
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PixelImageModel
@@ -24,6 +25,8 @@ class ExportPixelImageToSvgUseCaseImpl @Inject constructor(
         )
         Result.success(Unit)
     } catch (e: IOException) {
+        Result.failure(ExportPixelImageError(e))
+    } catch (e: WriteToFileError) {
         Result.failure(ExportPixelImageError(e))
     }
 
