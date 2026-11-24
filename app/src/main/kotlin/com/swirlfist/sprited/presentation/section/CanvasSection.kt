@@ -18,6 +18,7 @@ import com.swirlfist.sprited.domain.model.RectangleSelectionModel
 import com.swirlfist.sprited.presentation.state.CanvasSectionState
 import com.swirlfist.sprited.presentation.theme.SpritedTheme
 import com.swirlfist.sprited.presentation.uielements.PixelCanvas
+import com.swirlfist.sprited.presentation.uielements.PixelCanvasState
 import com.swirlfist.sprited.presentation.uielements.createCheckersPixelImage
 
 @Composable
@@ -31,15 +32,17 @@ fun CanvasSection(
     if (pixelImage != null) {
         PixelCanvas(
             modifier = modifier,
-            pixelImage = pixelImage,
-            pixelSelection = state.pixelSelectionModel,
-            floatingPixelImage = state.floatingPixelImageModel,
-            initialZoomFactor = state.zoomFactor,
-            isShowGridEnabled = state.isShowGridEnabled,
-            onPixelVisited = { x, y -> onEvent(CanvasSectionEvent.PixelVisited(x, y)) },
-            onPixelVisitCancel = { onEvent(CanvasSectionEvent.PixelVisitCancel) },
-            onPixelVisitFinish = { onEvent(CanvasSectionEvent.PixelVisitEnd) },
-            onZoomUpdate = { zoom -> onEvent(CanvasSectionEvent.ZoomUpdate(zoom)) },
+            state = PixelCanvasState(
+                pixelImage = pixelImage,
+                pixelSelection = state.pixelSelectionModel,
+                floatingPixelImage = state.floatingPixelImageModel,
+                initialZoomFactor = state.zoomFactor,
+                isShowGridEnabled = state.isShowGridEnabled,
+                onPixelVisited = { x, y -> onEvent(CanvasSectionEvent.PixelVisited(x, y)) },
+                onPixelVisitCancel = { onEvent(CanvasSectionEvent.PixelVisitCancel) },
+                onPixelVisitFinish = { onEvent(CanvasSectionEvent.PixelVisitEnd) },
+                onZoomUpdate = { zoom -> onEvent(CanvasSectionEvent.ZoomUpdate(zoom)) },
+            ),
         )
     }
 }
