@@ -117,13 +117,13 @@ class UpdateRectangleSelectionUseCaseImpl @Inject constructor(
         actionType: RectangleSelectionActionType,
         isSameAction: Boolean,
     ): PixelSelectionModel {
-        val rectangleSelection = pixelSelection.rectangleSelection ?: return pixelSelection
-
-        val adjustedRectangleSelection = adjustRectangleSelection(
-            rectangleSelection,
-            actionType,
-            isSameAction,
-        ) ?: return pixelSelection
+        val adjustedRectangleSelection = pixelSelection.rectangleSelection?.let { selection ->
+            adjustRectangleSelection(
+                selection,
+                actionType,
+                isSameAction,
+            )
+        } ?: return pixelSelection
 
         val adjustedX = when (actionType) {
             RectangleSelectionActionType.RESIZE_TOP_LEFT_CORNER,
@@ -202,18 +202,18 @@ class UpdateRectangleSelectionUseCaseImpl @Inject constructor(
         actionType: RectangleSelectionActionType,
         isSameAction: Boolean,
     ): PixelSelectionModel {
-        val rectangleSelection = pixelSelection.rectangleSelection ?: return pixelSelection
-
-        val adjustedRectangleSelection = if (!isSameAction) {
-            when (actionType) {
-                RectangleSelectionActionType.RESIZE_VERTICAL_TOP ->
-                    rectangleSelection.startFromBottomRight()
-                RectangleSelectionActionType.RESIZE_VERTICAL_BOTTOM ->
-                    rectangleSelection.startFromTopRight()
-                else -> null
+        val adjustedRectangleSelection = pixelSelection.rectangleSelection?.let { selection ->
+            if (!isSameAction) {
+                when (actionType) {
+                    RectangleSelectionActionType.RESIZE_VERTICAL_TOP ->
+                        selection.startFromBottomRight()
+                    RectangleSelectionActionType.RESIZE_VERTICAL_BOTTOM ->
+                        selection.startFromTopRight()
+                    else -> null
+                }
+            } else {
+                selection
             }
-        } else {
-            rectangleSelection
         } ?: return pixelSelection
 
         val adjustedY = when (actionType) {
@@ -251,18 +251,18 @@ class UpdateRectangleSelectionUseCaseImpl @Inject constructor(
         actionType: RectangleSelectionActionType,
         isSameAction: Boolean,
     ): PixelSelectionModel {
-        val rectangleSelection = pixelSelection.rectangleSelection ?: return pixelSelection
-
-        val adjustedRectangleSelection = if (!isSameAction) {
-            when (actionType) {
-                RectangleSelectionActionType.RESIZE_HORIZONTAL_LEFT ->
-                    rectangleSelection.startFromTopRight()
-                RectangleSelectionActionType.RESIZE_HORIZONTAL_RIGHT ->
-                    rectangleSelection.startFromTopLeft()
-                else -> null
+        val adjustedRectangleSelection = pixelSelection.rectangleSelection?.let { selection ->
+            if (!isSameAction) {
+                when (actionType) {
+                    RectangleSelectionActionType.RESIZE_HORIZONTAL_LEFT ->
+                        selection.startFromTopRight()
+                    RectangleSelectionActionType.RESIZE_HORIZONTAL_RIGHT ->
+                        selection.startFromTopLeft()
+                    else -> null
+                }
+            } else {
+                selection
             }
-        } else {
-            rectangleSelection
         } ?: return pixelSelection
 
         val adjustedX = when (actionType) {

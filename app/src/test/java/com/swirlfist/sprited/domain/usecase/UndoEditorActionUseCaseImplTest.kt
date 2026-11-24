@@ -32,7 +32,7 @@ class UndoEditorActionUseCaseImplTest {
     }
 
     @Test
-    fun `when invoking the use case if the call to the repository returns the resulting image then the use case succeeds`() =
+    fun `when invoking the use case if the call to the repository returns the resulting image then it succeeds`() =
         runTest {
             // Given
             val pixelImage = mockk<PixelImageModel>()

@@ -7,6 +7,7 @@ import com.swirlfist.sprited.domain.model.PixelMatrixModel
 import com.swirlfist.sprited.domain.model.PixelModel
 import com.swirlfist.sprited.domain.model.PixelSelectionModel
 import com.swirlfist.sprited.domain.model.RectangleSelectionModel
+import com.swirlfist.sprited.presentation.RGB_MAX_VALUE
 import kotlin.math.max
 import kotlin.math.min
 
@@ -45,17 +46,16 @@ fun PixelImageModel.getPixelWidth(): Int = pixelMatrixModel.width()
 
 fun PixelImageModel.getPixelHeight(): Int = pixelMatrixModel.height()
 
-fun PixelSelectionModel.isSelected(x: Int, y: Int): Boolean {
-    if (y !in selected.indices) {
-        return false
-    }
-
+fun PixelSelectionModel.isSelected(x: Int, y: Int): Boolean = if (y !in selected.indices) {
+    false
+} else {
     val row = selected[y]
-    if (x !in row.indices) {
-        return false
-    }
 
-    return row[x] != null
+    if (x !in row.indices) {
+        false
+    } else {
+        row[x] != null
+    }
 }
 
 fun PixelImageModel.createSelection(
@@ -121,9 +121,9 @@ fun PixelImageModel.selectNonEmpty(): PixelSelectionModel = PixelSelectionModel(
 )
 
 fun Color.toHexCode(): String {
-    val red = this.red * 255
-    val green = this.green * 255
-    val blue = this.blue * 255
+    val red = this.red * RGB_MAX_VALUE
+    val green = this.green * RGB_MAX_VALUE
+    val blue = this.blue * RGB_MAX_VALUE
 
     return String.format(HEX_FORMAT, red.toInt(), green.toInt(), blue.toInt())
 }
