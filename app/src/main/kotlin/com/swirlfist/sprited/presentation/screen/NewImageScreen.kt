@@ -68,6 +68,13 @@ fun NewImageScreen(viewModel: NewImageViewModel = hiltViewModel(), navigateToMai
         heightTextFieldState,
     )
 
+    newImageScreenState.savePalettePresetError?.let {
+        NoActionErrorDialog(
+            errorMessage = stringResource(R.string.error_save_palette_preset),
+            onDismiss = viewModel::clearSavePalettePresetError,
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

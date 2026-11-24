@@ -31,6 +31,7 @@
     <string name="cd_actions_section_button_zoom_out">Zoom out</string>
     <string name="cd_preview_section_button_pick_background_color">Select preview background color %s</string>
     <string name="error_open_pixel_image">No pixel image could be loaded</string>
+    <string name="error_save_palette_preset">Palette preset could not be saved</string>
     <string name="error_export_pixel_image">Pixel image could not be exported</string>
     <string name="success_export_pixel_image">Pixel image exported successfully</string>
     <string name="new_image">New image</string>

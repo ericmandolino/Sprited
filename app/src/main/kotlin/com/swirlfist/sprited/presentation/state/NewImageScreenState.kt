@@ -1,6 +1,7 @@
 package com.swirlfist.sprited.presentation.state
 
 import androidx.compose.foundation.text.input.TextFieldState
+import com.swirlfist.sprited.domain.error.SavePalettePresetError
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PalettePresetModel
 
@@ -11,6 +12,7 @@ data class NewImageScreenState(
     val isShowPalettePresets: Boolean = false,
     val isShowSavePalettePreset: Boolean = false,
     val paletteState: NewImagePaletteState = NewImagePaletteState(),
+    val savePalettePresetError: SavePalettePresetError? = null,
     val onCreateImageClick: () -> Unit = {},
     val onPalettePresetSelected: (PaletteModel) -> Unit = {},
     val onDeletePalettePresetClick: (PalettePresetModel) -> Unit = {},

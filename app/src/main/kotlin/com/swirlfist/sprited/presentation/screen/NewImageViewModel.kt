@@ -3,6 +3,7 @@ package com.swirlfist.sprited.presentation.screen
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.swirlfist.sprited.domain.error.SavePalettePresetError
 import com.swirlfist.sprited.domain.model.PaletteModel
 import com.swirlfist.sprited.domain.model.PalettePresetModel
 import com.swirlfist.sprited.domain.model.PixelImageModel
@@ -127,15 +128,15 @@ class NewImageViewModel @Inject constructor(
                         )
                     }
                 },
-                failureBlock = {
+                failureBlock = { error ->
                     _newImageScreenState.update { state ->
                         state.copy(
                             paletteState = state.paletteState.copy(
                                 isSavingPalettePreset = false,
                             ),
+                            savePalettePresetError = error as? SavePalettePresetError,
                         )
                     }
-                    // TODO: display error
                 },
                 params = SavePalettePresetUseCase.Params(
                     PalettePresetModel(
@@ -144,6 +145,14 @@ class NewImageViewModel @Inject constructor(
                         palette = PaletteModel(paletteColors),
                     ),
                 ),
+            )
+        }
+    }
+
+    fun clearSavePalettePresetError() {
+        _newImageScreenState.update { state ->
+            state.copy(
+                savePalettePresetError = null,
             )
         }
     }
