@@ -7,8 +7,8 @@ import com.swirlfist.sprited.domain.error.ReadFromFileError
 import com.swirlfist.sprited.domain.model.PixelImageModel
 import com.swirlfist.sprited.presentation.mapper.toPixelImageModel
 import com.swirlfist.sprited.presentation.model.PixelImageSaveModel
-import kotlinx.serialization.SerializationException
 import javax.inject.Inject
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 class OpenPixelImageUseCaseImpl @Inject constructor(

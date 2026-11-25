@@ -50,7 +50,8 @@ class ApplyBucketUseCaseImplTest {
             x,
             y,
             isSameAction = false,
-            paletteIndex = pixelImageModel.getPixelAt(x, y)?.paletteIndex ?: EMPTY_PIXEL_PALETTE_INDEX,
+            paletteIndex = pixelImageModel
+                .getPixelAt(x, y)?.paletteIndex ?: EMPTY_PIXEL_PALETTE_INDEX,
         )
 
         // When

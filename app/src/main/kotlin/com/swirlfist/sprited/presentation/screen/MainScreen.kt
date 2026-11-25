@@ -250,41 +250,6 @@ fun MainScreenContent(
 ) {
     val availableSize = LocalWindowInfo.current.containerSize
 
-    val canvasSection = @Composable { modifier: Modifier ->
-        CanvasSection(
-            modifier = modifier
-                .fillMaxSize(),
-            state = mainScreenState.canvasSectionState,
-            onEvent = onCanvasSectionEvent,
-        )
-    }
-
-    val actionsSection = @Composable { modifier: Modifier ->
-        val actionsSectionState = mainScreenState.actionsSectionState
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            ActionsSection(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(FLOAT_70_PERCENT),
-                state = actionsSectionState,
-                onEvent = onActionsSectionEvent,
-            )
-
-            if (actionsSectionState.isSelected(ActionButtonType.TogglePreviewActionButtonType)) {
-                PixelImagePreviewSection(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(FLOAT_30_PERCENT),
-                    previewState = mainScreenState.pixelImagePreviewSectionState,
-                    canvasState = mainScreenState.canvasSectionState,
-                )
-            }
-        }
-    }
-
     val containerModifier = modifier
         .safeContentPadding()
 
@@ -293,16 +258,77 @@ fun MainScreenContent(
             modifier = containerModifier,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            canvasSection(Modifier.weight(FLOAT_60_PERCENT))
-            actionsSection(Modifier.weight(FLOAT_40_PERCENT))
+            CanvasComponent(
+                Modifier.weight(FLOAT_60_PERCENT),
+                mainScreenState.canvasSectionState,
+                onCanvasSectionEvent,
+            )
+            ActionsComponent(
+                Modifier.weight(FLOAT_40_PERCENT),
+                mainScreenState,
+                onActionsSectionEvent,
+            )
         }
     } else {
         Row(
             modifier = containerModifier,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            canvasSection(Modifier.weight(FLOAT_60_PERCENT))
-            actionsSection(Modifier.weight(FLOAT_40_PERCENT))
+            CanvasComponent(
+                Modifier.weight(FLOAT_60_PERCENT),
+                mainScreenState.canvasSectionState,
+                onCanvasSectionEvent,
+            )
+            ActionsComponent(
+                Modifier.weight(FLOAT_40_PERCENT),
+                mainScreenState,
+                onActionsSectionEvent,
+            )
+        }
+    }
+}
+
+@Composable
+fun CanvasComponent(
+    modifier: Modifier,
+    state: CanvasSectionState,
+    onEvent: (CanvasSectionEvent) -> Unit,
+) {
+    CanvasSection(
+        modifier = modifier
+            .fillMaxSize(),
+        state,
+        onEvent,
+    )
+}
+
+@Composable
+fun ActionsComponent(
+    modifier: Modifier,
+    state: MainScreenState,
+    onEvent: (ActionSectionEvent) -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        val actionsSectionState = state.actionsSectionState
+        ActionsSection(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(FLOAT_70_PERCENT),
+            actionsSectionState,
+            onEvent,
+        )
+
+        if (actionsSectionState.isSelected(ActionButtonType.TogglePreviewActionButtonType)) {
+            PixelImagePreviewSection(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(FLOAT_30_PERCENT),
+                previewState = state.pixelImagePreviewSectionState,
+                canvasState = state.canvasSectionState,
+            )
         }
     }
 }
