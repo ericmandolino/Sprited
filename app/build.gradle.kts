@@ -18,8 +18,8 @@ android {
         applicationId = "com.swirlfist.sprited"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.9.0"
+        versionCode = 2
+        versionName = "0.9.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
