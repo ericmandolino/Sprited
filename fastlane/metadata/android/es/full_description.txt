@@ -1,0 +1,13 @@
+Sprited es una aplicación de dibujo pensada para crear tus propios sprites.
+
+Características principales:
+- Crea, guarda y carga tus propias paletas de colores, o bien edita al vuelo la que estés usando.
+- Usa las herramientas de pluma o cubo de pintura con un color de la paleta o el borrador.
+- Usa gestos de dos dedos para hacer zoom a la imagen o desplazarte por ella.
+- Crea y combina selecciones usando rectángulos, pixel a pixel y con la varita mágica.
+- Cambia tus selecciones de posición en la imagen.
+- Mueve todos los píxeles del sprite hacia arriba y hacia abajo fila a fila, o a la izquierda y derecha columna a columna.
+- Deshaz y repite tus acciones recientes.
+- Muestra u oculta la vista previa de tu sprite.
+- Guarda y carga tus sprites.
+- Exporta tus sprites a formato PNG y SVG.

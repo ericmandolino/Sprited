@@ -1,0 +1,1 @@
+Aplicación de dibujo pensada para crear tus propios sprites.

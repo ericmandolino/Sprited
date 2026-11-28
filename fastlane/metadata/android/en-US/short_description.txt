@@ -1,0 +1,1 @@
+Drawing application targeted to create your own sprites.
