@@ -51,9 +51,6 @@ android {
 }
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll(listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode"))
-    }
     ksp {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
