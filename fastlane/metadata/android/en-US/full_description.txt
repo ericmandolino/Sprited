@@ -1,4 +1,4 @@
-Sprited is a drawing application targeted to create your own sprites.
+Sprited is a drawing application targeted to creating your own sprites.
 
 Key features:
 - Create, save and load your own palettes, or edit the current palette on the go.
