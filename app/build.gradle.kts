@@ -9,14 +9,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("ANDROID_KEY_STOREFILE"))
-            storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("ANDROID_KEY_ALIAS")
-            keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
-        }
-    }
     namespace = "com.swirlfist.sprited"
     compileSdk {
         version = release(37)
@@ -26,8 +18,8 @@ android {
         applicationId = "com.swirlfist.sprited"
         minSdk = 26
         targetSdk = 37
-        versionCode = 6
-        versionName = "1.0.0"
+        versionCode = 7
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,7 +29,6 @@ android {
             optimization {
                 enable = false
             }
-            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
