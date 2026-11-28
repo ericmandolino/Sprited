@@ -19,9 +19,9 @@
     <string name="cd_actions_section_button_open_palette">Open palette</string>
     <string name="cd_actions_section_button_open_pixel_image">Open pixel image</string>
     <string name="cd_actions_section_button_pick_palette_color">Pick palette color %d</string>
-    <string name="cd_actions_section_button_select_magic_wand">Select magic wand</string>
-    <string name="cd_actions_section_button_select_rectangle">Select rectangle</string>
-    <string name="cd_actions_section_button_select_touch">Select touch</string>
+    <string name="cd_actions_section_button_select_magic_wand">Magic wand selection</string>
+    <string name="cd_actions_section_button_select_rectangle">Rectangle selection</string>
+    <string name="cd_actions_section_button_select_touch">Touch selection</string>
     <string name="cd_actions_section_button_toggle_preview">Toggle preview</string>
     <string name="cd_actions_section_button_redo">Redo last action</string>
     <string name="cd_actions_section_button_save_pixel_image">Save pixel image</string>
@@ -44,15 +44,15 @@
     <string name="create_image_size">Size</string>
     <string name="create_image_palette">Palette</string>
     <string name="delete">Delete</string>
-    <string name="red">R</string>
-    <string name="green">G</string>
-    <string name="blue">B</string>
+    <string name="red" translatable="false">R</string>
+    <string name="green" translatable="false">G</string>
+    <string name="blue" translatable="false">B</string>
     <string name="load_palette_preset">Load</string>
     <string name="save_palette_as_preset">Save</string>
     <string name="loading_palette_presets">Loading palette presets…</string>
     <string name="palette_preset_name">Preset name</string>
     <string name="save">Save</string>
     <string name="once_more_to_exit">Once more to exit</string>
-    <string name="pixel_image_export_format_svg">SVG</string>
-    <string name="pixel_image_export_format_png">PNG</string>
+    <string name="pixel_image_export_format_svg" translatable="false">SVG</string>
+    <string name="pixel_image_export_format_png" translatable="false">PNG</string>
 </resources>
